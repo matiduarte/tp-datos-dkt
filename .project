@@ -24,4 +24,11 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>CapaFisica/tp0_marian/cargador_masivo</name>
+			<type>2</type>
+			<location>/mnt/21ADD284762C86D8/FIUBA/Organizacion de Datos/TP0/cargador_masivo</location>
+		</link>
+	</linkedResources>
 </projectDescription>
