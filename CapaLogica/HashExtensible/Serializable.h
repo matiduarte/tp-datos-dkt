@@ -18,7 +18,6 @@ public:
 	//Solo para cuando se crean objetos en memoria en primer instancia
 	//despues tienen q usar siempre el constructor de arriba
 	virtual ~Serializable();
-
 	virtual string serializar()const  = 0;
 protected:
 	//Cte para separar los elementos
