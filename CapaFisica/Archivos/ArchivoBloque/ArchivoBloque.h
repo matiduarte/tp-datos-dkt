@@ -9,21 +9,26 @@
 #define ARCHIVOBLOQUE_H_
 
 #include <vector>
+#include <iostream>
+#include "../Archivo.h"
 using namespace std;
 
 class ArchivoBloque: Archivo {
 public:
-	ArchivoBloque(const char* nombre);
+	ArchivoBloque(string nombre);
 	virtual ~ArchivoBloque();
 
 	void subir(char* bloque, int tamanioBloque);
 	void leer(char* &bloque, int tamanioBloque, int numBloque);
+	void borrarBloque(int numeroBloque);
 
 private:
-	vector<bool> vectorMapaBits;
 
+	string nombreArchivo;
+	vector<char> vectorMapaBits;
 	int siguientePosicionLibre();
-	void borrarBloque(int numeroBloque, int tamanioBloque);
+	void leerMapaDeBits();
+	void escribirMapaBits();
 
 };
 

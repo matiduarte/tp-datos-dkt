@@ -1,12 +1,14 @@
 #ifndef BUFFER_H_
 #define BUFFER_H_
 
-#include "../Excepciones/Buffer_Incorrecto/ExcepcionBufferIncorrecto.h"
-#include "../../Constantes/Constantes.h"
+//#include "../Excepciones/Buffer_Incorrecto/ExcepcionBufferIncorrecto.h"
+#include "../Constantes.h"
+#include "../Archivos/Archivo.h"
 #include <string.h>
 #include <stdlib.h>
 #include <fstream>
 #include <sstream>
+#include<iostream>
 
 using namespace std;
 

@@ -13,12 +13,12 @@ using namespace std;
 
 class Archivo {
 public:
-	virtual Archivo();
+	Archivo();
 	virtual ~Archivo();
 	virtual void subir(char* dato, int tamanioDato);
 	virtual void leer(char* &dato, int tamanio, int numBloque);
 
-private:
+protected:
 	fstream archivo;
 };
 

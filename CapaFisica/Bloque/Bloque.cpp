@@ -32,7 +32,7 @@ unsigned int Bloque::leerTamanioBuffer(){
 
 	configLectura.close();
 
-	if(!esMultiplo(tamanioBuffer)) throw new ExcepcionBufferIncorrecto();	//el numero debe ser multiplo de 512 bytes
+//	if(!esMultiplo(tamanioBuffer)) throw new ExcepcionBufferIncorrecto();	//el numero debe ser multiplo de 512 bytes
 
 	return tamanioBuffer;
 }

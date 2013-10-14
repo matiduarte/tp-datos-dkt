@@ -8,6 +8,8 @@
 #ifndef ARCHIVOREGVARIABLE_H_
 #define ARCHIVOREGVARIABLE_H_
 
+#include "../Archivo.h"
+
 class ArchivoRegVariable: Archivo {
 public:
 	ArchivoRegVariable();
