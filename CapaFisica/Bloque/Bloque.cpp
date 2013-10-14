@@ -1,4 +1,4 @@
-#include "Buffer.h"
+#include "Bloque.h"
 
 Bloque::Bloque() {
 	tamanioBuffer = leerTamanioBuffer();
