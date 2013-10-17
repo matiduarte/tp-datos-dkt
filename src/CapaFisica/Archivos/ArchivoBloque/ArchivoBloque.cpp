@@ -7,13 +7,15 @@
 
 #include "ArchivoBloque.h"
 
-ArchivoBloque::ArchivoBloque(string nombre) {
+ArchivoBloque::ArchivoBloque(string nombre, int tamanioBloque) {
 
     archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary);
     if(!archivo) // si no existe, crear archivo nuevo
     	archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary | fstream::trunc);
 
     	nombreArchivo = (string)nombre;
+
+    	this->tamanioBloque = tamanioBloque;
 
     	leerMapaDeBits();
 }
@@ -47,18 +49,20 @@ void ArchivoBloque::escribirMapaBits(){
 	string dirMapaBits = nombreArchivo + "MapaBits";
 	ofstream archivoMapaBits;
 	archivoMapaBits.open(dirMapaBits.c_str(), fstream::binary);
-	archivoMapaBits.seekp(0);
+	archivoMapaBits.seekp(0, ios::beg);
 	for(unsigned int i=0; i< vectorMapaBits.size(); i++)
 		archivoMapaBits.write((char*)&vectorMapaBits[i], sizeof(char));
 
 	archivoMapaBits.close();
 }
 
-void ArchivoBloque::subir(char* bloque, int tamanioBloque){
+int ArchivoBloque::escribir(char* bloque){
 
 	int posicion = this->siguientePosicionLibre();
-	archivo.seekp(posicion*tamanioBloque);
+	archivo.seekp(posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
+
+	return posicion;
 }
 
 int ArchivoBloque::siguientePosicionLibre(){
@@ -72,12 +76,31 @@ int ArchivoBloque::siguientePosicionLibre(){
 	return pos;
 }
 
-void ArchivoBloque::leer(char* &dato, int tamanioDato, int numBloque){
-	archivo.seekg(tamanioDato * numBloque);
-	archivo.read(dato, tamanioDato);
+char* ArchivoBloque::leer(int numBloque){
+
+	char* dato = new char[tamanioBloque];
+
+	archivo.seekg(tamanioBloque * numBloque, ios::beg);
+	archivo.read(dato, tamanioBloque);
+
+	return dato;
 }
 
-void ArchivoBloque::borrarBloque(int numeroBloque){
-	vectorMapaBits.at(numeroBloque) = '0';
+int ArchivoBloque::getCantidadBloques(){
+
+	int posicion = archivo.tellp();
+
+	archivo.seekp(0, ios::end);
+	int numBloques= (archivo.tellp() / tamanioBloque);
+
+	archivo.seekp(posicion, ios::beg);
+
+	return numBloques;
 }
 
+void ArchivoBloque::borrar(unsigned int numBloque){
+
+	if(numBloque >= vectorMapaBits.size()) throw new ExcepcionBloqueInexistente();
+
+	vectorMapaBits.at(numBloque) = '0' ;
+}

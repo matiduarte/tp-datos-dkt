@@ -15,7 +15,7 @@ class Archivo {
 public:
 	Archivo();
 	virtual ~Archivo();
-	virtual void subir(char* dato, int tamanioDato);
+	virtual void escribir(char* dato, int tamanioDato);
 	virtual void leer(char* &dato, int tamanio, int numBloque);
 
 protected:

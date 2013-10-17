@@ -16,6 +16,6 @@ Archivo::~Archivo() {
 	// TODO Auto-generated destructor stub
 }
 
-void Archivo::subir(char* dato, int tamanio){};
+void Archivo::escribir(char* dato, int tamanio){};
 void Archivo::leer(char* &dato, int tamanio, int num){};
 
