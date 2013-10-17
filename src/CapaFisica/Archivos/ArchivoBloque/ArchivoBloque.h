@@ -10,12 +10,16 @@
 
 #include <vector>
 #include <iostream>
+#include <math.h>
 #include "../Archivo.h"
 #include "../../Excepciones/ExcepcionBloqueInexistente.h"
+#include "../../Excepciones/ExcepcionBloqueIncorrecto.h"
 using namespace std;
 
 class ArchivoBloque: Archivo {
 public:
+
+	//puede lanzar ExcepcionBloqueIncorrecto
 	ArchivoBloque(string nombre, int tamanioBloque);
 	virtual ~ArchivoBloque();
 
@@ -27,16 +31,14 @@ public:
 
 	int getCantidadBloques();
 
-	//pasar tamanioBloque por config
-
 private:
 	string nombreArchivo;
 	vector<char> vectorMapaBits;
+	int tamanioBloque;
+	bool esMultiplo(int tamanioBloque);
 	int siguientePosicionLibre();
 	void leerMapaDeBits();
 	void escribirMapaBits();
-	int tamanioBloque;
-
 };
 
 #endif /* ARCHIVOBLOQUE_H_ */

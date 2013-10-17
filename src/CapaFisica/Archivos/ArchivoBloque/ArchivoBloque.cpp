@@ -9,6 +9,8 @@
 
 ArchivoBloque::ArchivoBloque(string nombre, int tamanioBloque) {
 
+	if (!esMultiplo(tamanioBloque)) throw new ExcepcionBloqueIncorrecto();
+
     archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary);
     if(!archivo) // si no existe, crear archivo nuevo
     	archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary | fstream::trunc);
@@ -24,6 +26,14 @@ ArchivoBloque::~ArchivoBloque() {
 
 	escribirMapaBits();
 	archivo.close();
+}
+
+bool ArchivoBloque::esMultiplo(int tamanio){
+
+	double n1= tamanio / 512;
+	double n2= log2(n1);
+
+	return((n2 == static_cast<int>(n2)) && (tamanio>=512));
 }
 
 void ArchivoBloque::leerMapaDeBits(){
