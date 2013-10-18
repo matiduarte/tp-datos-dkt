@@ -10,6 +10,7 @@
 #include <iostream>
 #include "string.h"
 #include <list>
+#include "Clave.h"
 
 using namespace std;
 
@@ -18,21 +19,25 @@ class RegistroArbol {
 
 private:
 
-	string clave;
-	list<unsigned int>* id;
-	unsigned int tamanioClave;
+	Clave clave;
+	string valor;
+	//list<unsigned int>* id;
+	//unsigned int tamanioClave;
 
 
 public:
-	RegistroArbol(string);
+	RegistroArbol(Clave, string);
 	virtual ~RegistroArbol();
 
-	int agregar(string, unsigned int id);
+	int agregar(string, string);
 	int borrar(string , unsigned int id);
-	bool existe(unsigned int);
+	bool existe(string);
+	int persistir (char* bloque);
 
 	void setClave(string clave);
+	void setValor(string valor);
 	string getClave();
+	string getValor();
 	list<unsigned int>* getID();
 	unsigned int getTamanioClave();
 };

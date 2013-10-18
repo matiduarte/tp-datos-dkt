@@ -7,52 +7,51 @@
 
 #include "RegistroArbol.h"
 
-RegistroArbol::RegistroArbol(string clave) {
+RegistroArbol::RegistroArbol(Clave clave, string valor) {
 	// TODO Auto-generated constructor stub
 
 	this->clave = clave;
-	this->id = new list<unsigned int>();
-	this->tamanioClave = clave.size();
+	this->valor = valor;
+	//this->id = new list<unsigned int>();
+	//this->tamanioClave = clave.size();
 }
 
 RegistroArbol::~RegistroArbol() {
 	// TODO Auto-generated destructor stub
-	delete this->id;
+	//delete this->id;
 }
 
 string RegistroArbol::getClave(){
 
-	return this->clave;
+	return this->clave.getClave();
 
 }
 
 void RegistroArbol::setClave(string clave){
 
-	this->clave = clave;
+	this->clave.setClave(clave);
 
 }
 
-list<unsigned int>* RegistroArbol::getID(){
+string RegistroArbol::getValor(){
 
-	return this->id;
+	return this->valor;
 
 }
 
-bool RegistroArbol::existe(unsigned int id){
+void RegistroArbol::setValor(string valor){
 
-	bool existe = false;
-	list<unsigned int>::iterator it;
-	// Recorro la lista de IDs, en caso de que
-	// alguno coincida devuelvo verdadero
-	for (it = (this->id)->begin(); it != (this->id)->end(); it++){
-		if (*it == id){
-			existe = true;
-		}
-	}
-	return existe;
+	this->valor = valor;
+
 }
 
-int RegistroArbol::agregar(string clave, unsigned int id){
+bool RegistroArbol::existe(string clave){
+
+	return (this->clave.operator ==(clave));
+
+}
+
+int RegistroArbol::agregar(string clave, string valor){
 
 
 	/* resultado = 0 -> no se pudo agregar
@@ -61,21 +60,9 @@ int RegistroArbol::agregar(string clave, unsigned int id){
 	 * resultado = 3 -> el identificador ya existe
 	 */
 
-	int resultado;
 
 
-	if (this->existe(id)) {
-		resultado = 3;
-	} else {
-		if ( this->getClave() == clave ) {
-			this->id->push_back(id);
-			resultado = 1;
-		} else {
-			resultado = 0;
-		}
-	}
-
-	return resultado;
+	return 0;
 
 }
 
@@ -86,26 +73,26 @@ int RegistroArbol::borrar(string clave, unsigned int id){
 	 * resultado = 2 -> hubo desborde
 	 * resultado = 3 -> el identificador no existe
 	 */
-;
-	int resultado;
 
-	if (this->existe(id)){
-		// itero sobre la lista hasta encontrar el id
-		list<unsigned int>::iterator it;
-		for (it = (this->id)->begin(); it != (this->id)->end(); it++){
-			if (*it == id)
-				this->id->erase(it);
-		}
-		resultado = 1;
-	} else {
-		if (this->getClave() == clave){
-			resultado = 3;
-		} else {
-			resultado = 0;
-		}
-	}
 
-	return resultado;
+
+	return 0;
 }
 
 
+int RegistroArbol::persistir(char* bloque){
+	//Devuelve la cantidad de bytes almacenados
+
+	unsigned int bytesAlmacenados = this->clave.persistir(bloque);
+	unsigned int tamanioInt = sizeof (unsigned int);
+	unsigned int tamanioValor = this->valor.size();
+
+	//Primero agrego el tamanio del valor
+	memcpy(bloque + bytesAlmacenados, (char*)&tamanioValor, tamanioInt);
+	bytesAlmacenados += tamanioInt;
+	//Luego el dato
+	memcpy(bloque + bytesAlmacenados, this->valor.c_str(), tamanioValor);
+	bytesAlmacenados += tamanioValor;
+
+	return bytesAlmacenados;
+}
