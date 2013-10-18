@@ -7,7 +7,7 @@
 
 #ifndef NODOHOJA_H_
 #define NODOHOJA_H_
-#include "../Nodo/Nodo.h"
+#include "Nodo.h"
 
 
 class NodoHoja: public Nodo {

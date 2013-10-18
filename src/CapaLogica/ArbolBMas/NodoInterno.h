@@ -7,9 +7,19 @@
 
 #ifndef NODOINTERNO_H_
 #define NODOINTERNO_H_
-#include "../Nodo/Nodo.h"
+#include "Nodo.h"
+#include <list>
+#include <iostream>
+#include "Clave.h"
+
+using namespace std;
 
 class NodoInterno: public Nodo {
+
+private:
+	list<unsigned int> hijos;
+	list<Clave> claves;
+
 public:
 	NodoInterno();
 	virtual ~NodoInterno();
