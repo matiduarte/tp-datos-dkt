@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class ExceptionUnderflowNodo : public exception {
+class ExceptionUnderflowNodo : public Excepcion {
 
 private:
 	int tamDispersion;

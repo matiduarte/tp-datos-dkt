@@ -11,7 +11,7 @@
 #include <exception>
 using namespace std;
 
-class ExceptionTamTabla : public exception{
+class ExceptionTamTabla : public Excepcion{
 
 public:
 	virtual const char* what() const throw(){

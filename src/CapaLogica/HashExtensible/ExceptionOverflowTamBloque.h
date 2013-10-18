@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class ExceptionOverflowTamBloque : public exception
+class ExceptionOverflowTamBloque : public Excepcion
 {
 public:
 

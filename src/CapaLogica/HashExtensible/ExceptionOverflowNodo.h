@@ -12,7 +12,7 @@
 
 using namespace std;
 
-class ExceptionOverflowNodo : public exception{
+class ExceptionOverflowNodo : public Excepcion{
 
 private:
 	int posBloque;

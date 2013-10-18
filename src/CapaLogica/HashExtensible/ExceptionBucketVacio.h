@@ -9,10 +9,10 @@
 #define EXCEPTIONBUCKETVACIO_H_
 
 #include <exception>
-
+#include "../../Excepcion.h"
 using namespace std;
 
-class ExceptionBucketVacio : public exception {
+class ExceptionBucketVacio : public Excepcion{
 
 public:
 	virtual const char* what() const throw(){

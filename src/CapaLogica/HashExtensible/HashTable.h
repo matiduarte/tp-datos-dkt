@@ -6,6 +6,7 @@
 #include "ElementKey.h"
 #include "Convertidor.h"
 #include "ExceptionTamTabla.h"
+#include "ExceptionOverflowTamBloque.h"
 
 #include <list>
 #include <stdlib.h>

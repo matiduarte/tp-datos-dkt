@@ -8,7 +8,8 @@
 #ifndef SALVABLE_H_
 #define SALVABLE_H_
 
-#include "ArchivoBloque.h"
+#include "../../CapaFisica/Archivos/ArchivoBloque/ArchivoBloque.h"
+#include "ExceptionOverflowTamBloque.h"
 #include <string>
 
 using namespace std;

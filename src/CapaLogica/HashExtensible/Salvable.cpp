@@ -10,16 +10,20 @@
 using namespace std;
 
 Salvable::Salvable(const string& ruta, const bool& sobreEscribir,const short& tamElem){
-	archivo = new ArchivoBloque(ruta, tamElem, sobreEscribir);
+	//archivo = new ArchivoBloque(ruta, tamElem, sobreEscribir);
+	archivo = new ArchivoBloque(ruta, tamElem);
 }
 
 void Salvable::leerBloque(const int& numBloque,string* buffer)const{
-	*buffer = archivo->LeerBloque(numBloque);
+	*buffer = archivo->leer(numBloque);
 }
 
 void Salvable::escribirBloque(const string& bloque, const int& numBloque){
 	try {
-		archivo->EscribirBloque(bloque, numBloque);
+		if(numBloque < archivo->getCantidadBloques() && archivo->getCantidadBloques() > 0){
+			archivo->borrar(numBloque);
+		}
+		archivo->escribir((char*)bloque.c_str());
 	} catch (ExceptionOverflowTamBloque e) {
 		throw e;
 	}
@@ -27,7 +31,7 @@ void Salvable::escribirBloque(const string& bloque, const int& numBloque){
 }
 
 const unsigned int Salvable::getCantidadDeBloques ()const{
-	return archivo->getCantidadDeBloques();
+	return archivo->getCantidadBloques();
 }
 
 Salvable::~Salvable(){
