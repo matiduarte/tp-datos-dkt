@@ -1,0 +1,46 @@
+/*
+ * Nodo.cpp
+ *
+ *  Created on: 11/10/2013
+ *      Author: juanma
+ */
+
+#include "Nodo.h"
+
+Nodo::Nodo() {
+	this->cantidadDeElementos = 0;
+	this->nivel = 0;
+	this->NumeroDeBloque = 0;
+
+}
+
+Nodo::~Nodo() {
+	// TODO Auto-generated destructor stub
+}
+
+
+unsigned int Nodo::getCantidadDeElementos(){
+		return (this->cantidadDeElementos);
+}
+
+
+unsigned int Nodo::getNumeroDeBloque(){
+	return this->NumeroDeBloque;
+};
+
+
+void Nodo::setNumeroDeBloque(unsigned int numeroDeBloque){
+	this->NumeroDeBloque = numeroDeBloque;
+}
+
+
+short unsigned int Nodo::getNivel(){
+		return(this->nivel);
+}
+
+
+void Nodo::incrementarNivel(){this->nivel++;}
+
+
+void Nodo::decrementarNivel(){this->nivel--;}
+

@@ -1,18 +1,18 @@
 /*
- * Nodo.cpp
+ * NodoHoja.cpp
  *
- *  Created on: 11/10/2013
+ *  Created on: 13/10/2013
  *      Author: juanma
  */
 
-#include "Nodo.h"
+#include "NodoHoja.h"
 
-Nodo::Nodo() {
+NodoHoja::NodoHoja() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Nodo::~Nodo() {
+NodoHoja::~NodoHoja() {
 	// TODO Auto-generated destructor stub
 }
 
