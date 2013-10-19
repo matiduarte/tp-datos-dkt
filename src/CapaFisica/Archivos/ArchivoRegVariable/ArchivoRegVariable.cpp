@@ -102,3 +102,12 @@ unsigned int ArchivoRegVariable::escribir(char* registro){
 	return posicionRegistro;
 }
 
+char* ArchivoRegVariable::leer(unsigned int numRegistro){
+	return new char;
+}
+void ArchivoRegVariable::borrar(unsigned int numRegistro){
+
+}
+unsigned int ArchivoRegVariable::getCantidadRegistros(){
+	return 0;
+}
