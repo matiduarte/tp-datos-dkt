@@ -26,19 +26,19 @@ public:
 	virtual ~ArchivoBloque();
 
 	//puede lanzar ExcepcionOverflowTamBloque
-	int escribir(char* bloque);
-	char* leer(int numBloque);
+	unsigned int escribir(char* bloque);
+	char* leer(unsigned int numBloque);
 
 	//puede lanzar ExcepcionBloqueInexistente
 	void borrar(unsigned int numBloque);
-	int getCantidadBloques();
+	unsigned int getCantidadBloques();
 
 private:
 	string nombreArchivo;
 	vector<char> vectorMapaBits;
 	unsigned int tamanioBloque;
 	bool esMultiplo(int tamanioBloque);
-	int siguientePosicionLibre();
+	unsigned int siguientePosicionLibre();
 	void leerMapaDeBits();
 	void escribirMapaBits();
 };

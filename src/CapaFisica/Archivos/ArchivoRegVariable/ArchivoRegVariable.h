@@ -21,10 +21,10 @@ public:
 	ArchivoRegVariable();
 	virtual ~ArchivoRegVariable();
 
-	int escribir(char* registro);
-	char* leer(int numRegistro);
-	void borrar(int numRegistro);
-	int getCantidadRegistros();
+	unsigned int escribir(char* registro);
+	char* leer(unsigned int numRegistro);
+	void borrar(unsigned int numRegistro);
+	unsigned int getCantidadRegistros();
 };
 
 #endif /* ARCHIVOREGVARIABLE_H_ */

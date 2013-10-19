@@ -25,7 +25,7 @@ public:
 
 protected:
 	void leerBloque(const int& numBloque,string* buffer)const;
-	void escribirBloque(const string& bloque, const int& numBloque);
+	void escribirBloque(const string& bloque, const unsigned int& numBloque);
 	const unsigned int getCantidadDeBloques ()const;
 };
 

@@ -9,7 +9,6 @@
 
 ArchivoRegVariable::ArchivoRegVariable() {
 	// TODO Auto-generated constructor stub
-
 }
 
 ArchivoRegVariable::~ArchivoRegVariable() {

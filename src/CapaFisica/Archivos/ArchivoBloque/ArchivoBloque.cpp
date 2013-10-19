@@ -66,18 +66,18 @@ void ArchivoBloque::escribirMapaBits(){
 	archivoMapaBits.close();
 }
 
-int ArchivoBloque::escribir(char* bloque){
+unsigned int ArchivoBloque::escribir(char* bloque){
 
 	if(strlen(bloque) > tamanioBloque) throw new ExcepcionOverflowTamBloque();
 
-	int posicion = this->siguientePosicionLibre();
+	unsigned int posicion = this->siguientePosicionLibre();
 	archivo.seekp(posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
 
 	return posicion;
 }
 
-int ArchivoBloque::siguientePosicionLibre(){
+unsigned int ArchivoBloque::siguientePosicionLibre(){
 
 	unsigned int pos;
 	for(pos= 0; pos<vectorMapaBits.size() && vectorMapaBits.at(pos)=='1'; pos++){};
@@ -88,7 +88,7 @@ int ArchivoBloque::siguientePosicionLibre(){
 	return pos;
 }
 
-char* ArchivoBloque::leer(int numBloque){
+char* ArchivoBloque::leer(unsigned int numBloque){
 
 	char* dato = new char[tamanioBloque];
 
@@ -98,12 +98,12 @@ char* ArchivoBloque::leer(int numBloque){
 	return dato;
 }
 
-int ArchivoBloque::getCantidadBloques(){
+unsigned int ArchivoBloque::getCantidadBloques(){
 
 	int posicion = archivo.tellp();
 
 	archivo.seekp(0, ios::end);
-	int numBloques= (archivo.tellp() / tamanioBloque);
+	unsigned int numBloques= (archivo.tellp() / tamanioBloque);
 
 	archivo.seekp(posicion, ios::beg);
 
