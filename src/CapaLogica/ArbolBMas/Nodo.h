@@ -8,6 +8,11 @@
 #ifndef NODO_H_
 #define NODO_H_
 
+#include "../../CapaFisica/Archivos/ArchivoBloque/ArchivoBloque.h"
+#include "Clave.h"
+#include "string.h"
+#include "RegistroArbol.h"
+
 class Nodo {
 
 private:
