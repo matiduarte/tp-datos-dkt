@@ -16,7 +16,7 @@ ArchivoRegVariable::ArchivoRegVariable(string nombre) {
     	this->cantidadRegistros = 0;
 
     }else{ //el archivo ya existe
-    	archivo.seekp(0, ios::beg);
+    	archivo.seekg(0, ios::beg);
     	archivo.read((char*)&cantidadRegistros, sizeof(unsigned int));
     }
 
@@ -66,3 +66,39 @@ void ArchivoRegVariable::escribirEspaciosLibres(){
 
 	espaciosLibres.close();
 }
+
+unsigned int ArchivoRegVariable::escribir(char* registro){
+
+	bool espacioEncontrado = false;
+	unsigned int posicionRegistro;
+	unsigned int largoCadena = strlen(registro);
+	unsigned int tamanioDato = sizeof(largoCadena) + largoCadena;
+
+	for(unsigned int i=0; ((i< vectorEspaciosLibres.size()) && (!espacioEncontrado)) ; i++){
+		if(vectorEspaciosLibres.at(i).tamanio >= tamanioDato){ //si el dato entra en uno de los espacios libres
+
+			espacioEncontrado = true;
+			posicionRegistro = vectorEspaciosLibres.at(i).inicio;
+
+			//escribir el dato
+			archivo.seekp(vectorEspaciosLibres.at(i).inicio, ios::beg);
+			archivo.write((char*)&largoCadena, sizeof(largoCadena));
+			archivo.write((char*)&registro, largoCadena);
+
+			//dismunuir el tamaño del espacio libre
+			vectorEspaciosLibres.at(i).inicio += tamanioDato;
+			vectorEspaciosLibres.at(i).tamanio -= tamanioDato;
+		}
+	}
+	if(!espacioEncontrado){ //si se recorrio el vector de espacios y no se encontro nada, escribir al final
+
+		archivo.seekp(0, ios::end);
+		posicionRegistro = archivo.tellp();
+
+		archivo.write((char*)&largoCadena, sizeof(largoCadena));
+		archivo.write((char*)&registro, largoCadena);
+	}
+
+	return posicionRegistro;
+}
+
