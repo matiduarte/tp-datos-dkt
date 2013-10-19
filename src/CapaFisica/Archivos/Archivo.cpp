@@ -11,6 +11,9 @@ Archivo::Archivo() {}
 
 Archivo::~Archivo() {}
 
-//int Archivo::escribir(char* dato){};
-//char* Archivo::leer(int num){};
+unsigned int Archivo::escribir(char* dato){return 0;}
+char* Archivo::leer(unsigned int num){ return new char;}
+void Archivo::borrar(unsigned int num){}
 
+void Archivo::escribirEspaciosLibres(){}
+void Archivo::leerEspaciosLibres(){}

@@ -9,6 +9,8 @@
 #define ARCHIVO_H_
 
 #include <fstream>
+#include <vector>
+
 using namespace std;
 
 class Archivo {
@@ -21,6 +23,9 @@ public:
 
 protected:
 	fstream archivo;
+	string nombreArchivo;
+	virtual void escribirEspaciosLibres();
+	virtual void leerEspaciosLibres();
 };
 
 #endif /* ARCHIVO_H_ */

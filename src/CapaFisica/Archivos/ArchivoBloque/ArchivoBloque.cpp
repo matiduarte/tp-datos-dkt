@@ -19,12 +19,12 @@ ArchivoBloque::ArchivoBloque(string nombre, int tamanioBloque) {
 
     	this->tamanioBloque = tamanioBloque;
 
-    	leerMapaDeBits();
+    	leerEspaciosLibres();
 }
 
 ArchivoBloque::~ArchivoBloque() {
 
-	escribirMapaBits();
+	escribirEspaciosLibres();
 	archivo.close();
 }
 
@@ -36,7 +36,7 @@ bool ArchivoBloque::esMultiplo(int tamanio){
 	return((n2 == static_cast<int>(n2)) && (tamanio>=512));
 }
 
-void ArchivoBloque::leerMapaDeBits(){
+void ArchivoBloque::leerEspaciosLibres(){
 
 	string dirMapaBits = nombreArchivo + "MapaBits";
 	ifstream archivoMapaBits;
@@ -54,7 +54,7 @@ void ArchivoBloque::leerMapaDeBits(){
     archivoMapaBits.close();
 }
 
-void ArchivoBloque::escribirMapaBits(){
+void ArchivoBloque::escribirEspaciosLibres(){
 
 	string dirMapaBits = nombreArchivo + "MapaBits";
 	ofstream archivoMapaBits;

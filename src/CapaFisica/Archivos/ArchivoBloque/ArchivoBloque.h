@@ -8,7 +8,6 @@
 #ifndef ARCHIVOBLOQUE_H_
 #define ARCHIVOBLOQUE_H_
 
-#include <vector>
 #include <iostream>
 #include <math.h>
 #include <string.h>
@@ -34,13 +33,12 @@ public:
 	unsigned int getCantidadBloques();
 
 private:
-	string nombreArchivo;
 	vector<char> vectorMapaBits;
 	unsigned int tamanioBloque;
 	bool esMultiplo(int tamanioBloque);
 	unsigned int siguientePosicionLibre();
-	void leerMapaDeBits();
-	void escribirMapaBits();
+	void leerEspaciosLibres();
+	void escribirEspaciosLibres();
 };
 
 #endif /* ARCHIVOBLOQUE_H_ */

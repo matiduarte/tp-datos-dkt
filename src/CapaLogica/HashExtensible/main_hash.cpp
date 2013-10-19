@@ -141,7 +141,7 @@
 //	cout<<endl<<"Para mas informacion vea la documentacion adjunta"<<endl;
 //	cout<<endl;
 //}
-// 
+//
 //void comandoBusqueda(const string clave, Hash* hash){
 //	try {
 //		string valor = hash->buscarElemento(clave);

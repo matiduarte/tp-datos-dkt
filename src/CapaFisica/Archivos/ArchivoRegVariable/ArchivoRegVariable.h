@@ -13,18 +13,25 @@
 typedef struct{
 	unsigned int inicio;
 	unsigned int tamanio;
-}espacioVacio;
+}espacioLibre;
 
 class ArchivoRegVariable: Archivo {
-public:
 
-	ArchivoRegVariable();
+public:
+	ArchivoRegVariable(string nombreArchivo);
 	virtual ~ArchivoRegVariable();
 
 	unsigned int escribir(char* registro);
 	char* leer(unsigned int numRegistro);
 	void borrar(unsigned int numRegistro);
 	unsigned int getCantidadRegistros();
+
+private:
+	unsigned int cantidadRegistros;
+
+	vector<espacioLibre> vectorEspaciosLibres;
+	void leerEspaciosLibres();
+	void escribirEspaciosLibres();
 };
 
 #endif /* ARCHIVOREGVARIABLE_H_ */
