@@ -11,7 +11,7 @@
 #include "HashNode.h"
 #include "Salvable.h"
 #include "ExceptionElementoNoEncontrado.h"
-#include "ExceptionOverflowTamBloque.h"
+#include "../../CapaFisica/Excepciones/ExcepcionOverflowTamBloque.h"
 #include "ExceptionOverflowNodo.h"
 #include "ExceptionUnderflowNodo.h"
 

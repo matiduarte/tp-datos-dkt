@@ -23,10 +23,10 @@ void HashNodeInterpreter::insertarElemento(const HashClave& key, const string& v
     try {
 		nodo->insertarElemento(key, valor);
         escribirBloque(nodo->serializar(), numeroNodo);
-    } catch (ExceptionElementoKeyYaIngresado e){
+    } catch (ExceptionElementoKeyYaIngresado& e){
     	liberarNodo();
     	throw ExceptionElementoKeyYaIngresado("Clave " + key.serializar() + " ya fue ingresada.");
-    } catch (ExceptionOverflowTamBloque e){
+    } catch (ExcepcionOverflowTamBloque& e){
         throw ExceptionOverflowNodo(numeroNodo, nodo->getTamDispersion(), nodo->getElementos());
     }
 
@@ -38,10 +38,10 @@ void HashNodeInterpreter::modificarElemento(const HashClave& key, const string& 
 	try {
 		nodo->modificarElemento(key,nvoValor);
 		escribirBloque(nodo->serializar(),numeroNodo);
-	} catch (ExceptionElementoNoEncontrado e) {
+	} catch (ExceptionElementoNoEncontrado& e) {
 		liberarNodo();
 		throw e;
-	} catch (ExceptionOverflowTamBloque e) {
+	} catch (ExcepcionOverflowTamBloque& e) {
 		throw ExceptionOverflowNodo(numeroNodo, nodo->getTamDispersion(), nodo->getElementos());
 	}
 	liberarNodo();
@@ -51,10 +51,10 @@ void HashNodeInterpreter::eliminarElemento(const HashClave& key, const int numer
 	levantarNodo(numeroNodo);
 	try {
 		nodo->eliminarElemento(key);
-	} catch (ExceptionElementoNoEncontrado e) {
+	} catch (ExceptionElementoNoEncontrado& e) {
 		liberarNodo();
 		throw e;
-	} catch (ExceptionUnderflowNodo e) {
+	} catch (ExceptionUnderflowNodo& e) {
 		//Guardo el nodo utilizado, borre un elemento (me quedo el nodo vacio)
 		escribirBloque(nodo->serializar(),numeroNodo);
 		liberarNodo();
@@ -71,7 +71,7 @@ string HashNodeInterpreter::buscarElemento(const HashClave& key, const int numer
 	try {
 		//Busco la Key
 		retorno=nodo->buscarElemento(key);
-	} catch (ExceptionElementoNoEncontrado e) {
+	} catch (ExceptionElementoNoEncontrado& e) {
 		liberarNodo();
 		throw e;
 	}
@@ -104,7 +104,7 @@ void HashNodeInterpreter::redispersarNodo(const list<pair<HashElement,bool> >&  
 				nodo->insertarElemento(it->first.getClave(),it->first.getValor());
 			}
 		}
-	}catch (ExceptionElementoKeyYaIngresado e) {
+	}catch (ExceptionElementoKeyYaIngresado& e) {
 		//Si pasa esto que rompa todo.
 		throw e;
 	}

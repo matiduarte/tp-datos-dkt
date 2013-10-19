@@ -6,7 +6,7 @@
 #include "ElementKey.h"
 #include "Convertidor.h"
 #include "ExceptionTamTabla.h"
-#include "ExceptionOverflowTamBloque.h"
+#include "../../CapaFisica/Excepciones/ExcepcionOverflowTamBloque.h"
 
 #include <list>
 #include <stdlib.h>

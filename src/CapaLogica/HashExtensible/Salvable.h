@@ -9,7 +9,7 @@
 #define SALVABLE_H_
 
 #include "../../CapaFisica/Archivos/ArchivoBloque/ArchivoBloque.h"
-#include "ExceptionOverflowTamBloque.h"
+#include "../../CapaFisica/Excepciones/ExcepcionOverflowTamBloque.h"
 #include <string>
 
 using namespace std;

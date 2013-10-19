@@ -11,6 +11,6 @@ Archivo::Archivo() {}
 
 Archivo::~Archivo() {}
 
-virtual void Archivo::escribir(char* dato){};
-virtual void Archivo::leer(int num){};
+//int Archivo::escribir(char* dato){};
+//char* Archivo::leer(int num){};
 

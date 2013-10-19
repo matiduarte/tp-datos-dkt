@@ -24,7 +24,7 @@ void Salvable::escribirBloque(const string& bloque, const int& numBloque){
 			archivo->borrar(numBloque);
 		}
 		archivo->escribir((char*)bloque.c_str());
-	} catch (ExceptionOverflowTamBloque e) {
+	} catch (ExcepcionOverflowTamBloque& e) {
 		throw e;
 	}
 

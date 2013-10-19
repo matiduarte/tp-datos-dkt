@@ -69,7 +69,7 @@ int HashTable::nodoNuevo(int tamDispersion, const HashClave& key){
 	if (tamTabla == tamDispersion){
 		try {
 			duplicarTabla();
-		}catch (ExceptionTamTabla e) {
+		}catch (ExceptionTamTabla& e) {
 			throw e;
 		}
 		setElement(nuevoNodo, pos);
@@ -196,7 +196,7 @@ bool HashTable::tablaEspejo(){
 void HashTable::guardarTamTabla(){
 	try {
 		escribirBloque(Convertidor::intToString(tamTabla), 0);
-	}catch (ExceptionOverflowTamBloque e){
+	}catch (ExcepcionOverflowTamBloque& e){
 		//cuando el tamTabla no entra para guardar, y hay qe agrandar el tam bloque de la tabla.
 		throw ExceptionTamTabla();
 	}

@@ -15,8 +15,8 @@ class Archivo {
 public:
 	Archivo();
 	virtual ~Archivo();
-	virtual void escribir(char* dato);
-	virtual void leer(int numBloque);
+	virtual int escribir(char* dato);
+	virtual char* leer(int numBloque);
 
 protected:
 	fstream archivo;
