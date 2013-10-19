@@ -9,16 +9,12 @@
 
 RegistroArbol::RegistroArbol(Clave clave, string valor) {
 	// TODO Auto-generated constructor stub
-
 	this->clave = clave;
 	this->valor = valor;
-	//this->id = new list<unsigned int>();
-	//this->tamanioClave = clave.size();
 }
 
 RegistroArbol::~RegistroArbol() {
 	// TODO Auto-generated destructor stub
-	//delete this->id;
 }
 
 string RegistroArbol::getClave(){
@@ -60,8 +56,6 @@ int RegistroArbol::agregar(string clave, string valor){
 	 * resultado = 3 -> el identificador ya existe
 	 */
 
-
-
 	return 0;
 
 }
@@ -73,8 +67,6 @@ int RegistroArbol::borrar(string clave, unsigned int id){
 	 * resultado = 2 -> hubo desborde
 	 * resultado = 3 -> el identificador no existe
 	 */
-
-
 
 	return 0;
 }

@@ -26,7 +26,9 @@ public:
 	virtual ~Clave();
 	string getClave();
 	void setClave(string);
+
 	int persistir (char*);
+	int hidratar (char*);
 
 	bool operator != (const Clave& otra) const;
 	bool operator == (const Clave& otra) const;

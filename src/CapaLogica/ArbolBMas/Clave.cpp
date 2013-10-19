@@ -47,6 +47,28 @@ int Clave::persistir(char* bloque){
 
 }
 
+int Clave::hidratar(char* bloque){
+
+	//Devuelve la cantidad de bytes hidratados
+	int bytesLeidos = 0;
+	unsigned int tamanioInt = sizeof(unsigned int);
+	unsigned int tamanioClave;
+	string clave;
+	//Aca usar constante de tamanioBloque
+	char bloqueAux[1024];
+
+	memcpy(&tamanioClave, bloque, tamanioInt);
+	bytesLeidos += tamanioInt;
+	memcpy(bloqueAux, bloque + tamanioInt, tamanioClave);
+	bytesLeidos += tamanioClave;
+	clave = bloqueAux;
+	//Seteo la clave nueva
+	this->setClave(clave);
+
+	return bytesLeidos;
+
+}
+
 bool Clave::operator != (const Clave& otra) const{
 
         return (this->clave != otra.clave);
