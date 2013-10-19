@@ -68,6 +68,8 @@ void ArchivoBloque::escribirMapaBits(){
 
 int ArchivoBloque::escribir(char* bloque){
 
+	if(strlen(bloque) > tamanioBloque) throw new ExcepcionOverflowTamBloque();
+
 	int posicion = this->siguientePosicionLibre();
 	archivo.seekp(posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);

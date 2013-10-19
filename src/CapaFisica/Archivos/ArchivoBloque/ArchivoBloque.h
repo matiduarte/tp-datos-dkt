@@ -11,9 +11,11 @@
 #include <vector>
 #include <iostream>
 #include <math.h>
+#include <string.h>
 #include "../Archivo.h"
 #include "../../Excepciones/ExcepcionBloqueInexistente.h"
 #include "../../Excepciones/ExcepcionBloqueIncorrecto.h"
+#include "../../Excepciones/ExcepcionOverflowTamBloque.h"
 using namespace std;
 
 class ArchivoBloque: Archivo {
@@ -23,18 +25,18 @@ public:
 	ArchivoBloque(string nombre, int tamanioBloque);
 	virtual ~ArchivoBloque();
 
+	//puede lanzar ExcepcionOverflowTamBloque
 	int escribir(char* bloque);
 	char* leer(int numBloque);
 
 	//puede lanzar ExcepcionBloqueInexistente
 	void borrar(unsigned int numBloque);
-
 	int getCantidadBloques();
 
 private:
 	string nombreArchivo;
 	vector<char> vectorMapaBits;
-	int tamanioBloque;
+	unsigned int tamanioBloque;
 	bool esMultiplo(int tamanioBloque);
 	int siguientePosicionLibre();
 	void leerMapaDeBits();

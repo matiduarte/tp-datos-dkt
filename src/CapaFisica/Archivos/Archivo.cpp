@@ -7,15 +7,10 @@
 
 #include "Archivo.h"
 
-Archivo::Archivo() {
-	// TODO Auto-generated constructor stub
+Archivo::Archivo() {}
 
-}
+Archivo::~Archivo() {}
 
-Archivo::~Archivo() {
-	// TODO Auto-generated destructor stub
-}
-
-void Archivo::escribir(char* dato, int tamanio){};
-void Archivo::leer(char* &dato, int tamanio, int num){};
+virtual void Archivo::escribir(char* dato){};
+virtual void Archivo::leer(int num){};
 
