@@ -63,8 +63,10 @@ void ArchivoRegVariable::escribirEspaciosLibres(){
 	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::binary);
 
 	for(unsigned int i=0 ; i< vectorEspaciosLibres.size(); i++){
-		espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).inicio, sizeof(vectorEspaciosLibres.at(i).inicio));
-		espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).tamanio, sizeof(vectorEspaciosLibres.at(i).tamanio));
+		if(vectorEspaciosLibres.at(i).tamanio <= 0){
+			espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).inicio, sizeof(vectorEspaciosLibres.at(i).inicio));
+			espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).tamanio, sizeof(vectorEspaciosLibres.at(i).tamanio));
+		}
 	}
 
 	espaciosLibres.close();
@@ -111,16 +113,26 @@ void ArchivoRegVariable::leer(char* &dato, unsigned int posicionBytes){
 	unsigned int largoCadena;
 
 	archivo.seekg(posicionBytes, ios::beg);
-
 	archivo.read((char*)&largoCadena, sizeof(largoCadena));
 	archivo.read((char*)&dato, largoCadena);
-
 }
 
-void ArchivoRegVariable::borrar(unsigned int numRegistro){
+void ArchivoRegVariable::borrar(unsigned int posRegistroBytes){
 
+	unsigned int largoCadena;
+	archivo.seekg(posRegistroBytes, ios::beg);
+	archivo.read((char*)&largoCadena, sizeof(largoCadena));
+
+	espacioLibre espacio;
+
+	espacio.inicio = posRegistroBytes;
+	espacio.tamanio = sizeof(largoCadena) + largoCadena;
+
+	vectorEspaciosLibres.push_back(espacio);
+	cantidadRegistros--;
 }
 
 unsigned int ArchivoRegVariable::getCantidadRegistros(){
+
 	return cantidadRegistros;
 }
