@@ -10,21 +10,22 @@
 ArchivoRegVariable::ArchivoRegVariable(string nombre) {
 
     archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary);
-    if(!archivo){
+    if(!archivo){ // si no existe, crear archivo nuevo
     	archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary | fstream::trunc);
-    	archivo.write(0,sizeof(unsigned int));
-    	this->cantidadRegistros = 0;
+    	cantidadRegistros = 0;
+    	archivo.seekp(0, ios::beg);
+    	archivo.write((char*)&cantidadRegistros, sizeof(cantidadRegistros));
 
     }else{ //el archivo ya existe
     	archivo.seekg(0, ios::beg);
-    	archivo.read((char*)&cantidadRegistros, sizeof(unsigned int));
+    	archivo.read((char*)&cantidadRegistros, sizeof(cantidadRegistros));
     }
 
+    nombreArchivo= nombre;
     leerEspaciosLibres();
 }
 
 ArchivoRegVariable::~ArchivoRegVariable() {
-
 	archivo.seekp(0, ios::beg);
 	archivo.write((char*)&cantidadRegistros, sizeof(cantidadRegistros));
 	archivo.close();
@@ -35,12 +36,13 @@ ArchivoRegVariable::~ArchivoRegVariable() {
 void ArchivoRegVariable::leerEspaciosLibres(){
 
 	string dirEspaciosLibres = nombreArchivo + "ListaEspaciosLibres";
-	ifstream espaciosLibres;
-	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::binary);
+	fstream espaciosLibres;
+	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::in | fstream::out |  fstream::binary);
     if(!espaciosLibres) // si no existe, crear archivo nuevo
-    	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::binary | fstream::app);
+    	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::in | fstream::out |  fstream::binary | fstream::trunc);
 
     espacioLibre EL;
+    espaciosLibres.seekg(0, ios::beg);
     espaciosLibres.read((char*)&EL.inicio, sizeof(EL.inicio));
 
     while(!espaciosLibres.eof()){
@@ -55,20 +57,15 @@ void ArchivoRegVariable::leerEspaciosLibres(){
 void ArchivoRegVariable::escribirEspaciosLibres(){
 
 	string dirEspaciosLibres = nombreArchivo + "ListaEspaciosLibres";
-
-	//se borra para poder escribir el nuevo vector actualizado y que no queden espacios en blanco
-	delete(dirEspaciosLibres.c_str());
-
-	ofstream espaciosLibres;
-	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::binary);
+	fstream espaciosLibres;
+	espaciosLibres.open(dirEspaciosLibres.c_str(), fstream::in | fstream::out |  fstream::binary);
 
 	for(unsigned int i=0 ; i< vectorEspaciosLibres.size(); i++){
-		if(vectorEspaciosLibres.at(i).tamanio <= 0){
+		if(vectorEspaciosLibres.at(i).tamanio > 0){
 			espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).inicio, sizeof(vectorEspaciosLibres.at(i).inicio));
 			espaciosLibres.write((char*)&vectorEspaciosLibres.at(i).tamanio, sizeof(vectorEspaciosLibres.at(i).tamanio));
 		}
 	}
-
 	espaciosLibres.close();
 }
 
@@ -88,7 +85,7 @@ unsigned int ArchivoRegVariable::escribir(char* registro){
 			//escribir el dato
 			archivo.seekp(vectorEspaciosLibres.at(i).inicio, ios::beg);
 			archivo.write((char*)&largoCadena, sizeof(largoCadena));
-			archivo.write((char*)&registro, largoCadena);
+			archivo.write(registro, largoCadena);
 
 			//dismunuir el tamaño del espacio libre
 			vectorEspaciosLibres.at(i).inicio += tamanioDato;
@@ -101,23 +98,33 @@ unsigned int ArchivoRegVariable::escribir(char* registro){
 		posicionRegistro = archivo.tellp();
 
 		archivo.write((char*)&largoCadena, sizeof(largoCadena));
-		archivo.write((char*)&registro, largoCadena);
+		archivo.write(registro, largoCadena);
 	}
 
 	cantidadRegistros++;
 	return posicionRegistro;
 }
 
-void ArchivoRegVariable::leer(char* &dato, unsigned int posicionBytes){
+char* ArchivoRegVariable::leer(unsigned int posicionBytes){
 
 	unsigned int largoCadena;
-
 	archivo.seekg(posicionBytes, ios::beg);
 	archivo.read((char*)&largoCadena, sizeof(largoCadena));
-	archivo.read((char*)&dato, largoCadena);
+
+	char* dato = new char[largoCadena];
+
+	archivo.read(dato, largoCadena);
+
+	return dato;
 }
 
 void ArchivoRegVariable::borrar(unsigned int posRegistroBytes){
+
+	for(unsigned int i=0; i< vectorEspaciosLibres.size(); i++){
+		espacioLibre EL = vectorEspaciosLibres.at(i);
+		if((EL.inicio <= posRegistroBytes) && (EL.inicio + EL.tamanio > posRegistroBytes))
+			throw new ExcepcionPosicionEnEspacioLibre();
+	}
 
 	unsigned int largoCadena;
 	archivo.seekg(posRegistroBytes, ios::beg);

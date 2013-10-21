@@ -22,7 +22,7 @@ public:
 
 	//puede lanzar ExcepcionBloqueIncorrecto
 	ArchivoBloque(string nombre, int tamanioBloque);
-	virtual ~ArchivoBloque();
+	~ArchivoBloque();
 
 	//puede lanzar ExcepcionOverflowTamBloque
 	unsigned int escribir(char* bloque);

@@ -9,6 +9,8 @@
 #define ARCHIVOREGVARIABLE_H_
 
 #include "../Archivo.h"
+#include "../../Excepciones/ExcepcionPosicionEnEspacioLibre.h"
+
 
 typedef struct{
 	unsigned int inicio;
@@ -19,11 +21,12 @@ class ArchivoRegVariable: Archivo {
 
 public:
 	ArchivoRegVariable(string nombreArchivo);
-	virtual ~ArchivoRegVariable();
+	~ArchivoRegVariable();
 
 	//devuelve la posicion en el archivo donde se guarda el registro
 	unsigned int escribir(char* registro);
-	void leer(char* &dato, unsigned int posicionBytes);
+	char* leer(unsigned int posicionBytes);
+	//puede lanzar ExcepcionPosicionEnEspacioLibre
 	void borrar(unsigned int posicionBytes);
 	unsigned int getCantidadRegistros();
 
