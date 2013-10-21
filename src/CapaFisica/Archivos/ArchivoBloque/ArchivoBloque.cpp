@@ -77,6 +77,15 @@ unsigned int ArchivoBloque::escribir(char* bloque){
 	return posicion;
 }
 
+void ArchivoBloque::reescribir(char* bloque, unsigned int posicion){
+
+	if(strlen(bloque) > tamanioBloque) throw new ExcepcionOverflowTamBloque();
+	if(posicion >= vectorMapaBits.size()) throw new ExcepcionBloqueInexistente();
+
+	archivo.seekp(posicion*tamanioBloque, ios::beg);
+	archivo.write(bloque, tamanioBloque);
+}
+
 unsigned int ArchivoBloque::siguientePosicionLibre(){
 
 	unsigned int pos;

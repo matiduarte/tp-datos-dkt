@@ -26,6 +26,9 @@ public:
 
 	//puede lanzar ExcepcionOverflowTamBloque
 	unsigned int escribir(char* bloque);
+
+	//puede lanzar ExcepcionOverflowTamBloque y ExcepcionBloqueInexistente
+	void reescribir(char* bloque, unsigned int numeroBloque);
 	char* leer(unsigned int numBloque);
 
 	//puede lanzar ExcepcionBloqueInexistente
