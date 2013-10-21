@@ -11,6 +11,14 @@
 
 
 class NodoHoja: public Nodo {
+
+	private:
+        int persistirRegistros(char * bloque);
+
+        unsigned int referenciaAlSiguiente;
+        list<RegistroArbol*> * elementos;
+
+
 public:
 		NodoHoja();
         NodoHoja(ArchivoBloque * arch);
@@ -43,11 +51,7 @@ public:
         string getClaveDelMedio();
         list<RegistroArbol*> * getClavesYDatos();
         list<RegistroArbol*> * getMitadDerecha();
-private:
-        int persistirRegistros(char * bloque);
 
-        unsigned int referencia_al_siguiente;
-        list<RegistroArbol*> * claves_datos;
 };
 
 

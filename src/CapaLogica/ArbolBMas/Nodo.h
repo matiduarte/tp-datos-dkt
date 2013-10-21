@@ -16,7 +16,7 @@
 class Nodo {
 
 private:
-	short unsigned int nivel;
+	unsigned int nivel;
 	unsigned int cantidadDeElementos;
 	unsigned int NumeroDeBloque;
 
@@ -26,11 +26,20 @@ public:
 
 	/*getters y setters*/
 	unsigned int getCantidadDeElementos();
-	short unsigned int getNivel();
+	unsigned int getNivel();
 	unsigned int getNumeroDeBloque();
 	void setNumeroDeBloque(unsigned int numeroDeBloque);
+	void setNivel(unsigned int nivel);
+	void setCantidadDeElementos(unsigned int cantidad);
+
 	/*----------------*/
 
+
+	static void hidratar(char* bloque);
+	virtual void persistir(ArchivoBloque* archivo);
+	static Nodo* cargar(ArchivoBloque* arch, unsigned int indice);
+	int agregar(string clave, unsigned int valor);
+	virtual short unsigned int calcularTamanioOcupado();
 	virtual bool estaVacio();
 	void incrementarNivel();
 	void decrementarNivel();

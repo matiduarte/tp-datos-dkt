@@ -34,8 +34,19 @@ void Nodo::setNumeroDeBloque(unsigned int numeroDeBloque){
 }
 
 
-short unsigned int Nodo::getNivel(){
+unsigned int Nodo::getNivel(){
 		return(this->nivel);
+}
+
+
+
+void Nodo::setNivel(unsigned int nivel){
+	this->nivel = nivel;
+}
+
+
+void Nodo::setCantidadDeElementos(unsigned int cantidad){
+	this->cantidadDeElementos = cantidad;
 }
 
 void Nodo::incrementarNivel(){this->nivel++;}
