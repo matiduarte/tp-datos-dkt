@@ -38,7 +38,9 @@ public:
 	void setValor(string valor);
 	string getClave();
 	string getValor();
-	unsigned int getTamanioClave();
+	int getTamanioClave();
+	int getTamanioValor();
+	int cantidadDeBytesOcupados();
 };
 
 #endif /* REGISTROARBOL_H_ */

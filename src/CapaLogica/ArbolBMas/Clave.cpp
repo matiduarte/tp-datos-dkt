@@ -21,7 +21,15 @@ Clave::~Clave() {
 	// TODO Auto-generated destructor stub
 }
 
-string Clave::getClave(){ return this->id; }
+string Clave::getClave(){
+
+	return this->id;
+}
+
+int Clave::getTamanioClave() {
+
+	return this->id.size();
+}
 
 void Clave::setClave(string clave){
 

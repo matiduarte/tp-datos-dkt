@@ -40,6 +40,18 @@ string RegistroArbol::getValor(){
 
 }
 
+int RegistroArbol::getTamanioValor(){
+
+	return this->valor.size();
+
+}
+
+int RegistroArbol::getTamanioClave(){
+
+	return this->clave.getTamanioClave();
+
+}
+
 void RegistroArbol::setValor(string valor){
 
 	this->valor = valor;
@@ -113,5 +125,19 @@ RegistroArbol* RegistroArbol::hidratar(char* bloque){
 
 	return registro;
 
+
+}
+
+//Devuelvo la cantidad de bytes ocupados en el registro
+int RegistroArbol::cantidadDeBytesOcupados(){
+
+
+	int valor = 0;
+	unsigned int tamanioInt = sizeof(unsigned int);
+
+	//Sumo todos los campos del registro
+	valor = ((this->getTamanioClave()) + (this->getTamanioValor()) + tamanioInt*2);
+
+	return valor;
 
 }

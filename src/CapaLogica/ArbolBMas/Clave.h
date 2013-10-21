@@ -25,6 +25,7 @@ public:
 	Clave(string);
 	virtual ~Clave();
 	string getClave();
+	int getTamanioClave();
 	void setClave(string);
 
 	int persistir (char*);
