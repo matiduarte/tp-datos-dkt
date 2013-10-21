@@ -14,33 +14,34 @@ Clave::Clave(){
 
 Clave::Clave(string clave) {
 	// TODO Auto-generated constructor stub
-	this->clave = clave;
+	this->id = clave;
 }
 
 Clave::~Clave() {
 	// TODO Auto-generated destructor stub
 }
 
-string Clave::getClave(){ return this->clave; }
+string Clave::getClave(){ return this->id; }
 
 void Clave::setClave(string clave){
 
-	this->clave = clave;
+	this->id = clave;
 
 }
 
-//Devuelve la cantidad de bytes almacenados
+
 int Clave::persistir(char* bloque){
 
+	//Devuelve la cantidad de bytes almacenados
 	unsigned int bytesAlmacenados = 0;
-	unsigned int tamanioClave = this->clave.size();
+	unsigned int tamanioClave = this->id.size();
 	unsigned int tamanioInt = sizeof(unsigned int);
 
 	//Agrego el tamanio de la clave
 	memcpy(bloque, (char*)&tamanioClave, tamanioInt);
 	bytesAlmacenados += tamanioInt;
 	//Agrego la clave
-	memcpy(bloque + bytesAlmacenados, this->clave.c_str(), tamanioClave);
+	memcpy(bloque + bytesAlmacenados, this->id.c_str(), tamanioClave);
 	bytesAlmacenados += tamanioClave;
 
 	return bytesAlmacenados;
@@ -69,32 +70,3 @@ int Clave::hidratar(char* bloque){
 
 }
 
-bool Clave::operator != (const Clave& otra) const{
-
-        return (this->clave != otra.clave);
-}
-
-bool Clave::operator == (const Clave& otra) const{
-
-        return (this->clave == otra.clave);
-}
-
-bool Clave::operator <= (const Clave& otra) const{
-
-        return (this->clave <= otra.clave);
-}
-
-bool Clave::operator >= (const Clave& otra) const{
-
-        return (this->clave >= otra.clave);
-}
-
-bool Clave::operator < (const Clave& otra) const{
-
-        return (this->clave < otra.clave);
-}
-
-bool Clave::operator > (const Clave& otra) const{
-
-        return (this->clave > otra.clave);
-}

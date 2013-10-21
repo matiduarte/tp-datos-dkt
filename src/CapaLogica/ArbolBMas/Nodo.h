@@ -31,6 +31,7 @@ public:
 	void setNumeroDeBloque(unsigned int numeroDeBloque);
 	/*----------------*/
 
+	virtual bool estaVacio();
 	void incrementarNivel();
 	void decrementarNivel();
 

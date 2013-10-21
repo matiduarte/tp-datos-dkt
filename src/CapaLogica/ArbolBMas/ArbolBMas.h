@@ -31,8 +31,13 @@ public:
 	virtual ~ArbolBMas();
 	void persistir();
 
+    int agregarValor(Clave clave, string valor);
+    int agregarRecursivamente (Nodo* nodo, Clave clave, string valor);
+    int borrarValor(Clave clave, string valor);
+    int borrarRecursivamente(Nodo* nodo, Clave clave, string valor);
+
 	int partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
-	int partirNodoInterno(NodoInterno* nodoActual, NodoInterno* nodoHijo);
+	int partirNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 
 	void partirNodoRaiz();
 	void partirNodoRaizHoja();
@@ -50,14 +55,10 @@ public:
 	int mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 
-    int Agregar(Clave clave, string valor);
-    int Borrar(Clave clave, string valor);
     string buscarClave (Clave clave);
-
 	string buscarEnLaRaizHoja(Clave clave);
 	string buscarClaveRecursivo(Clave clave, Nodo* nodoActual);
-	int agregarRecursivo (Nodo* nodoActual, Clave clave, string valor);
-	int eliminarRecursivo (Nodo* nodoActual, Clave clave, string valor);
+
 	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
 };
 

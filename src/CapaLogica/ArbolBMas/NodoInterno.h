@@ -33,7 +33,7 @@ public:
         bool overflow();
         bool underflow();
         bool capacidadMinima();
-        bool isEmpty();
+        bool estaVacio();
         int tamanioOcupado();
 
         void mostrar();

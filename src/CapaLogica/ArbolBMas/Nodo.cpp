@@ -38,7 +38,6 @@ short unsigned int Nodo::getNivel(){
 		return(this->nivel);
 }
 
-
 void Nodo::incrementarNivel(){this->nivel++;}
 
 

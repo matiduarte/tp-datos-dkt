@@ -43,7 +43,7 @@ void RegistroArbol::setValor(string valor){
 
 bool RegistroArbol::existe(string clave){
 
-	return (this->clave.operator ==(clave));
+	return (this->clave.getClave() == clave);
 
 }
 

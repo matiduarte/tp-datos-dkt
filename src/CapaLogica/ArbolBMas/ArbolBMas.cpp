@@ -53,7 +53,7 @@ string ArbolBMas::buscarClave (Clave clave){
 
 string ArbolBMas::buscarEnLaRaizHoja(Clave clave){
 
-	//return this->((NodoHoja*)raiz)->buscarClave(clave);
+	//return ((NodoHoja*)raiz)->buscarClave(clave);
 	return "Falta programar";
 }
 
@@ -80,3 +80,34 @@ string ArbolBMas::buscarClaveRecursivo(Clave clave, Nodo* nodoActual){
     	//return buscarClaveRecursivo(clave,nodoNuevoHidratado);
     	return "Faltan metodos nodos";
 }
+
+/*int ArbolBMas::borrarValor(Clave clave, string valor){
+
+	int resultado = 0;
+
+	//Estoy en una hoja, borro directamente
+	if (this->raiz->getNivel() == 0) {
+		resultado = ((NodoHoja*)this->raiz)->baja(clave, valor);
+	}else{
+		//Si la raiz no es hoja borro recursivamente
+		resultado = this->borrarRecursivamente(this->raiz, clave, valor);
+		//Hubo subflujo en la raiz
+		if (resultado == 3){
+		if((this->raiz)->isEmpty()){
+				//Intercambio al hijo por el izquierdo de la raiz
+				unsigned int hijoUnico = ((NodoInterno*)this->raiz)->getUltimoNodo();
+				Nodo * nuevaRaiz = Nodo::cargar(this->archivo, hijoUnico);
+				delete this->raiz;
+				this->raiz = nuevaRaiz;
+				this->archivo->borrar(nuevaRaiz->getNumeroDeBloque());
+				nuevaRaiz->setNumeroDeBloque(0);
+			}
+		}
+	}
+
+	//this->raiz->persistir(this->archivo);
+	return resultado;
+}*/
+
+
+
