@@ -34,6 +34,7 @@ void NodoInterno::agregarClave(Clave clave){
 
 	if (this->claves.empty()){
 		this->claves.push_back(clave);
+		return;
 	}
 
 	list<Clave>::iterator it_claves;
@@ -41,12 +42,13 @@ void NodoInterno::agregarClave(Clave clave){
 	while (it_claves != claves.end()){
 		if ((*it_claves) > (clave)){
 			this->claves.insert(it_claves,clave);
-
+			return;
 		}
 		it_claves++;
 	}
 
     this->claves.push_back(clave);
+    return;
 }
 
 list<Clave> NodoInterno::getClaves(){
@@ -168,4 +170,92 @@ int NodoInterno::tamanioOcupado(){
 	return tamanioOcupado;
 }
 
-void NodoInterno::persistir(ArchivoBloque* archivo){}
+int NodoInterno::getCantidadDeClaves(){
+
+	return this->claves.size();
+
+}
+
+Clave NodoInterno::getClaveDelMedio(){
+
+	list<Clave>::iterator it;
+	int cantClaves = this->getCantidadDeClaves();
+	int contador = 0;
+	bool llegue = false;
+	Clave clave;
+	//Itero hasta la mitad
+	for (it = claves.begin(); (it != claves.end()) && !(llegue); it++){
+		if (contador >= cantClaves/2){
+			clave = (*it);
+			llegue = true;
+		}
+		contador++;
+	}
+
+	return clave;
+}
+
+void NodoInterno::setReferenciaAIzq(Nodo * nodo){
+
+	unsigned int nroBloque = nodo->getNumeroDeBloque();
+    this->hijos.push_front(nroBloque);
+}
+
+void NodoInterno::setReferenciaADer(Nodo * nodo){
+
+	unsigned int nroBloque = nodo->getNumeroDeBloque();
+	this->hijos.push_back(nroBloque);
+}
+
+
+void NodoInterno::persistir(ArchivoBloque * archivo){
+
+	char bloque[1024]; //MODIFICAR ESTO
+
+	unsigned int tamanioOcupado = this->tamanioOcupado();
+	unsigned int nivel = getNivel();
+	unsigned int tamanioInt = sizeof(unsigned int);
+	unsigned int bytesOcupados = 0;
+
+	memcpy(bloque, (char*)&tamanioOcupado, tamanioInt);
+	bytesOcupados += tamanioInt;
+
+	memcpy(bloque + bytesOcupados,(char*)&nivel ,tamanioInt);
+	bytesOcupados += tamanioInt;
+
+	bytesOcupados += escribirReferenciasANodosInternos(bloque + bytesOcupados);
+
+	archivo->reescribir(bloque, this->getNumeroDeBloque());
+}
+
+//Devuelvo la cantidad de bytes persistidos
+int NodoInterno::escribirReferenciasANodosInternos(char* bloque){
+
+	int contador = 0;
+
+	list<unsigned int>::iterator itNodos = hijos.begin();
+	list<Clave>::iterator itClaves = claves.begin();
+	Clave clave;
+	unsigned int numeroDeBloque = 0;
+	unsigned int tamanioInt = sizeof(unsigned int);
+
+	while(itClaves != claves.end()){
+
+		numeroDeBloque = (*itNodos);
+
+		memcpy(bloque + contador,(char*)&numeroDeBloque,tamanioInt);
+		contador += tamanioInt;
+
+		clave = *itClaves;
+		contador += clave.persistir(bloque + contador);
+
+		itClaves++;
+		itNodos++;
+	}
+
+	numeroDeBloque = *itNodos;
+	memcpy(bloque + contador,(char*)&numeroDeBloque,tamanioInt);
+	contador += tamanioInt;
+
+	return contador;
+}

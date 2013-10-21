@@ -35,7 +35,7 @@ public:
         bool estaVacio();
         int tamanioOcupado();
 
-        int cantidadDeClaves();
+        int getCantidadDeClaves();
         void agregarReferencia(Clave clave, unsigned int nodo);
 
         void PartirNodoADerecha(NodoInterno* hermano_derecho, NodoInterno* padre);
@@ -48,7 +48,7 @@ public:
         void agregarHijos(list<unsigned int> lista_hijos);
         unsigned int buscarNodo(int indice);
         int buscarClave(Clave clave);
-
+        int escribirReferenciasANodosInternos(char* bloque);
         void setReferenciaAIzq(Nodo * nodo);
         void setReferenciaADer(Nodo * nodo);
 
