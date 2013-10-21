@@ -18,8 +18,8 @@ class NodoInterno: public Nodo {
 
 private:
 
-	list<unsigned int>* hijos;
-	list<Clave>* claves;
+	list<unsigned int> hijos;
+	list<Clave> claves;
 
 public:
         NodoInterno();
