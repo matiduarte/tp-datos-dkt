@@ -17,11 +17,12 @@ using namespace std;
 class NodoInterno: public Nodo {
 
 private:
-	list<unsigned int> hijos;
-	list<Clave> claves;
+
+	list<unsigned int>* hijos;
+	list<Clave>* claves;
 
 public:
-                NodoInterno();
+        NodoInterno();
         NodoInterno(ArchivoBloque * arch);
         virtual ~NodoInterno();
 
@@ -61,7 +62,7 @@ public:
         unsigned int getNodoAnteriorA(unsigned int indice);
         list<Clave> getClaves();
         list<unsigned int> getHijos();
-        Clave getClave(int index);
+        Clave getClave(int indice);
         void setHijos(list<unsigned int> hijos);
         void setClaves(list<Clave> claves);
         Clave getPrimerClave();

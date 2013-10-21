@@ -88,3 +88,25 @@ int RegistroArbol::persistir(char* bloque){
 
 	return bytesAlmacenados;
 }
+
+
+//Devuelvo un registro con los campos hidratados
+RegistroArbol* RegistroArbol::hidratar(char* bloque){
+
+	unsigned int bytesLeidosClave = this->clave.hidratar(bloque);
+	unsigned int tamanioInt = sizeof(unsigned int);
+	string clave = this->clave.getClave();
+	unsigned int tamanioValor;
+
+	//Me fijo cuantos bytes tengo que leer para el dato
+	memcpy(&(tamanioValor),bloque + bytesLeidosClave, tamanioInt);
+	char bloqueAux[1024]; // ESTO MOFIDICAR POR CONSTANTE TAM BLOQUE
+	memcpy(&(bloqueAux),bloque + bytesLeidosClave + tamanioInt, tamanioValor);
+	string valor = bloqueAux;
+
+	RegistroArbol* registro = new RegistroArbol(clave, valor);
+
+	return registro;
+
+
+}

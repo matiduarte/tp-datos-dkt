@@ -33,6 +33,7 @@ public:
 	int borrar(string , unsigned int id);
 	bool existe(string);
 	int persistir (char* bloque);
+	RegistroArbol* hidratar(char* bloque);
 
 	void setClave(string clave);
 	void setValor(string valor);
