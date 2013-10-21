@@ -43,7 +43,10 @@ public:
 	virtual bool estaVacio();
 	void incrementarNivel();
 	void decrementarNivel();
-
+    int getTamanioUnderflow();
+    int getTamanioOverflow();
+    virtual bool hayOverflow();
+    virtual bool hayUnderflow();
 
 
 

@@ -54,3 +54,14 @@ void Nodo::incrementarNivel(){this->nivel++;}
 
 void Nodo::decrementarNivel(){this->nivel--;}
 
+int Nodo::getTamanioUnderflow(){
+
+	return 1024 * 0.5; //MODIFICAR ESTO
+
+}
+
+int Nodo::getTamanioOverflow(){
+
+	return 1024 * 0.8; //MODIFICAR ESTO
+
+}

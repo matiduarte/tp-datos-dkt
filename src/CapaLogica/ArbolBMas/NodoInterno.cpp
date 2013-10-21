@@ -119,3 +119,51 @@ Clave NodoInterno::getUltimaClave(){
 	return this->claves.back();
 
 }
+
+
+bool NodoInterno::hayOverflow(){
+
+	int tamanioMaximo = getTamanioOverflow();
+
+	return ((tamanioMaximo) >= (this->tamanioOcupado()));
+}
+
+bool NodoInterno::hayUnderflow(){
+
+	int tamanioMinimo = getTamanioUnderflow();
+
+	return ((tamanioMinimo) <= (this->tamanioOcupado()));
+}
+
+bool NodoInterno::capacidadMinima(){
+
+
+	int tamanioMinimo = getTamanioUnderflow();
+	int tamanioUltimaClave = claves.back().getTamanioClave() + sizeof(unsigned int);
+
+	return ((tamanioMinimo) >= (this->tamanioOcupado() - tamanioUltimaClave));
+
+}
+
+int NodoInterno::tamanioOcupado(){
+
+	//Tamanio que ocupa el bloque en el nodo
+	int tamanioOcupado = 0;
+
+	list<Clave>::iterator it;
+	for (it = claves.begin(); it != claves.end(); it++){
+		tamanioOcupado += (*it).getTamanioClave();
+		tamanioOcupado+=sizeof (unsigned int); // para el tamClave
+	}
+
+	list<unsigned int>::iterator it1;
+	for (it1 = hijos.begin(); it1 != hijos.end(); it1++){
+		tamanioOcupado += sizeof(unsigned int);
+	}
+
+	tamanioOcupado += sizeof(unsigned int); //nro de bloque
+	tamanioOcupado += sizeof(unsigned int); //nivel
+	tamanioOcupado += sizeof(unsigned int); //cantidadDeElementos
+
+	return tamanioOcupado;
+}

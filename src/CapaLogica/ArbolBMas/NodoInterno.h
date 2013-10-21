@@ -31,13 +31,10 @@ public:
 
         static NodoInterno* hidratar(char* bloque, unsigned int indice);
         static NodoInterno* cargar(ArchivoBloque* archivo, unsigned int indice);
-        bool overflow();
-        bool underflow();
         bool capacidadMinima();
         bool estaVacio();
         int tamanioOcupado();
 
-        void mostrar();
         int cantidadDeClaves();
         void agregarReferencia(Clave clave, unsigned int nodo);
 
@@ -67,6 +64,9 @@ public:
         void setClaves(list<Clave> claves);
         Clave getPrimerClave();
         Clave getUltimaClave();
+        bool hayOverflow();
+        bool hayUnderflow();
+
 };
 
 #endif /* NODOINTERNO_H_ */
