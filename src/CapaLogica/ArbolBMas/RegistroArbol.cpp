@@ -7,6 +7,11 @@
 
 #include "RegistroArbol.h"
 
+
+RegistroArbol::RegistroArbol(){
+
+}
+
 RegistroArbol::RegistroArbol(Clave clave, string valor) {
 	// TODO Auto-generated constructor stub
 	this->clave = clave;
@@ -47,7 +52,7 @@ bool RegistroArbol::existe(string clave){
 
 }
 
-int RegistroArbol::agregar(string clave, string valor){
+int RegistroArbol::agregar(Clave clave, string valor){
 
 
 	/* resultado = 0 -> no se pudo agregar
@@ -60,7 +65,7 @@ int RegistroArbol::agregar(string clave, string valor){
 
 }
 
-int RegistroArbol::borrar(string clave, unsigned int id){
+int RegistroArbol::borrar(Clave clave, string valor){
 
 	/* resultado = 0 -> no se pudo eliminar
 	 * resultado = 1 -> se elimino correctamente

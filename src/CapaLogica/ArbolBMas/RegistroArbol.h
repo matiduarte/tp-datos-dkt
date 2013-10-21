@@ -21,16 +21,15 @@ private:
 
 	Clave clave;
 	string valor;
-	//list<unsigned int>* id;
-	//unsigned int tamanioClave;
-
 
 public:
+
+	RegistroArbol();
 	RegistroArbol(Clave, string);
 	virtual ~RegistroArbol();
 
-	int agregar(string, string);
-	int borrar(string , unsigned int id);
+	int agregar(Clave, string);
+	int borrar(Clave , string);
 	bool existe(string);
 	int persistir (char* bloque);
 	RegistroArbol* hidratar(char* bloque);
@@ -39,7 +38,6 @@ public:
 	void setValor(string valor);
 	string getClave();
 	string getValor();
-	list<unsigned int>* getID();
 	unsigned int getTamanioClave();
 };
 

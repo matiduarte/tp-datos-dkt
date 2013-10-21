@@ -30,6 +30,13 @@ public:
 	int persistir (char*);
 	int hidratar (char*);
 
+    bool operator != (const Clave& otra) const;
+    bool operator == (const Clave& otra) const;
+    bool operator <= (const Clave& otra) const;
+    bool operator >= (const Clave& otra) const;
+    bool operator < (const Clave& otra) const;
+    bool operator > (const Clave& otra) const;
+
 };
 
 #endif /* CLAVE_H_ */

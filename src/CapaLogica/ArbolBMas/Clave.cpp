@@ -70,3 +70,32 @@ int Clave::hidratar(char* bloque){
 
 }
 
+bool Clave::operator != (const Clave& otra) const{
+
+        return (this->id != otra.id);
+}
+
+bool Clave::operator == (const Clave& otra) const{
+
+        return (this->id == otra.id);
+}
+
+bool Clave::operator <= (const Clave& otra) const{
+
+        return (this->id <= otra.id);
+}
+
+bool Clave::operator >= (const Clave& otra) const{
+
+        return (this->id >= otra.id);
+}
+
+bool Clave::operator < (const Clave& otra) const{
+
+        return (this->id < otra.id);
+}
+
+bool Clave::operator > (const Clave& otra) const{
+
+        return (this->id > otra.id);
+}
