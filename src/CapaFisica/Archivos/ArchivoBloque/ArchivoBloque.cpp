@@ -97,14 +97,10 @@ unsigned int ArchivoBloque::siguientePosicionLibre(){
 	return pos;
 }
 
-char* ArchivoBloque::leer(unsigned int numBloque){
-
-	char* dato = new char[tamanioBloque];
+void ArchivoBloque::leer(char* &bloque, unsigned int numBloque){
 
 	archivo.seekg(tamanioBloque * numBloque, ios::beg);
-	archivo.read(dato, tamanioBloque);
-
-	return dato;
+	archivo.read(bloque, tamanioBloque);
 }
 
 unsigned int ArchivoBloque::getCantidadBloques(){

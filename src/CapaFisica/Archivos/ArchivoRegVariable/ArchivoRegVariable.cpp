@@ -25,7 +25,10 @@ ArchivoRegVariable::ArchivoRegVariable(string nombre) {
 
 ArchivoRegVariable::~ArchivoRegVariable() {
 
+	archivo.seekp(0, ios::beg);
+	archivo.write((char*)&cantidadRegistros, sizeof(cantidadRegistros));
 	archivo.close();
+
 	escribirEspaciosLibres();
 }
 
@@ -99,15 +102,25 @@ unsigned int ArchivoRegVariable::escribir(char* registro){
 		archivo.write((char*)&registro, largoCadena);
 	}
 
+	cantidadRegistros++;
 	return posicionRegistro;
 }
 
-char* ArchivoRegVariable::leer(unsigned int numRegistro){
-	return new char;
+void ArchivoRegVariable::leer(char* &dato, unsigned int posicionBytes){
+
+	unsigned int largoCadena;
+
+	archivo.seekg(posicionBytes, ios::beg);
+
+	archivo.read((char*)&largoCadena, sizeof(largoCadena));
+	archivo.read((char*)&dato, largoCadena);
+
 }
+
 void ArchivoRegVariable::borrar(unsigned int numRegistro){
 
 }
+
 unsigned int ArchivoRegVariable::getCantidadRegistros(){
-	return 0;
+	return cantidadRegistros;
 }

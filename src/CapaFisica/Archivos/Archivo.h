@@ -19,7 +19,7 @@ public:
 	Archivo();
 	virtual ~Archivo();
 	virtual unsigned int escribir(char* dato);
-	virtual char* leer(unsigned int num);
+	virtual void leer(char* &dato, unsigned int num);
 	virtual void borrar(unsigned int num);
 
 protected:

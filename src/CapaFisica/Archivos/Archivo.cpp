@@ -12,7 +12,7 @@ Archivo::Archivo() {}
 Archivo::~Archivo() {}
 
 unsigned int Archivo::escribir(char* dato){return 0;}
-char* Archivo::leer(unsigned int num){ return new char;}
+void Archivo::leer(char* &dato, unsigned int num){}
 void Archivo::borrar(unsigned int num){}
 
 void Archivo::escribirEspaciosLibres(){}

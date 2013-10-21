@@ -23,8 +23,8 @@ public:
 
 	//devuelve la posicion en el archivo donde se guarda el registro
 	unsigned int escribir(char* registro);
-	char* leer(unsigned int numRegistro);
-	void borrar(unsigned int numRegistro);
+	void leer(char* &dato, unsigned int posicionBytes);
+	void borrar(unsigned int posicionBytes);
 	unsigned int getCantidadRegistros();
 
 private:
