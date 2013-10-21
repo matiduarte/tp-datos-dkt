@@ -65,3 +65,13 @@ int Nodo::getTamanioOverflow(){
 	return 1024 * 0.8; //MODIFICAR ESTO
 
 }
+//Redefinidos en los hijos:
+void Nodo::persistir(ArchivoBloque* archivo){}
+
+int Nodo::tamanioOcupado(){return 0;}
+
+bool Nodo::hayOverflow(){return 0;}
+
+bool Nodo::hayUnderflow(){return 0;}
+
+bool Nodo::estaVacio(){return 0;}

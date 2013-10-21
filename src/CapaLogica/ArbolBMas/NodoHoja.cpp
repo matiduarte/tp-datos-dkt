@@ -161,7 +161,7 @@ int NodoHoja::agregar(Clave clave, string valor){
                 if (agregado==false)
                         this->elementos->push_back(reg);
         }
-        if (overflow()){
+        if (hayOverflow()){
                 indicador = 2;
         }
         return indicador;
@@ -197,14 +197,7 @@ int NodoHoja::tamanioOcupado(){
         return bytes_ocupados;
 }
 
-bool NodoHoja::overflow(){
-        int aux = 1024 * 0.8;
-        if (aux >= this->tamanioOcupado()){
-                return false;
-        }else {
-                return true;
-        }
-}
+
 
 RegistroArbol* NodoHoja::getRegistro(Clave clave){
         //Devuelve el registro correspondiente a la clave
@@ -220,3 +213,18 @@ RegistroArbol* NodoHoja::getRegistro(Clave clave){
         return reg_actual;
 }
 
+bool NodoHoja::hayOverflow(){
+
+	int tamanioMaximo = getTamanioOverflow();
+
+	return ((tamanioMaximo) >= (this->tamanioOcupado()));
+}
+
+bool NodoHoja::hayUnderflow(){
+
+	int tamanioMinimo = getTamanioUnderflow();
+
+	return ((tamanioMinimo) <= (this->tamanioOcupado()));
+}
+
+bool NodoHoja::estaVacio(){return 0;}

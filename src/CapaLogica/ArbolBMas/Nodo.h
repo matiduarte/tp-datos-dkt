@@ -39,7 +39,7 @@ public:
 	virtual void persistir(ArchivoBloque* archivo);
 	static Nodo* cargar(ArchivoBloque* arch, unsigned int indice);
 	int agregar(string clave, unsigned int valor);
-	virtual short unsigned int calcularTamanioOcupado();
+	virtual int tamanioOcupado();
 	virtual bool estaVacio();
 	void incrementarNivel();
 	void decrementarNivel();

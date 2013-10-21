@@ -167,3 +167,5 @@ int NodoInterno::tamanioOcupado(){
 
 	return tamanioOcupado;
 }
+
+void NodoInterno::persistir(ArchivoBloque* archivo){}

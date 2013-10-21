@@ -30,10 +30,10 @@ public:
         int baja (Clave clave, string valor);
 
         bool tieneLaClave(Clave clave);
-        bool overflow();
-        bool underflow();
+        bool hayOverflow();
+        bool hayUnderflow();
         bool capacidadMinima();
-        bool isEmpty();
+        bool estaVacio();
         int tamanioOcupado();
         void mostrar();
 
