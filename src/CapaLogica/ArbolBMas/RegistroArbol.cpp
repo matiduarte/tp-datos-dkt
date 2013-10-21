@@ -10,6 +10,7 @@
 
 RegistroArbol::RegistroArbol(){
 
+
 }
 
 RegistroArbol::RegistroArbol(Clave clave, string valor) {

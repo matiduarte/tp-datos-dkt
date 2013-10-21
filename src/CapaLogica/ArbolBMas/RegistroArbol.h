@@ -24,6 +24,7 @@ private:
 
 public:
 
+
 	RegistroArbol();
 	RegistroArbol(Clave, string);
 	virtual ~RegistroArbol();

@@ -39,14 +39,14 @@ void NodoInterno::agregarClave(Clave clave){
 	list<Clave>::iterator it_claves;
 	it_claves = this->claves.begin();
 	while (it_claves != claves.end()){
-		if ( (*it_claves)>(clave)){
+		if ((*it_claves) > (clave)){
 			this->claves.insert(it_claves,clave);
 
 		}
 		it_claves++;
 	}
 
-    claves.push_back(clave);
+    this->claves.push_back(clave);
 }
 
 list<Clave> NodoInterno::getClaves(){
@@ -85,10 +85,10 @@ void NodoInterno::agregarHijoAlFinal(unsigned int hijo){
 
 }
 
-void NodoInterno::agregarHijos(list<unsigned int> lista_hijos){
+void NodoInterno::agregarHijos(list<unsigned int> hijos){
 
 	list<unsigned int>::iterator it;
-	for (it = lista_hijos.begin(); it != lista_hijos.end(); it++)
+	for (it = hijos.begin(); it != hijos.end(); it++)
 		this->agregarHijoAlFinal(*it);
 
 }
