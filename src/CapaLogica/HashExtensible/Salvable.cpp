@@ -15,17 +15,21 @@ Salvable::Salvable(const string& ruta, const bool& sobreEscribir,const short& ta
 }
 
 void Salvable::leerBloque(const int& numBloque,string* buffer)const{
-	*buffer = archivo->leer(numBloque);
+    char* bloque = new char[archivo->getTamanoBloque()];
+	archivo->leer(bloque, numBloque);
+	*buffer = string(bloque);
 }
 
 void Salvable::escribirBloque(const string& bloque, const unsigned int& numBloque){
 	try {
-		if(numBloque < archivo->getCantidadBloques() && archivo->getCantidadBloques() > 0){
-			archivo->borrar(numBloque);
-		}
-		archivo->escribir((char*)bloque.c_str());
+//		if(numBloque < archivo->getCantidadBloques() && archivo->getCantidadBloques() > 0){
+//			archivo->borrar(numBloque);
+//		}
+		archivo->reescribir((char*)bloque.c_str(),numBloque);
 	} catch (ExcepcionOverflowTamBloque& e) {
 		throw e;
+	}catch(ExcepcionBloqueInexistente& ex){
+		archivo->escribir((char*)bloque.c_str());
 	}
 
 }

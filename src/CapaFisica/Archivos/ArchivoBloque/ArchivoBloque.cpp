@@ -68,7 +68,7 @@ void ArchivoBloque::escribirEspaciosLibres(){
 
 unsigned int ArchivoBloque::escribir(char* bloque){
 
-	if(strlen(bloque) > tamanioBloque) throw new ExcepcionOverflowTamBloque();
+	if(strlen(bloque) > tamanioBloque) throw ExcepcionOverflowTamBloque();
 
 	unsigned int posicion = this->siguientePosicionLibre();
 	archivo.seekp(posicion*tamanioBloque, ios::beg);
@@ -79,8 +79,8 @@ unsigned int ArchivoBloque::escribir(char* bloque){
 
 void ArchivoBloque::reescribir(char* bloque, unsigned int posicion){
 
-	if(strlen(bloque) > tamanioBloque) throw new ExcepcionOverflowTamBloque();
-	if(posicion >= vectorMapaBits.size()) throw new ExcepcionBloqueInexistente();
+	if(strlen(bloque) > tamanioBloque) throw ExcepcionOverflowTamBloque();
+	if(posicion >= vectorMapaBits.size()) throw ExcepcionBloqueInexistente();
 
 	archivo.seekp(posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
@@ -115,9 +115,13 @@ unsigned int ArchivoBloque::getCantidadBloques(){
 	return numBloques;
 }
 
+unsigned int ArchivoBloque::getTamanoBloque(){
+	return tamanioBloque;
+}
+
 void ArchivoBloque::borrar(unsigned int numBloque){
 
-	if(numBloque >= vectorMapaBits.size()) throw new ExcepcionBloqueInexistente();
+	if(numBloque >= vectorMapaBits.size()) throw ExcepcionBloqueInexistente();
 
 	vectorMapaBits.at(numBloque) = '0' ;
 }

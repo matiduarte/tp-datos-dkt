@@ -34,6 +34,7 @@ public:
 	//puede lanzar ExcepcionBloqueInexistente
 	void borrar(unsigned int numBloque);
 	unsigned int getCantidadBloques();
+	unsigned int getTamanoBloque();
 
 private:
 	vector<char> vectorMapaBits;
