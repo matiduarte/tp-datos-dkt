@@ -8,6 +8,8 @@
 #ifndef EXCEPCIONPOSICIONENESPACIOLIBRE_H_
 #define EXCEPCIONPOSICIONENESPACIOLIBRE_H_
 
+#include "../../Excepcion.h"
+
 class ExcepcionPosicionEnEspacioLibre : Excepcion{
 public:
 	ExcepcionPosicionEnEspacioLibre();
