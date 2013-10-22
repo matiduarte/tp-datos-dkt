@@ -79,15 +79,15 @@ NodoHoja* NodoHoja::hidratar(char* bloque, unsigned int indice){
         unsigned int bytesRecorridos=0;
 
 
-        memcpy( &nivel ,bloque, sizeof (unsigned int));
+        memcpy((char *) &nivel ,bloque, sizeof (unsigned int));
         nodoAdevolver->setNivel(nivel);
         bytesRecorridos+=sizeof (unsigned int);
 
-        memcpy(&cantidadDeElementos, bloque + bytesRecorridos,sizeof (unsigned int));
+        memcpy((char *)&cantidadDeElementos, bloque + bytesRecorridos,sizeof (unsigned int));
         nodoAdevolver->setCantidadDeElementos(cantidadDeElementos);
         bytesRecorridos+= sizeof (unsigned int);
 
-        memcpy(&numeroDeBloque, bloque + bytesRecorridos,sizeof (unsigned int));
+        memcpy((char *)&numeroDeBloque, bloque + bytesRecorridos,sizeof (unsigned int));
                nodoAdevolver->setNumeroDeBloque(numeroDeBloque);
                bytesRecorridos+= sizeof (unsigned int);
 
@@ -103,7 +103,7 @@ NodoHoja* NodoHoja::hidratar(char* bloque, unsigned int indice){
 
 
         //hidrato la referencia al siguiente:
-        memcpy( &referenciaAlSiguiente ,bloque, sizeof (unsigned int));
+        memcpy( (char *)&referenciaAlSiguiente ,bloque, sizeof (unsigned int));
         nodoAdevolver->setSiguiente(referenciaAlSiguiente);
         bytesRecorridos+=sizeof (unsigned int);
 
@@ -160,6 +160,7 @@ int NodoHoja::agregar(Clave clave, string valor){
                 }
                 if (agregado==false)
                         this->elementos->push_back(reg);
+                this->incrementarCantidadDeElementos();
         }
         if (hayOverflow()){
                 indicador = 2;

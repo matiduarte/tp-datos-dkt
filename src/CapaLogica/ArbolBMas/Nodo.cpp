@@ -65,6 +65,15 @@ int Nodo::getTamanioOverflow(){
 	return 1024 * 0.8; //MODIFICAR ESTO
 
 }
+
+void Nodo::incrementarCantidadDeElementos(){
+	this->setCantidadDeElementos((this->getCantidadDeElementos())+1);
+}
+
+void Nodo::decrementarCantidadDeElementos(){
+	this->setCantidadDeElementos((this->getCantidadDeElementos())-1);;
+}
+
 //Redefinidos en los hijos:
 void Nodo::persistir(ArchivoBloque* archivo){}
 

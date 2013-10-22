@@ -47,7 +47,8 @@ public:
     int getTamanioOverflow();
     virtual bool hayOverflow();
     virtual bool hayUnderflow();
-
+    void incrementarCantidadDeElementos();
+    void decrementarCantidadDeElementos();
 
 
 };
