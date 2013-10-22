@@ -48,7 +48,7 @@ public:
         void agregarHijos(list<unsigned int> lista_hijos);
         unsigned int buscarNodo(int indice);
         int buscarClave(Clave clave);
-        int escribirReferenciasANodosInternos(char* bloque);
+        int persistirReferenciasANodosInternos(char* bloque);
         void setReferenciaAIzq(Nodo * nodo);
         void setReferenciaADer(Nodo * nodo);
 
