@@ -235,7 +235,8 @@ bool NodoHoja::hayUnderflow(){
 	return ((tamanioMinimo) <= (this->tamanioOcupado()));
 }
 
-bool NodoHoja::estaVacio(){return 0;}
+bool NodoHoja::estaVacio(){
+	return this->getElementos()->empty();}
 
 
 int NodoHoja::baja(Clave clave, string valor){
@@ -269,6 +270,125 @@ int NodoHoja::baja(Clave clave, string valor){
         return indicador;
 }
 
+void NodoHoja::setElementos(list<RegistroArbol*> * listaElementos){
+	this->elementos = listaElementos;
+}
+
+
 list<RegistroArbol*> * NodoHoja::getElementos(){
 	return this->elementos;
 }
+
+bool NodoHoja::capacidadMinima(){
+        //Devuelve true si se encuentra en la capacidad minima
+        int aux = 1024 * 0.5;
+        RegistroArbol *reg;
+        reg = this->getElementos()->back();
+        int tamUltimoRegistro = reg->cantidadDeBytesOcupados();
+
+        if (aux >= (this->tamanioOcupado()) - tamUltimoRegistro){
+                return true;
+        }
+        return false;
+}
+
+
+
+int NodoHoja::cantidadDeRegistros(){
+        //Devuelve la cantidad de registros en el nodo
+        return this->getElementos()->size();
+}
+
+
+
+string NodoHoja::buscarClave (Clave clave){
+        //Busca en todos los registros del nodo si tiene la clave. Si la tiene devuelve
+        //la lista correspondiente al registro
+        list<RegistroArbol*>::iterator it;
+        RegistroArbol * registro;
+        Clave claveAux;
+        for (it = this->getElementos()->begin(); it != this->getElementos()->end(); ++it){
+                registro = *it;
+                claveAux  = registro->getClave();
+                if (claveAux==clave){
+                        return registro->getValor();
+                }
+        }
+        return NULL;
+}
+
+
+int NodoHoja::agregar(RegistroArbol * reg){
+        //Devuelve: 0 si el nodo no se actualizo
+        //                      1 si el nodo se actualizo
+        //                      2 si desbordo
+        //                      3 si ya existe el id que quiero agregar
+        //Si ya tengo una clave igual, agrego a ese registro.
+        int indicador = 1;
+        if (this->tieneLaClave(reg->getClave())){
+                RegistroArbol * registro = this->getRegistro(reg->getClave());
+                registro->setValor(reg->getValor());
+
+        } else{
+                this->getElementos()->push_back(reg);
+        }
+        if (hayOverflow()){
+                indicador = 2;
+        }
+        return indicador;
+
+}
+
+
+int NodoHoja::agregar(list<RegistroArbol*> * lista){
+        list<RegistroArbol*>::iterator it;
+        RegistroArbol* registro;
+        for (it = lista->begin(); it != lista->end(); it++){
+                registro = *it;
+                this->agregar(registro);
+        }
+        if (hayOverflow()) return 2;
+        return 1;
+}
+
+
+string NodoHoja::getPrimerClave(){
+        return (this->getElementos()->front())->getClave();
+}
+
+list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
+        //Elimina la ultima mitad de los registros del nodo y los devuelve. Como si fuera un pop
+        list<RegistroArbol*>::iterator it;
+        int cantidad = cantidadDeRegistros();
+        int aux = 0;
+        RegistroArbol* reg;
+        list <RegistroArbol*>* mitad_derecha = new list<RegistroArbol*> ();
+        while(aux <= cantidad){
+                if (aux > cantidad/2){
+                        reg = this->getElementos()->back();
+                        this->getElementos()->pop_back();
+                        mitad_derecha->push_front(reg);
+                }
+                aux ++;
+        }
+
+        return mitad_derecha;
+}
+
+string NodoHoja::getClaveDelMedio(){
+        //Funcion que se llama si el nodo esta en overflow. Devuelve la clave del medio para
+        //insertarla en algun futuro nodo padre
+        list<RegistroArbol*>::iterator it;
+        int cantidad = this->getElementos()->size();
+        int aux = 0;
+        string retorno;
+        for (it = this->getElementos()->begin(); it != this->getElementos()->end(); it++){
+                aux++;
+                if (aux > cantidad/2){
+                        retorno = (*it)->getClave();
+                        break;
+                }
+        }
+        return retorno;
+}
+
