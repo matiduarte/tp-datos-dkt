@@ -52,10 +52,10 @@ void NodoHoja::persistir(ArchivoBloque * archivo){
         memcpy(bloqueApersistir, (char *)&nivel, sizeof(unsigned int) );
         bytesOcupados += sizeof(unsigned int);
 
-        memcpy(bloqueApersistir, (char *)&cantidadDeElementos, sizeof(unsigned int) );
+        memcpy(bloqueApersistir+bytesOcupados, (char *)&cantidadDeElementos, sizeof(unsigned int) );
         bytesOcupados += sizeof(unsigned int);
 
-        memcpy(bloqueApersistir, (char *)&numeroDeBloque, sizeof(unsigned int) );
+        memcpy(bloqueApersistir+bytesOcupados, (char *)&numeroDeBloque, sizeof(unsigned int) );
         bytesOcupados += sizeof(unsigned int);
 
         //Persisto los registros
@@ -94,10 +94,11 @@ NodoHoja* NodoHoja::hidratar(char* bloque, unsigned int indice){
         //hidrato los registros:
 
         RegistroArbol* registroAux = new RegistroArbol();
+        RegistroArbol* registroHidratado;
         for(unsigned int i=0; i<cantidadDeElementos; i++){
-			registroAux->hidratar(bloque + bytesRecorridos);
-			nodoAdevolver->elementos->push_back(registroAux);
-			bytesRecorridos+= registroAux->cantidadDeBytesOcupados();
+			registroHidratado = (registroAux->hidratar(bloque + bytesRecorridos));
+			nodoAdevolver->elementos->push_back(registroHidratado);
+			bytesRecorridos+= registroHidratado->cantidadDeBytesOcupados();
         }
 
 
