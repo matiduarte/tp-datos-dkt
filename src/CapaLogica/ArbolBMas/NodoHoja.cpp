@@ -35,11 +35,11 @@ NodoHoja::~NodoHoja() {
 
 }
 
-NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int indice){
+NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 
-	char* bloque = new char[1024]; // modificar esto
-	archivo->leer(bloque, indice);
-	return NodoHoja::hidratar(bloque,indice);
+	char* bloque = new char[1024];
+	archivo->leer(bloque, nroDeBloque);
+	return NodoHoja::hidratar(bloque);
 }
 
 void NodoHoja::persistir(ArchivoBloque * archivo){
@@ -76,7 +76,7 @@ void NodoHoja::persistir(ArchivoBloque * archivo){
 }
 
 
-NodoHoja* NodoHoja::hidratar(char* bloque, unsigned int indice){
+NodoHoja* NodoHoja::hidratar(char* bloque){
 	//hidrato en este orden: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 
 		unsigned int nivel, cantidadDeElementos, numeroDeBloque, referenciaAlSiguiente;
@@ -236,3 +236,39 @@ bool NodoHoja::hayUnderflow(){
 }
 
 bool NodoHoja::estaVacio(){return 0;}
+
+
+int NodoHoja::baja(Clave clave, string valor){
+        //Elimino del registro (o el registro completo) del id requerido.
+        //Devuelve 3 si quedo en underflow
+        //Devuelve 2 si se borro exitosamente
+        // 1 si no contiene esa clave o id
+        // 0 si hubo un error
+        int indicador = 1;
+        if (this->tieneLaClave(clave)){
+                //Si tiene la clave la borro
+                RegistroArbol * reg = getRegistro(clave);
+                indicador = reg->borrar(clave,valor);
+                //Si el registro quedo vacio tengo que eliminarlo
+                if (indicador == 3){
+                        //Lo elimino de la lista
+                        this->getElementos()->remove(reg);
+                        //Y de memoria
+                        delete reg;
+                        //Como ya resolvi lo del registro, seteo el indicador para que informe que se
+                        //borro exitosamente
+                        indicador = 2;
+                }
+        } else{
+                //Si no tiene la clave devuelve 1
+                return 1;
+        }
+        if (this->hayUnderflow()){ //Si es raiz no
+                indicador = 3;
+        }
+        return indicador;
+}
+
+list<RegistroArbol*> * NodoHoja::getElementos(){
+	return this->elementos;
+}

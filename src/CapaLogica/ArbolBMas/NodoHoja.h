@@ -40,17 +40,17 @@ public:
 
         int cantidadDeRegistros();
         string buscarClave(Clave clave);
-        static NodoHoja* hidratar(char* bloque, unsigned int indice);
-        static NodoHoja* cargar(ArchivoBloque* archivo, unsigned int indice);
+        static NodoHoja* hidratar(char* bloque);
+        static NodoHoja* cargar(ArchivoBloque* archivo, unsigned int nroDeBloque);
 
         void setSiguiente (unsigned int nrobloque);
-        void setClavesYDatos(list<RegistroArbol*> * lista);
+        void setElementos(list<RegistroArbol*> * lista);
 
         unsigned int getSiguiente();
         RegistroArbol* getRegistro(Clave clave);
         string getPrimerClave();
         string getClaveDelMedio();
-        list<RegistroArbol*> * getClavesYDatos();
+        list<RegistroArbol*> * getElementos();
         list<RegistroArbol*> * getMitadDerecha();
 
 };
