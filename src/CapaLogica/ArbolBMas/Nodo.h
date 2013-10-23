@@ -8,10 +8,14 @@
 #ifndef NODO_H_
 #define NODO_H_
 
+#include <iostream>
+#include <fstream>
 #include "../../CapaFisica/Archivos/ArchivoBloque/ArchivoBloque.h"
 #include "Clave.h"
 #include "string.h"
 #include "RegistroArbol.h"
+
+using namespace std;
 
 class Nodo {
 
@@ -37,7 +41,6 @@ public:
 
 	static void hidratar(char* bloque);
 	virtual void persistir(ArchivoBloque* archivo);
-	static Nodo* cargar(ArchivoBloque* arch, unsigned int indice);
 	int agregar(string clave, unsigned int valor);
 	virtual int tamanioOcupado();
 	virtual bool estaVacio();
@@ -49,6 +52,7 @@ public:
     virtual bool hayUnderflow();
     void incrementarCantidadDeElementos();
     void decrementarCantidadDeElementos();
+    static Nodo* cargar(ArchivoBloque* archivo, unsigned int indice);
 
 
 };

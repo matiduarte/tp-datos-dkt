@@ -32,23 +32,25 @@ bool NodoInterno::estaVacio(){
 }
 void NodoInterno::agregarClave(Clave clave){
 
+	bool seAgrego = false;
+
 	if (this->claves.empty()){
 		this->claves.push_back(clave);
-		return;
+		seAgrego = true;
 	}
 
 	list<Clave>::iterator it_claves;
 	it_claves = this->claves.begin();
-	while (it_claves != claves.end()){
+	while ((it_claves != claves.end()) && !(seAgrego)){
 		if ((*it_claves) > (clave)){
 			this->claves.insert(it_claves,clave);
-			return;
 		}
 		it_claves++;
 	}
 
-    this->claves.push_back(clave);
-    return;
+	if(!seAgrego)
+		this->claves.push_back(clave);
+
 }
 
 list<Clave> NodoInterno::getClaves(){
@@ -81,11 +83,6 @@ void NodoInterno::agregarClaves(list<Clave> lista_claves){
 
 }
 
-void NodoInterno::agregarHijoAlFinal(unsigned int hijo){
-
-	hijos.push_back(hijo);
-
-}
 
 void NodoInterno::agregarHijos(list<unsigned int> hijos){
 
@@ -147,6 +144,14 @@ bool NodoInterno::capacidadMinima(){
 
 }
 
+
+NodoInterno* NodoInterno::cargar(ArchivoBloque* archivo, unsigned int indice){
+
+	char* bloque = new char[1024]; // modificar esto
+	archivo->leer(bloque, indice);
+	return NodoInterno::hidratar(bloque,indice);
+}
+
 int NodoInterno::tamanioOcupado(){
 
 	//Tamanio que ocupa el bloque en el nodo
@@ -176,18 +181,6 @@ int NodoInterno::getCantidadDeClaves(){
 
 }
 
-
-NodoInterno* NodoInterno::cargar(ArchivoBloque* archivo, unsigned int indice){
-
-	//Primero cargo el bloque que me están pasando por parametro,
-	//luego cargo los hijos
-	char* bloque = new char[1024]; // modificar esto
-	archivo->leer(bloque, indice);
-	return NodoInterno::hidratar(bloque,indice);
-}
-
-
-
 Clave NodoInterno::getClaveDelMedio(){
 
 	list<Clave>::iterator it;
@@ -206,6 +199,8 @@ Clave NodoInterno::getClaveDelMedio(){
 
 	return clave;
 }
+
+
 
 void NodoInterno::setReferenciaAIzq(Nodo * nodo){
 
@@ -507,3 +502,90 @@ void NodoInterno::borrarClave(Clave clave){
 	//Si llego hasta aca es la ultima
 	if(!encontrado)	claves.pop_back();
 }
+
+void NodoInterno::borrarReferencia(unsigned int hijo){
+
+	list<unsigned int>::iterator it_hijos;
+	it_hijos = hijos.begin();
+	while (it_hijos != hijos.end()){
+		if (*it_hijos == hijo)
+			hijos.erase(it_hijos);
+		it_hijos++;
+    }
+}
+
+
+void NodoInterno::agregarHijoAlFinal(unsigned int hijo){
+
+	hijos.push_back(hijo);
+}
+
+void NodoInterno::agregarReferencia(Clave clave, unsigned int nodo){
+
+	int indice = this->buscarClave(clave);
+	this->agregarClave(clave);
+	bool seAgrego = false;
+
+	//Es el mayor, agrego al final
+	if (indice==-1){
+		this->agregarHijoAlFinal(nodo);
+		seAgrego = true;
+    }
+	//Si no es el mayor itero hasta encontrar la posicion correspondiente
+	int indicador = 0;
+	list<unsigned int>::iterator it_hijos;
+	it_hijos = hijos.begin();
+	while ((it_hijos != hijos.end()) && !(seAgrego)){
+		it_hijos++;
+		if (indicador == indice){
+			hijos.insert(it_hijos,nodo);
+		}
+		indicador++;
+	}
+}
+
+unsigned int NodoInterno::getUltimoNodo(){
+
+	return hijos.back();
+}
+
+unsigned int NodoInterno::buscarNodo(int indice){
+
+	int contador = 0;
+	unsigned int retorno = 0;
+	bool encontrado = false;
+	list<unsigned int>::iterator it_hijos;
+	it_hijos = hijos.begin();
+
+	while ((it_hijos != hijos.end()) && !(encontrado)){
+		if (contador == indice){
+			retorno = *it_hijos;
+			encontrado = true;
+		}
+		contador++;
+		it_hijos++;
+	}
+
+	return retorno;
+}
+
+unsigned int NodoInterno::getNodoAnteriorA(unsigned int indice){
+
+	// Devuelve el indice anterior al nodo que le pasas,
+	// si no lo encuentra, devuelve 0
+
+	int nodoAnterior = 0;
+	list<unsigned int>::iterator it_hijos;
+	it_hijos = hijos.begin();
+
+	while (it_hijos != hijos.end()){
+		if (*it_hijos == indice){
+			return nodoAnterior;
+		}
+		nodoAnterior = *it_hijos;
+		it_hijos++;
+	}
+
+	return nodoAnterior;
+}
+

@@ -1,11 +1,14 @@
 /*
  * Nodo.cpp
- *
+
  *  Created on: 11/10/2013
  *      Author: juanma
  */
 
 #include "Nodo.h"
+#include "NodoInterno.h"
+#include "NodoHoja.h"
+
 
 Nodo::Nodo() {
 	this->cantidadDeElementos = 0;
@@ -38,7 +41,24 @@ unsigned int Nodo::getNivel(){
 		return(this->nivel);
 }
 
+Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
+	char* bloque = new char[1024]; //cambiar
+	archivo->leer(bloque, indice);
+	unsigned int tamanioInt = sizeof(unsigned int);
+	int bytesHidratados = sizeof (unsigned int);
+
+	unsigned int nivel;
+	memcpy(&nivel,bloque + bytesHidratados, tamanioInt);
+
+	if (nivel == 0){
+		//Es hoja
+		return NodoHoja::cargar(archivo, indice);
+	}else {
+		//Es interno
+		return NodoInterno::cargar(archivo, indice);
+	}
+}
 
 void Nodo::setNivel(unsigned int nivel){
 	this->nivel = nivel;

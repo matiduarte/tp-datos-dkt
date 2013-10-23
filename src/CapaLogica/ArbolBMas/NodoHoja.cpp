@@ -35,6 +35,12 @@ NodoHoja::~NodoHoja() {
 
 }
 
+NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int indice){
+
+	char* bloque = new char[1024]; // modificar esto
+	archivo->leer(bloque, indice);
+	return NodoHoja::hidratar(bloque,indice);
+}
 
 void NodoHoja::persistir(ArchivoBloque * archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]

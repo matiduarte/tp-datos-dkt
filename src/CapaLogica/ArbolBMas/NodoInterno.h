@@ -7,10 +7,12 @@
 
 #ifndef NODOINTERNO_H_
 #define NODOINTERNO_H_
-#include "Nodo.h"
+
+
 #include <list>
 #include <iostream>
 #include "Clave.h"
+#include "Nodo.h"
 
 using namespace std;
 
@@ -49,8 +51,8 @@ public:
         unsigned int buscarNodo(int indice);
         int buscarClave(Clave clave);
         int persistirReferenciasANodosInternos(char* bloque);
-        void setReferenciaAIzq(Nodo * nodo);
-        void setReferenciaADer(Nodo * nodo);
+        void setReferenciaAIzq(Nodo* nodo);
+        void setReferenciaADer(Nodo* nodo);
 
         list<Clave> * getMitadDerechaClaves();
         list<unsigned int> * getMitadDerechaHijos();
