@@ -13,6 +13,7 @@ private:
 	ArchivoRegVariable* archivo;
 
 public:
+	ListaInvertida();
 	ListaInvertida(const string& rutaArchList);
 	unsigned int insertar(string idPalabra, string valor);
 	void modificar(int posLista, string valor);
