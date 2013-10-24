@@ -44,6 +44,7 @@ void NodoInterno::agregarClave(Clave clave){
 	while ((it_claves != claves.end()) && !(seAgrego)){
 		if ((*it_claves) > (clave)){
 			this->claves.insert(it_claves,clave);
+			seAgrego = true;
 		}
 		it_claves++;
 	}
@@ -240,17 +241,22 @@ int NodoInterno::buscarClave(Clave clave){
 
 void NodoInterno::persistir(ArchivoBloque * archivo){
 
+	// [nivel| nroDeBloque |cantidadDeClaves| refHijIzq| clave | refHijoDer]
 	char bloque[1024]; //MODIFICAR ESTO
 
-	unsigned int tamanioOcupado = this->tamanioOcupado();
+	unsigned int cantidadDeClaves = this->getCantidadDeClaves();
+	unsigned int nroDeBloque = this->getNumeroDeBloque();
 	unsigned int nivel = getNivel();
 	unsigned int tamanioInt = sizeof(unsigned int);
 	unsigned int bytesOcupados = 0;
 
-	memcpy(bloque, (char*)&tamanioOcupado, tamanioInt);
+	memcpy(bloque, (char*)&nivel, tamanioInt);
 	bytesOcupados += tamanioInt;
 
-	memcpy(bloque + bytesOcupados,(char*)&nivel ,tamanioInt);
+	memcpy(bloque + bytesOcupados, (char*)&nroDeBloque, tamanioInt);
+	bytesOcupados += tamanioInt;
+
+	memcpy(bloque + bytesOcupados,(char*)&cantidadDeClaves ,tamanioInt);
 	bytesOcupados += tamanioInt;
 
 	bytesOcupados += this->persistirReferenciasANodosInternos(bloque + bytesOcupados);
@@ -258,7 +264,7 @@ void NodoInterno::persistir(ArchivoBloque * archivo){
 	archivo->reescribir(bloque, this->getNumeroDeBloque());
 }
 
-//Devuelvo la cantidad de bytes persistidos
+//Persisto clave y ref a los hijos
 int NodoInterno::persistirReferenciasANodosInternos(char* bloque){
 
 	int contador = 0;
@@ -272,7 +278,6 @@ int NodoInterno::persistirReferenciasANodosInternos(char* bloque){
 	while(itClaves != claves.end()){
 
 		numeroDeBloque = (*itNodos);
-
 		memcpy(bloque + contador,(char*)&numeroDeBloque,tamanioInt);
 		contador += tamanioInt;
 
@@ -293,28 +298,36 @@ int NodoInterno::persistirReferenciasANodosInternos(char* bloque){
 
 NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 
+	unsigned int contador = 0;
 	unsigned int bytesHidratados = 0;
 	unsigned int nroDeBloque = 0;
+	unsigned int refHijos = 0;
+	unsigned int nivel = 0;
+	unsigned int cantidadDeClaves = 0;
 	unsigned int tamanioInt = sizeof (unsigned int);
-	unsigned int tamanioOcupado = 0;
 
 	NodoInterno* nodoHidratado = new NodoInterno();
 
-	memcpy(&(tamanioOcupado), bloque, tamanioInt);
+	memcpy(&(nivel), bloque, tamanioInt);
+  	bytesHidratados += tamanioInt;
+  	nodoHidratado->setNivel(nivel);
+
+  	memcpy(&(nroDeBloque), bloque + bytesHidratados, tamanioInt);
+  	bytesHidratados += tamanioInt;
+  	nodoHidratado->setNumeroDeBloque(nroDeBloque);
+
+	memcpy(&(cantidadDeClaves), bloque + bytesHidratados ,tamanioInt);
   	bytesHidratados += tamanioInt;
 
-  	unsigned int nivel = nodoHidratado->getNivel();
-	memcpy(&(nivel), bloque + bytesHidratados ,tamanioInt);
-  	bytesHidratados += tamanioInt;
+	while (contador < cantidadDeClaves) {
 
-	while ((bytesHidratados) < (tamanioOcupado - tamanioInt)) {
-
-		char bloqueAux[128]; //VER ESTO
-		string clave;
+		contador++;
+		char bloqueAux[50]= " ";; //VER ESTO
+		string clave = " ";
 		unsigned int tamanioClave = 0;
 
-		memcpy(&(nroDeBloque),bloque + bytesHidratados, tamanioInt);
-		nodoHidratado->getHijos().push_back(nroDeBloque);
+		memcpy(&(refHijos),bloque + bytesHidratados, tamanioInt);
+		nodoHidratado->hijos.push_back(refHijos);
 		bytesHidratados += tamanioInt;
 
 		memcpy(&(tamanioClave), bloque + bytesHidratados, tamanioInt);
@@ -325,18 +338,15 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 		bytesHidratados += tamanioClave;
 
 
-		nodoHidratado->getClaves().push_back(clave);
-		nroDeBloque = 0;
+		nodoHidratado->claves.push_back(clave);
+		refHijos = 0;
 	}
 
-	memcpy(&(nroDeBloque),bloque + bytesHidratados, tamanioInt);
-	nodoHidratado->getHijos().push_back(nroDeBloque);
+	memcpy(&(refHijos),bloque + bytesHidratados, tamanioInt);
+	nodoHidratado->hijos.push_back(refHijos);
 	bytesHidratados += tamanioInt;
 
-	nodoHidratado->setNumeroDeBloque(indice);
-
 	return nodoHidratado;
-
 }
 
 
@@ -539,6 +549,7 @@ void NodoInterno::agregarReferencia(Clave clave, unsigned int nodo){
 		it_hijos++;
 		if (indicador == indice){
 			hijos.insert(it_hijos,nodo);
+			seAgrego = true;
 		}
 		indicador++;
 	}

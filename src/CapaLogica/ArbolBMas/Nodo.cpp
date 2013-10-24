@@ -46,10 +46,9 @@ Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 	char* bloque = new char[1024]; //cambiar
 	archivo->leer(bloque, indice);
 	unsigned int tamanioInt = sizeof(unsigned int);
-	int bytesHidratados = sizeof (unsigned int);
 
 	unsigned int nivel;
-	memcpy(&nivel,bloque + bytesHidratados, tamanioInt);
+	memcpy(&nivel,bloque, tamanioInt);
 
 	if (nivel == 0){
 		//Es hoja
