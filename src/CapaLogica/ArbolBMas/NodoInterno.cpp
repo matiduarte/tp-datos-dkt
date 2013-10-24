@@ -14,7 +14,7 @@ NodoInterno::NodoInterno() {
 
 NodoInterno::NodoInterno(ArchivoBloque* archivo){
 
-	char bloque[1024]; //CAMBIAR ESTOOOOOOO
+	char bloque[TAMANIO_MAXIMO_BLOQUE]; //CAMBIAR ESTOOOOOOO
 	unsigned int numeroDeBloque = archivo->escribir(bloque);
 	this->setNumeroDeBloque(numeroDeBloque);
 
@@ -148,7 +148,7 @@ bool NodoInterno::capacidadMinima(){
 
 NodoInterno* NodoInterno::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[1024]; // modificar esto
+	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE]; // modificar esto
 	archivo->leer(bloque, indice);
 	return NodoInterno::hidratar(bloque,indice);
 }
@@ -242,7 +242,7 @@ int NodoInterno::buscarClave(Clave clave){
 void NodoInterno::persistir(ArchivoBloque * archivo){
 
 	// [nivel| nroDeBloque |cantidadDeClaves| refHijIzq| clave | refHijoDer]
-	char bloque[1024]; //MODIFICAR ESTO
+	char bloque[TAMANIO_MAXIMO_BLOQUE]; //MODIFICAR ESTO
 
 	unsigned int cantidadDeClaves = this->getCantidadDeClaves();
 	unsigned int nroDeBloque = this->getNumeroDeBloque();
@@ -322,7 +322,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 	while (contador < cantidadDeClaves) {
 
 		contador++;
-		char bloqueAux[50]= " ";; //VER ESTO
+		char bloqueAux[TAMANIO_MAXIMO_CLAVE]= " ";; //VER ESTO
 		string clave = " ";
 		unsigned int tamanioClave = 0;
 

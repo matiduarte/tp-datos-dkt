@@ -62,9 +62,9 @@ int Clave::hidratar(char* bloque){
 	int bytesLeidos = 0;
 	unsigned int tamanioInt = sizeof(unsigned int);
 	unsigned int tamanioClave;
-	string clave;
+	string clave = " ";
 	//Aca usar constante de tamanioBloque
-	char bloqueAux[1024];
+	char bloqueAux[TAMANIO_MAXIMO_BLOQUE] = " ";
 
 	memcpy(&tamanioClave, bloque, tamanioInt);
 	bytesLeidos += tamanioInt;

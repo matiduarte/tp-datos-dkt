@@ -9,6 +9,7 @@
 #define CONSTANTES_H_
 
 #define TAMANIO_MAXIMO_BLOQUE 1024
+#define TAMANIO_MAXIMO_CLAVE 50
 
 
 

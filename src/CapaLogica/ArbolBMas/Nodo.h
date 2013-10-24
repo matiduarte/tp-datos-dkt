@@ -14,6 +14,7 @@
 #include "Clave.h"
 #include "string.h"
 #include "RegistroArbol.h"
+#include "Constantes.h"
 
 using namespace std;
 

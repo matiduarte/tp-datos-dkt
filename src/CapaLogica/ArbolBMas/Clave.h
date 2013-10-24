@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "string.h"
+#include "Constantes.h"
 
 using namespace std;
 

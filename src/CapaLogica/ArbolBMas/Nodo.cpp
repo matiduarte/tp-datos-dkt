@@ -10,6 +10,7 @@
 #include "NodoHoja.h"
 
 
+
 Nodo::Nodo() {
 	this->cantidadDeElementos = 0;
 	this->nivel = 0;
@@ -43,7 +44,7 @@ unsigned int Nodo::getNivel(){
 
 Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[1024]; //cambiar
+	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE]; //cambiar
 	archivo->leer(bloque, indice);
 	unsigned int tamanioInt = sizeof(unsigned int);
 
@@ -75,13 +76,13 @@ void Nodo::decrementarNivel(){this->nivel--;}
 
 int Nodo::getTamanioUnderflow(){
 
-	return 1024 * 0.5; //MODIFICAR ESTO
+	return TAMANIO_MAXIMO_BLOQUE * 0.5; //MODIFICAR ESTO
 
 }
 
 int Nodo::getTamanioOverflow(){
 
-	return 1024 * 0.8; //MODIFICAR ESTO
+	return TAMANIO_MAXIMO_BLOQUE * 0.8; //MODIFICAR ESTO
 
 }
 
