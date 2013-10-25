@@ -42,7 +42,7 @@ void NodoInterno::agregarClave(Clave clave){
 	list<Clave>::iterator it_claves;
 	it_claves = this->claves.begin();
 	while ((it_claves != claves.end()) && !(seAgrego)){
-		if ((*it_claves) > (clave)){
+		if ((*it_claves).getClave() > clave.getClave()){
 			this->claves.insert(it_claves,clave);
 			seAgrego = true;
 		}

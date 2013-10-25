@@ -142,3 +142,7 @@ int RegistroArbol::cantidadDeBytesOcupados(){
 	return valor;
 
 }
+
+Clave RegistroArbol::getClaveEntera(){
+	return this->clave;
+}

@@ -37,6 +37,7 @@ public:
 
 	void setClave(string clave);
 	void setValor(string valor);
+	Clave getClaveEntera();
 	string getClave();
 	string getValor();
 	int getTamanioClave();

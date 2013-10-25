@@ -43,7 +43,7 @@ public:
 	void partirNodoRaizHoja();
 	void partirNodoRaizInterno();
 
-	int balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo);
+	int balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoNuevo);
 	int mergeNodoHojaDerecho(NodoInterno* nodoPadre, NodoHoja* nodoIzq, NodoHoja* nodoDer);
 	int equilibrarNodoHojaDerecho(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
 	int mergeNodoHojaIzquierdo(NodoInterno* nodoPadre,NodoHoja* nodoDer,NodoHoja* nodoIzq);
