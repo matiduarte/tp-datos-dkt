@@ -13,7 +13,7 @@ void ListaInvertida::modificar(int posLista, string valor){
 }
 
 string ListaInvertida::obtener(unsigned int posicionLista){
-	string buffer = string(this->archivo->leer(posicionLista));
+	string buffer = string(this->archivo->sacar(posicionLista));
 	RegistroLista* reg = new RegistroLista(buffer);
 	return reg->getValor();
 }

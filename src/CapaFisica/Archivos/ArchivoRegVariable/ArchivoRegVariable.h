@@ -25,7 +25,8 @@ public:
 
 	//devuelve la posicion en el archivo donde se guarda el registro
 	unsigned int escribir(char* registro);
-	char* leer(unsigned int posicionBytes);
+	//puede lanzar ExcepcionPosicionEnEspacioLibre
+	char* sacar(unsigned int posicionBytes);
 	//puede lanzar ExcepcionPosicionEnEspacioLibre
 	void borrar(unsigned int posicionBytes);
 	unsigned int getCantidadRegistros();

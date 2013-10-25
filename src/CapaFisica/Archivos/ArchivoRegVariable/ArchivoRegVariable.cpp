@@ -105,7 +105,7 @@ unsigned int ArchivoRegVariable::escribir(char* registro){
 	return posicionRegistro;
 }
 
-char* ArchivoRegVariable::leer(unsigned int posicionBytes){
+char* ArchivoRegVariable::sacar(unsigned int posicionBytes){
 
 	unsigned int largoCadena;
 	archivo.seekg(posicionBytes, ios::beg);
@@ -114,6 +114,8 @@ char* ArchivoRegVariable::leer(unsigned int posicionBytes){
 	char* dato = new char[largoCadena];
 
 	archivo.read(dato, largoCadena);
+
+	borrar(posicionBytes);
 
 	return dato;
 }
