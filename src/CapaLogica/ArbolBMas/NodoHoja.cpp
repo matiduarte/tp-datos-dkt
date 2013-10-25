@@ -37,7 +37,7 @@ NodoHoja::~NodoHoja() {
 
 NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 
-	char* bloque = new char[1024];
+	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE];
 	archivo->leer(bloque, nroDeBloque);
 	return NodoHoja::hidratar(bloque);
 }
@@ -46,7 +46,7 @@ void NodoHoja::persistir(ArchivoBloque * archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 	//persisto nivel, cantidadDeElementos, NumeroDeBloque:
 
-        char bloqueApersistir[1024];
+        char bloqueApersistir[TAMANIO_MAXIMO_BLOQUE];
         unsigned int bytesOcupados, nivel, cantidadDeElementos, numeroDeBloque, referenciaAlSiguiente;
         bytesOcupados = 0;
         nivel = this->getNivel();
@@ -145,7 +145,7 @@ int NodoHoja::agregar(Clave clave, string valor){
         //Devuelve: 0 si el nodo no se actualizo
         //                      1 si el nodo se actualizo
         //                      2 si desbordo
-        //                      3 si ya existe el id que quiero agregar
+        //                      3 si ya existe el valor que quiero agregar
         //Si ya tengo una clave igual, agrego a ese registro.
         int indicador = 1;
         if (this->tieneLaClave(clave)){
@@ -240,10 +240,10 @@ bool NodoHoja::estaVacio(){
 
 
 int NodoHoja::baja(Clave clave, string valor){
-        //Elimino del registro (o el registro completo) del id requerido.
+        //Elimino del registro (o el registro completo) del valor requerido.
         //Devuelve 3 si quedo en underflow
         //Devuelve 2 si se borro exitosamente
-        // 1 si no contiene esa clave o id
+        // 1 si no contiene esa clave o valor
         // 0 si hubo un error
         int indicador = 1;
         if (this->tieneLaClave(clave)){
@@ -281,7 +281,7 @@ list<RegistroArbol*> * NodoHoja::getElementos(){
 
 bool NodoHoja::capacidadMinima(){
         //Devuelve true si se encuentra en la capacidad minima
-        int aux = 1024 * 0.5;
+        int aux = TAMANIO_MAXIMO_BLOQUE * 0.5;
         RegistroArbol *reg;
         reg = this->getElementos()->back();
         int tamUltimoRegistro = reg->cantidadDeBytesOcupados();
@@ -322,7 +322,7 @@ int NodoHoja::agregar(RegistroArbol * reg){
         //Devuelve: 0 si el nodo no se actualizo
         //                      1 si el nodo se actualizo
         //                      2 si desbordo
-        //                      3 si ya existe el id que quiero agregar
+        //                      3 si ya existe el valor que quiero agregar
         //Si ya tengo una clave igual, agrego a ese registro.
         int indicador = 1;
         if (this->tieneLaClave(reg->getClave())){
@@ -357,7 +357,7 @@ Clave NodoHoja::getPrimerClave(){
 }
 
 list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
-        //Elimina la ultima mitad de los registros del nodo y los devuelve. Como si fuera un pop
+        //Elimina la ultima mitad de los registros del nodo y los devuelve.
         list<RegistroArbol*>::iterator it;
         int cantidad = cantidadDeRegistros();
         int aux = 0;
