@@ -68,23 +68,12 @@ bool RegistroArbol::existe(string clave){
 int RegistroArbol::agregar(Clave clave, string valor){
 
 
-	/* resultado = 0 -> no se pudo agregar
-	 * resultado = 1 -> se agrego correctamente
-	 * resultado = 2 -> hubo desborde
-	 * resultado = 3 -> el identificador ya existe
-	 */
-
 	return 0;
 
 }
 
 int RegistroArbol::borrar(Clave clave, string valor){
 
-	/* resultado = 0 -> no se pudo eliminar
-	 * resultado = 1 -> se elimino correctamente
-	 * resultado = 2 -> hubo desborde
-	 * resultado = 3 -> el identificador no existe
-	 */
 
 	return 0;
 }

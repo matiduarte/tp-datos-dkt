@@ -43,7 +43,6 @@ public:
         void PartirNodoADerecha(NodoInterno* hermano_derecho, NodoInterno* padre);
         void agregarClave(Clave clave);
         void borrarClave(Clave clave);
-        void borrarClave(int indice);
         void borrarReferencia(unsigned int hijo);
         void agregarHijoAlFinal(unsigned int hijo);
         void agregarClaves(list<Clave> lista_claves);

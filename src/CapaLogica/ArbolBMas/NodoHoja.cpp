@@ -213,8 +213,8 @@ RegistroArbol* NodoHoja::getRegistro(Clave clave){
         RegistroArbol * reg_actual = NULL;
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
                 reg_actual = *it;
-                Clave aux = (reg_actual)->getClave();
-                if (aux == clave){
+                Clave aux = (reg_actual)->getClaveEntera();
+                if (aux.getClave() == clave.getClave()){
                         return reg_actual;
                 }
         }
@@ -352,8 +352,8 @@ int NodoHoja::agregar(list<RegistroArbol*> * lista){
 }
 
 
-string NodoHoja::getPrimerClave(){
-        return (this->getElementos()->front())->getClave();
+Clave NodoHoja::getPrimerClave(){
+        return (this->getElementos()->front())->getClaveEntera();
 }
 
 list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
@@ -375,20 +375,22 @@ list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
         return mitad_derecha;
 }
 
-string NodoHoja::getClaveDelMedio(){
-        //Funcion que se llama si el nodo esta en overflow. Devuelve la clave del medio para
-        //insertarla en algun futuro nodo padre
-        list<RegistroArbol*>::iterator it;
-        int cantidad = this->getElementos()->size();
-        int aux = 0;
-        string retorno;
-        for (it = this->getElementos()->begin(); it != this->getElementos()->end(); it++){
-                aux++;
-                if (aux > cantidad/2){
-                        retorno = (*it)->getClave();
-                        break;
-                }
+Clave NodoHoja::getClaveDelMedio(){
+
+	//Funcion que se llama si el nodo esta en overflow. Devuelve la clave del medio para
+	//insertarla en algun futuro nodo padre
+	list<RegistroArbol*>::iterator it;
+	int cantidad = this->getElementos()->size();
+	int aux = 0;
+	Clave claveRetorno;
+	for (it = this->getElementos()->begin(); it != this->getElementos()->end(); it++){
+		aux++;
+		if (aux > cantidad/2){
+			claveRetorno = (*it)->getClaveEntera();
+			break;
         }
-        return retorno;
+	}
+
+	return claveRetorno;
 }
 

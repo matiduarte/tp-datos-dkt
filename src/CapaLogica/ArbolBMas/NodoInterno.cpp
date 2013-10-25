@@ -469,21 +469,6 @@ list<unsigned int> * NodoInterno::getMitadDerechaHijos(){
 	return mitdaDerHijos;
 }
 
-/*void NodoInterno::borrarClave(int indice){
-
-	VER SI SE USA **************
-	int indicador = 0;
-	list<Clave>::iterator it_claves;
-	it_claves = claves.begin();
-	while (it_claves != claves.end()){
-		if (indicador == indice){
-			claves.erase(it_claves);
-		}
-		indicador++;
-		it_claves++;
-	}
-} */
-
 void NodoInterno::borrarClave(Clave clave){
 
 /* Borra la clave, si no la encuenta borra la menor que le sigue,
@@ -497,10 +482,10 @@ void NodoInterno::borrarClave(Clave clave){
 
 	while ((it_claves != claves.end()) && !(encontrado)){
 		claveActual = *it_claves;
-		if (claveActual == clave){
+		if (claveActual.getClave() == clave.getClave()){
 			claves.erase(it_claves);
 			encontrado = true;
-		}else if (claveActual > clave){
+		}else if (claveActual.getClave() > clave.getClave()){
 			if (it_claves != claves.begin()){
 				it_claves--;
 				claves.erase(it_claves);

@@ -48,8 +48,8 @@ public:
 
         unsigned int getSiguiente();
         RegistroArbol* getRegistro(Clave clave);
-        string getPrimerClave();
-        string getClaveDelMedio();
+        Clave getPrimerClave();
+        Clave getClaveDelMedio();
         list<RegistroArbol*> * getElementos();
         list<RegistroArbol*> * getMitadDerecha();
 
