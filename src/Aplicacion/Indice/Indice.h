@@ -4,6 +4,8 @@
 #include "../../CapaLogica/HashExtensible/Hash.h"
 #include "../../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../../CapaLogica/ListaInvertida/ListaInvertida.h"
+#include "../../CapaLogica/HashExtensible/Convertidor.h"
+#include "../Entidades/Usuario.h"
 #include <string.h>
 
 using namespace std;
@@ -29,6 +31,7 @@ private:
 public:
 	Indice();
 	~Indice();
+	void agregarUsuario(Usuario usuario);
 };
 
 #endif /*INDICE_H_*/
