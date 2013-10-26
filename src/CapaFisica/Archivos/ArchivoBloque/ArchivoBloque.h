@@ -12,6 +12,8 @@
 #include <math.h>
 #include <string.h>
 #include "../Archivo.h"
+#include "../../../Aplicacion/LectorConfig/LectorConfig.h"
+#include "../../../Aplicacion/constantes.h"
 #include "../../Excepciones/ExcepcionBloqueInexistente.h"
 #include "../../Excepciones/ExcepcionBloqueIncorrecto.h"
 #include "../../Excepciones/ExcepcionOverflowTamBloque.h"
@@ -21,7 +23,7 @@ class ArchivoBloque: Archivo {
 public:
 
 	//puede lanzar ExcepcionBloqueIncorrecto
-	ArchivoBloque(string nombre, int tamanioBloque);
+	ArchivoBloque(string nombre);
 	~ArchivoBloque();
 
 	//puede lanzar ExcepcionOverflowTamBloque

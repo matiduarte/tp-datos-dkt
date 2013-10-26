@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-HashTable::HashTable(const string& ruta,const bool& sobreEscribir,const short& tamElemento)
-: Salvable(ruta,sobreEscribir,tamElemento){
+HashTable::HashTable(const string& ruta,const bool& sobreEscribir)
+: Salvable(ruta,sobreEscribir){
 	if (sobreEscribir){
 		//armo una nueva tabla (tabla vacia)...
 		tamTabla = 0;

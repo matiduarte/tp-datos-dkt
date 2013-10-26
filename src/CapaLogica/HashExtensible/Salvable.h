@@ -20,7 +20,7 @@ private:
 	ArchivoBloque* archivo;
 
 public:
-	Salvable(const string& ruta,const bool& sobreEscribir,const short& tamElem);
+	Salvable(const string& ruta,const bool& sobreEscribir);
 	virtual ~Salvable();
 
 protected:

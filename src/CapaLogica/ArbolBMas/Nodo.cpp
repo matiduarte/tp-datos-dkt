@@ -9,13 +9,21 @@
 #include "NodoInterno.h"
 #include "NodoHoja.h"
 
-
+unsigned int Nodo::tamanioMaximoBloque;
 
 Nodo::Nodo() {
 	this->cantidadDeElementos = 0;
 	this->nivel = 0;
 	this->NumeroDeBloque = 0;
 
+	try{
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+	}
+	catch(ExcepcionArchivoInexistente &e){
+
+		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+	}
 }
 
 Nodo::~Nodo() {
@@ -44,7 +52,7 @@ unsigned int Nodo::getNivel(){
 
 Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE]; //cambiar
+	char* bloque = new char[tamanioMaximoBloque]; //cambiar
 	archivo->leer(bloque, indice);
 	unsigned int tamanioInt = sizeof(unsigned int);
 
@@ -76,13 +84,13 @@ void Nodo::decrementarNivel(){this->nivel--;}
 
 int Nodo::getTamanioUnderflow(){
 
-	return TAMANIO_MAXIMO_BLOQUE * 0.5; //MODIFICAR ESTO
+	return tamanioMaximoBloque * 0.5; //MODIFICAR ESTO
 
 }
 
 int Nodo::getTamanioOverflow(){
 
-	return TAMANIO_MAXIMO_BLOQUE * 0.8; //MODIFICAR ESTO
+	return tamanioMaximoBloque * 0.8; //MODIFICAR ESTO
 
 }
 

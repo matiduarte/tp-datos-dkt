@@ -9,9 +9,9 @@
 
 using namespace std;
 
-Salvable::Salvable(const string& ruta, const bool& sobreEscribir,const short& tamElem){
+Salvable::Salvable(const string& ruta, const bool& sobreEscribir){
 	//archivo = new ArchivoBloque(ruta, tamElem, sobreEscribir);
-	archivo = new ArchivoBloque(ruta, tamElem);
+	archivo = new ArchivoBloque(ruta);
 }
 
 void Salvable::leerBloque(const int& numBloque,string* buffer)const{

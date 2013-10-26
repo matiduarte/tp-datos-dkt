@@ -11,9 +11,9 @@ ArbolBMas::ArbolBMas(){
 
 }
 
-ArbolBMas::ArbolBMas(string nombre, int tamanioBloque) {
+ArbolBMas::ArbolBMas(string nombre) {
 	// TODO Auto-generated constructor stub
-	this->archivo = new ArchivoBloque(nombre, tamanioBloque);
+	this->archivo = new ArchivoBloque(nombre);
 	unsigned int cantidadDeBloque = this->archivo->getCantidadBloques();
 	if (cantidadDeBloque == 0){
 		//es un archivo nuevo

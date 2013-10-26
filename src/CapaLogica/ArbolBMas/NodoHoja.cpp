@@ -7,10 +7,20 @@
 
 #include "NodoHoja.h"
 
+unsigned int NodoHoja::tamanioMaximoBloque;
+
 NodoHoja::NodoHoja(){
     this->referenciaAlSiguiente = 0;
     this->elementos = new list<RegistroArbol*>();
 
+	try{
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+	}
+	catch(ExcepcionArchivoInexistente &e){
+
+		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+	}
 }
 
 NodoHoja::NodoHoja(ArchivoBloque * archivo) {
@@ -37,7 +47,7 @@ NodoHoja::~NodoHoja() {
 
 NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 
-	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE];
+	char* bloque = new char[tamanioMaximoBloque];
 	archivo->leer(bloque, nroDeBloque);
 	return NodoHoja::hidratar(bloque);
 }
@@ -46,7 +56,7 @@ void NodoHoja::persistir(ArchivoBloque * archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 	//persisto nivel, cantidadDeElementos, NumeroDeBloque:
 
-        char bloqueApersistir[TAMANIO_MAXIMO_BLOQUE];
+        char bloqueApersistir[tamanioMaximoBloque];
         unsigned int bytesOcupados, nivel, cantidadDeElementos, numeroDeBloque, referenciaAlSiguiente;
         bytesOcupados = 0;
         nivel = this->getNivel();
@@ -281,7 +291,7 @@ list<RegistroArbol*> * NodoHoja::getElementos(){
 
 bool NodoHoja::capacidadMinima(){
         //Devuelve true si se encuentra en la capacidad minima
-        int aux = TAMANIO_MAXIMO_BLOQUE * 0.5;
+        int aux = tamanioMaximoBloque * 0.5;
         RegistroArbol *reg;
         reg = this->getElementos()->back();
         int tamUltimoRegistro = reg->cantidadDeBytesOcupados();

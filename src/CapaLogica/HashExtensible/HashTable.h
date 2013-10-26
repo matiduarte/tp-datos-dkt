@@ -29,7 +29,7 @@ private:
 	void guardarTamTabla();
 
 public:
-	HashTable(const string& ruta, const bool& sobreEscribir, const short& tamElemento);
+	HashTable(const string& ruta, const bool& sobreEscribir);
 	int getElement(const HashClave& key);
 	void setElement(int elem, const HashClave& key);
 	int nodoNuevo(int tamDispersion, const HashClave& key);

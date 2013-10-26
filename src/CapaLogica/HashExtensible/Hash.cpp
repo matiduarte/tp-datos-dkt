@@ -1,9 +1,9 @@
 #include "Hash.h"
 
-Hash::Hash(const string& pathArchTabla, const string& pathArchNodos, const int& tamElemTabla, const int& tamElemNodo, bool sobreEscribir){
+Hash::Hash(const string& pathArchTabla, const string& pathArchNodos, bool sobreEscribir){
 	//creo la tabla y el interpreter...
-	tabla = new HashTable(pathArchTabla, sobreEscribir, tamElemTabla);
-	interpreteNodo = new HashNodeInterpreter(pathArchNodos, sobreEscribir, tamElemNodo);
+	tabla = new HashTable(pathArchTabla, sobreEscribir);
+	interpreteNodo = new HashNodeInterpreter(pathArchNodos, sobreEscribir);
 }
 
 void Hash::insertarElemento(const string& clave,const string& valor){

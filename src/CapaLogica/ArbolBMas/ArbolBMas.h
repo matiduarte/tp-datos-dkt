@@ -27,7 +27,7 @@ private:
 
 public:
 	ArbolBMas();
-	ArbolBMas(string, int);
+	ArbolBMas(string);
 	virtual ~ArbolBMas();
 	void persistir();
 

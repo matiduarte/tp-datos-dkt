@@ -7,8 +7,8 @@
 
 #include "HashNodeInterpreter.h"
 
-HashNodeInterpreter::HashNodeInterpreter(const string& ruta, const bool& sobreEscribir, const short& tamElem)
-: Salvable(ruta,sobreEscribir,tamElem){
+HashNodeInterpreter::HashNodeInterpreter(const string& ruta, const bool& sobreEscribir)
+: Salvable(ruta,sobreEscribir){
 	//escribo un bloque vacio...
 	if (sobreEscribir){
 		nodo = new HashNode(1);

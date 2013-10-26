@@ -19,6 +19,8 @@ class NodoHoja: public Nodo {
         unsigned int referenciaAlSiguiente;
         list<RegistroArbol*> * elementos;
 
+        static unsigned int tamanioMaximoBloque;
+
 
 public:
 		NodoHoja();

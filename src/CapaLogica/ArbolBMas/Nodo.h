@@ -24,6 +24,7 @@ private:
 	unsigned int nivel;
 	unsigned int cantidadDeElementos;
 	unsigned int NumeroDeBloque;
+	static unsigned int tamanioMaximoBloque;
 
 public:
 	Nodo();

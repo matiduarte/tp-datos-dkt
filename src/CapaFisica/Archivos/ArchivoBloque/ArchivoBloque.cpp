@@ -7,7 +7,17 @@
 
 #include "ArchivoBloque.h"
 
-ArchivoBloque::ArchivoBloque(string nombre, int tamanioBloque) {
+ArchivoBloque::ArchivoBloque(string nombre) {
+
+	try{
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig_ArchivoBloque);
+    	this->tamanioBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+	}
+	catch(ExcepcionArchivoInexistente &e){
+
+		this->tamanioBloque = TAMANIOBLOQUE_DEFAULT;
+	}
+
 
 	if (!esMultiplo(tamanioBloque)) throw new ExcepcionBloqueIncorrecto();
 
@@ -17,7 +27,6 @@ ArchivoBloque::ArchivoBloque(string nombre, int tamanioBloque) {
 
     	nombreArchivo = (string)nombre;
 
-    	this->tamanioBloque = tamanioBloque;
 
     	leerEspaciosLibres();
 }

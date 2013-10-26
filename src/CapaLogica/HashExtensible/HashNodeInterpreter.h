@@ -30,7 +30,7 @@ protected:
     HashNode* nodo;
 
 public:
-    HashNodeInterpreter(const string & ruta, const bool & sobreEscribir, const short  & tamElemento);
+    HashNodeInterpreter(const string & ruta, const bool & sobreEscribir);
     virtual ~HashNodeInterpreter();
     void insertarElemento(const HashClave& key, const string& valor, const int numeroNodo);
 	void modificarElemento(const HashClave& key, const string& nvoValor, const int numeroNodo);
