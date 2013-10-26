@@ -52,12 +52,12 @@ unsigned int Nodo::getNivel(){
 
 Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[tamanioMaximoBloque]; //cambiar
+	char* bloque = new char[archivo->getTamanoBloque()];
 	archivo->leer(bloque, indice);
 	unsigned int tamanioInt = sizeof(unsigned int);
 
 	unsigned int nivel;
-	memcpy(&nivel,bloque, tamanioInt);
+	memcpy((char*)&nivel,bloque, tamanioInt);
 
 	if (nivel == 0){
 		//Es hoja
@@ -103,7 +103,7 @@ void Nodo::decrementarCantidadDeElementos(){
 }
 
 //Redefinidos en los hijos:
-void Nodo::persistir(ArchivoBloque* archivo){}
+void Nodo::persistir(ArchivoBloque*& archivo){}
 
 int Nodo::tamanioOcupado(){return 0;}
 

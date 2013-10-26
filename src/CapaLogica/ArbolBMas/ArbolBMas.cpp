@@ -21,7 +21,7 @@ ArbolBMas::ArbolBMas(string nombre) {
 		this->raiz->persistir(archivo);
 	} else {
 		//busco el bloque raiz
-		this->raiz = Nodo::cargar(archivo, 0);
+		this->raiz->cargar(archivo, 0);
 	}
 
 }

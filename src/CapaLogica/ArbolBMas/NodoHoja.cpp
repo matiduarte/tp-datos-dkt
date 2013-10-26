@@ -23,7 +23,7 @@ NodoHoja::NodoHoja(){
 	}
 }
 
-NodoHoja::NodoHoja(ArchivoBloque * archivo) {
+NodoHoja::NodoHoja(ArchivoBloque* archivo) {
         // TODO Auto-generated constructor stub
         char bloque[2] = " ";
         unsigned int numeroDeBloque = archivo->escribir(bloque);
@@ -31,6 +31,14 @@ NodoHoja::NodoHoja(ArchivoBloque * archivo) {
         this->referenciaAlSiguiente = 0;
         this->elementos = new list<RegistroArbol*>();
 
+    	try{
+    		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+        	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+    	}
+    	catch(Excepcion &e){
+
+    		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+    	}
 }
 
 NodoHoja::~NodoHoja() {
@@ -47,12 +55,12 @@ NodoHoja::~NodoHoja() {
 
 NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 
-	char* bloque = new char[tamanioMaximoBloque];
+	char* bloque = new char[archivo->getTamanoBloque()];
 	archivo->leer(bloque, nroDeBloque);
 	return NodoHoja::hidratar(bloque);
 }
 
-void NodoHoja::persistir(ArchivoBloque * archivo){
+void NodoHoja::persistir(ArchivoBloque *& archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 	//persisto nivel, cantidadDeElementos, NumeroDeBloque:
 
@@ -81,7 +89,7 @@ void NodoHoja::persistir(ArchivoBloque * archivo){
         memcpy(bloqueApersistir+bytesOcupados,(char *)&referenciaAlSiguiente,sizeof(unsigned int));
         bytesOcupados += sizeof (unsigned int);
 
-        archivo->reescribir(bloqueApersistir,this->getNumeroDeBloque());
+        archivo->reescribir(bloqueApersistir, numeroDeBloque);
 
 }
 
@@ -235,14 +243,14 @@ bool NodoHoja::hayOverflow(){
 
 	int tamanioMaximo = getTamanioOverflow();
 
-	return ((tamanioMaximo) >= (this->tamanioOcupado()));
+	return ((tamanioMaximo) < (this->tamanioOcupado()));
 }
 
 bool NodoHoja::hayUnderflow(){
 
 	int tamanioMinimo = getTamanioUnderflow();
 
-	return ((tamanioMinimo) <= (this->tamanioOcupado()));
+	return ((tamanioMinimo) > (this->tamanioOcupado()));
 }
 
 bool NodoHoja::estaVacio(){

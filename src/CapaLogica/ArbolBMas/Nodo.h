@@ -42,7 +42,7 @@ public:
 
 
 	static void hidratar(char* bloque);
-	virtual void persistir(ArchivoBloque* archivo);
+	virtual void persistir(ArchivoBloque* &archivo);
 	int agregar(string clave, unsigned int valor);
 	virtual int tamanioOcupado();
 	virtual bool estaVacio();

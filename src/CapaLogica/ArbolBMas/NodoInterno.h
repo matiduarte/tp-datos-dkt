@@ -32,7 +32,7 @@ public:
         virtual ~NodoInterno();
 
         int alta(string cancion, string valor);
-        void persistir(ArchivoBloque* archivo);
+        void persistir(ArchivoBloque* &archivo);
 
         static NodoInterno* hidratar(char* bloque, unsigned int indice);
         static NodoInterno* cargar(ArchivoBloque* archivo, unsigned int indice);

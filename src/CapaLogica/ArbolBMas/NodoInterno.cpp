@@ -26,10 +26,20 @@ NodoInterno::NodoInterno() {
 
 NodoInterno::NodoInterno(ArchivoBloque* archivo){
 
+	try{
+		LectorConfig* lector = LectorConfig::getLector("//Aplicacion/config");
+    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+    	this->tamanioMaximoClave = lector->stringToInt(lector->getValor("tamanioClave"));
+	}
+	catch(Excepcion& e){
+
+		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+		this->tamanioMaximoClave = TAMANIOCLAVE_DEFAULT;
+	}
+
 	char bloque[tamanioMaximoBloque]; //CAMBIAR ESTOOOOOOO
 	unsigned int numeroDeBloque = archivo->escribir(bloque);
 	this->setNumeroDeBloque(numeroDeBloque);
-
 }
 
 NodoInterno::~NodoInterno() {
@@ -137,14 +147,14 @@ bool NodoInterno::hayOverflow(){
 
 	int tamanioMaximo = getTamanioOverflow();
 
-	return ((tamanioMaximo) >= (this->tamanioOcupado()));
+	return ((tamanioMaximo) < (this->tamanioOcupado()));
 }
 
 bool NodoInterno::hayUnderflow(){
 
 	int tamanioMinimo = getTamanioUnderflow();
 
-	return ((tamanioMinimo) <= (this->tamanioOcupado()));
+	return ((tamanioMinimo) > (this->tamanioOcupado()));
 }
 
 bool NodoInterno::capacidadMinima(){
@@ -160,7 +170,7 @@ bool NodoInterno::capacidadMinima(){
 
 NodoInterno* NodoInterno::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[tamanioMaximoBloque];
+	char* bloque = new char[archivo->getTamanoBloque()];
 	archivo->leer(bloque, indice);
 	return NodoInterno::hidratar(bloque,indice);
 }
@@ -251,7 +261,7 @@ int NodoInterno::buscarClave(Clave clave){
 }
 
 
-void NodoInterno::persistir(ArchivoBloque * archivo){
+void NodoInterno::persistir(ArchivoBloque* &archivo){
 
 	// [nivel| nroDeBloque |cantidadDeClaves| refHijIzq| clave | refHijoDer]
 	char bloque[tamanioMaximoBloque];
@@ -324,11 +334,11 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
   	bytesHidratados += tamanioInt;
   	nodoHidratado->setNivel(nivel);
 
-  	memcpy(&(nroDeBloque), bloque + bytesHidratados, tamanioInt);
+  	memcpy((char*)&nroDeBloque, bloque + bytesHidratados, tamanioInt);
   	bytesHidratados += tamanioInt;
   	nodoHidratado->setNumeroDeBloque(nroDeBloque);
 
-	memcpy(&(cantidadDeClaves), bloque + bytesHidratados ,tamanioInt);
+	memcpy((char*)&cantidadDeClaves, bloque + bytesHidratados ,tamanioInt);
   	bytesHidratados += tamanioInt;
 
 	while (contador < cantidadDeClaves) {
@@ -338,11 +348,11 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 		string clave = " ";
 		unsigned int tamanioClave = 0;
 
-		memcpy(&(refHijos),bloque + bytesHidratados, tamanioInt);
+		memcpy((char*)&refHijos,bloque + bytesHidratados, tamanioInt);
 		nodoHidratado->hijos.push_back(refHijos);
 		bytesHidratados += tamanioInt;
 
-		memcpy(&(tamanioClave), bloque + bytesHidratados, tamanioInt);
+		memcpy((char*)&tamanioClave, bloque + bytesHidratados, tamanioInt);
 		bytesHidratados += tamanioInt;
 
 		memcpy(bloqueAux, bloque + bytesHidratados, tamanioClave);
@@ -354,7 +364,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 		refHijos = 0;
 	}
 
-	memcpy(&(refHijos),bloque + bytesHidratados, tamanioInt);
+	memcpy((char*)&refHijos,bloque + bytesHidratados, tamanioInt);
 	nodoHidratado->hijos.push_back(refHijos);
 	bytesHidratados += tamanioInt;
 

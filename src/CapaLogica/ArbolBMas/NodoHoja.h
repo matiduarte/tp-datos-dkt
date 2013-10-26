@@ -23,10 +23,10 @@ class NodoHoja: public Nodo {
 
 
 public:
-		NodoHoja();
-        NodoHoja(ArchivoBloque * arch);
+        NodoHoja();
+        NodoHoja(ArchivoBloque* arch);
         virtual ~NodoHoja();
-        void persistir(ArchivoBloque *archivo);
+        void persistir(ArchivoBloque* &archivo);
         int agregar(Clave clave, string valor);
         int agregar(RegistroArbol * reg);
         int agregar(list<RegistroArbol*> *lista);
