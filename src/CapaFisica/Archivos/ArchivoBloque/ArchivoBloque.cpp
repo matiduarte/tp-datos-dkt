@@ -13,11 +13,10 @@ ArchivoBloque::ArchivoBloque(string nombre) {
 		LectorConfig* lector = LectorConfig::getLector(rutaConfig_ArchivoBloque);
     	this->tamanioBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
 	}
-	catch(ExcepcionArchivoInexistente& e){
+	catch(Excepcion& e){
 
 		this->tamanioBloque = TAMANIOBLOQUE_DEFAULT;
 	}
-
 
 	if (!esMultiplo(tamanioBloque)) throw new ExcepcionBloqueIncorrecto();
 

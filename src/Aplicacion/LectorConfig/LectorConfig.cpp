@@ -23,7 +23,7 @@ LectorConfig::LectorConfig(string rutaArchivo) {
 	ifstream archivo;
 
 	archivo.open(rutaArchivo.c_str());
-	if(!archivo) throw new ExcepcionArchivoInexistente();
+	if(!archivo) throw ExcepcionArchivoInexistente();
 
 	this->leerArchivoConfig(archivo);
 
@@ -41,7 +41,7 @@ string LectorConfig::getValor(string nombre){
 	for(i = 0; (i< vectorDatos.size())&&(vectorDatos[i].nombreVariable != nombre); i++){};
 
 	//si llego al final del vector, la variable buscada no existe
-	if(i == vectorDatos.size()) throw new ExcepcionVariableInexistente();
+	if(i == vectorDatos.size()) throw ExcepcionVariableInexistente();
 
 	return vectorDatos[i].valorVariable;
 }

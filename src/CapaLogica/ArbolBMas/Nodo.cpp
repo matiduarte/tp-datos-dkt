@@ -20,7 +20,7 @@ Nodo::Nodo() {
 		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
     	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
 	}
-	catch(ExcepcionArchivoInexistente &e){
+	catch(Excepcion &e){
 
 		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
 	}
