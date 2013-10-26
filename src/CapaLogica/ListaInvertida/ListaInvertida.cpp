@@ -13,7 +13,7 @@ void ListaInvertida::modificar(int posLista, string valor){
 }
 
 string ListaInvertida::obtener(unsigned int posicionLista){
-	string buffer = string(this->archivo->sacar(posicionLista));
+	string buffer = string(this->archivo->sacar(posicionLista)); //me parece que deberias escribirlo nuevamente (el sacar lo borra del archivo)
 	RegistroLista* reg = new RegistroLista(buffer);
 	return reg->getValor();
 }
