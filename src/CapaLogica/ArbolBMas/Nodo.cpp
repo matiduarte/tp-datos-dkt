@@ -53,7 +53,7 @@ unsigned int Nodo::getNivel(){
 Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
 	char* bloque = new char[archivo->getTamanoBloque()];
-	archivo->leer(bloque, indice);
+	archivo->leer(bloque, 0);
 	unsigned int tamanioInt = sizeof(unsigned int);
 
 	unsigned int nivel;

@@ -22,7 +22,7 @@ ArbolBMas::ArbolBMas(string nombre) {
 		this->raiz->persistir(archivo);
 	} else {
 		//busco el bloque raiz
-		this->raiz->cargar(archivo, tamanioInt);
+		this->raiz = Nodo::cargar(archivo, tamanioInt);
 	}
 
 }
