@@ -87,7 +87,7 @@ unsigned int ArchivoBloque::escribir(char* bloque){
 	if(strlen(bloque) > tamanioBloque) throw ExcepcionOverflowTamBloque();
 
 	unsigned int posicion = this->siguientePosicionLibre();
-	archivo.seekp(posicion*tamanioBloque, ios::beg);
+	archivo.seekp(sizeof(cantidadBloques) + posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
 	cantidadBloques++;
 
@@ -99,7 +99,7 @@ void ArchivoBloque::reescribir(char* bloque, unsigned int posicion){
 	if(strlen(bloque) > tamanioBloque) throw ExcepcionOverflowTamBloque();
 	if(posicion >= vectorMapaBits.size()) throw ExcepcionBloqueInexistente();
 
-	archivo.seekp(posicion*tamanioBloque, ios::beg);
+	archivo.seekp(sizeof(cantidadBloques) + posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
 }
 
@@ -116,7 +116,7 @@ unsigned int ArchivoBloque::siguientePosicionLibre(){
 
 void ArchivoBloque::leer(char* &bloque, unsigned int numBloque){
 
-	archivo.seekg(tamanioBloque * numBloque, ios::beg);
+	archivo.seekg(sizeof(cantidadBloques) + numBloque*tamanioBloque, ios::beg);
 	archivo.read(bloque, tamanioBloque);
 }
 
