@@ -18,14 +18,20 @@ ArchivoBloque::ArchivoBloque(string nombre) {
 		this->tamanioBloque = TAMANIOBLOQUE_DEFAULT;
 	}
 
+
 	if (!esMultiplo(tamanioBloque)) throw new ExcepcionBloqueIncorrecto();
 
     archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary);
-    if(!archivo) // si no existe, crear archivo nuevo
+    if(!archivo){ // si no existe, crear archivo nuevo
     	archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary | fstream::trunc);
+    	cantidadBloques=0;
+    }else{
+
+    	archivo.seekg(0, ios::beg);
+    	archivo.read((char*)&cantidadBloques, sizeof(cantidadBloques));
+    }
 
     	nombreArchivo = (string)nombre;
-
 
     	leerEspaciosLibres();
 }
@@ -33,6 +39,8 @@ ArchivoBloque::ArchivoBloque(string nombre) {
 ArchivoBloque::~ArchivoBloque() {
 
 	escribirEspaciosLibres();
+	archivo.seekp(0, ios::beg);
+	archivo.write((char*)&cantidadBloques, sizeof(cantidadBloques));
 	archivo.close();
 }
 
@@ -81,6 +89,7 @@ unsigned int ArchivoBloque::escribir(char* bloque){
 	unsigned int posicion = this->siguientePosicionLibre();
 	archivo.seekp(posicion*tamanioBloque, ios::beg);
 	archivo.write(bloque, tamanioBloque);
+	cantidadBloques++;
 
 	return posicion;
 }
@@ -112,15 +121,7 @@ void ArchivoBloque::leer(char* &bloque, unsigned int numBloque){
 }
 
 unsigned int ArchivoBloque::getCantidadBloques(){
-
-	int posicion = archivo.tellp();
-
-	archivo.seekp(0, ios::end);
-	unsigned int numBloques= (archivo.tellp() / tamanioBloque);
-
-	archivo.seekp(posicion, ios::beg);
-
-	return numBloques;
+	return cantidadBloques;
 }
 
 unsigned int ArchivoBloque::getTamanoBloque(){
@@ -132,4 +133,5 @@ void ArchivoBloque::borrar(unsigned int numBloque){
 	if(numBloque >= vectorMapaBits.size()) throw ExcepcionBloqueInexistente();
 
 	vectorMapaBits.at(numBloque) = '0' ;
+	cantidadBloques--;
 }
