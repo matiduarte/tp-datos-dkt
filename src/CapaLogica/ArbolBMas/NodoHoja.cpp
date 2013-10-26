@@ -332,7 +332,8 @@ string NodoHoja::buscarClave (Clave clave){
                         return registro->getValor();
                 }
         }
-        return NULL;
+
+        return "NO EXISTE"; //ARREGLAR ESTO, HACER ALGO PORQUE NO EXISTE MAS
 }
 
 
