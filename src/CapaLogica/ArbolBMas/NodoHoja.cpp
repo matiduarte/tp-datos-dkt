@@ -153,9 +153,9 @@ void NodoHoja::setSiguiente (unsigned int nrobloque){
 
 int NodoHoja::agregar(Clave clave, string valor){
         //Devuelve: 0 si el nodo no se actualizo
-        //                      1 si el nodo se actualizo
-        //                      2 si desbordo
-        //                      3 si ya existe el valor que quiero agregar
+        //1 si el nodo se actualizo
+        //2 si desbordo
+        //3 si ya existe el valor que quiero agregar
         //Si ya tengo una clave igual, agrego a ese registro.
         int indicador = 1;
         if (this->tieneLaClave(clave)){
@@ -250,7 +250,7 @@ bool NodoHoja::estaVacio(){
 
 
 int NodoHoja::baja(Clave clave, string valor){
-        //Elimino del registro (o el registro completo) del valor requerido.
+        //Elimino el registro completo del valor requerido.
         //Devuelve 3 si quedo en underflow
         //Devuelve 2 si se borro exitosamente
         // 1 si no contiene esa clave o valor
@@ -266,13 +266,13 @@ int NodoHoja::baja(Clave clave, string valor){
                         this->getElementos()->remove(reg);
                         //Y de memoria
                         delete reg;
-                        //Como ya resolvi lo del registro, seteo el indicador para que informe que se
-                        //borro exitosamente
+                        // Seteo el indicador para que informe que se
+                        // borro exitosamente
                         indicador = 2;
                 }
         } else{
                 //Si no tiene la clave devuelve 1
-                return 1;
+                indicador = 1;
         }
         if (this->hayUnderflow()){ //Si es raiz no
                 indicador = 3;

@@ -86,7 +86,7 @@ int ArbolBMas::agregarValor(Clave clave, string valor){
 	//Agrega una clave con su respectivo valor
 	//Devuelve: 0 si el nodo no se actualizo
 	//1 si el nodo se actualizo
-	//3 si ya existe el valoe
+	//3 si ya existe el valor
 	int resultado = 0;
 	if (this->raiz->getNivel() == 0){
 		//Si la raiz tiene 0 de nivel entonces es un nodo hoja

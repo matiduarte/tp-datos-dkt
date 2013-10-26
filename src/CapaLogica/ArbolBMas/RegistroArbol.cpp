@@ -67,15 +67,49 @@ bool RegistroArbol::existe(string clave){
 
 int RegistroArbol::agregar(Clave clave, string valor){
 
+	string id = clave.getClave();
+	int resultado;
 
-	return 0;
+	if (!(this->existe(id))){
+			this->setClave(id);
+			this->setValor(valor);
+			resultado = 1;
+		} else {
+			//Ya existe la clave
+			resultado = 3;
+		}
+
+	return resultado;
 
 }
 
+
+// Este metodo no borra nada dado que el registro se borra completo del bloque
+// lo unico que haces es verificar que coincida la clave y el valor
 int RegistroArbol::borrar(Clave clave, string valor){
 
 
-	return 0;
+	/*
+	 *  resultado = 0 --> error
+	 *  resultado = 3 --> coinciden ambos
+	 *
+	 */
+
+	string id = clave.getClave();
+	int resultado;
+
+	// Si la clave existe y coincide el valor esta todo ok
+	if (this->existe(id) && this->valor == valor){
+		resultado = 3;
+	} else {
+		//Si no coincide alguno de los dos hay un error
+		resultado = 0;
+	}
+
+
+	return resultado;
+
+
 }
 
 
