@@ -10,7 +10,7 @@
 
 #include "../../Excepcion.h"
 
-class ExcepcionBloqueIncorrecto: Excepcion {
+class ExcepcionBloqueIncorrecto: public Excepcion {
 public:
 	ExcepcionBloqueIncorrecto();
 };

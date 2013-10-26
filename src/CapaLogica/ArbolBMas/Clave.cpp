@@ -12,9 +12,20 @@ Clave::Clave(){
 
 }
 
+unsigned int Clave::tamanioMaximoBloque;
+
 Clave::Clave(string clave) {
 	// TODO Auto-generated constructor stub
 	this->id = clave;
+
+	try{
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+	}
+	catch(Excepcion &e){
+
+		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+	}
 }
 
 Clave::~Clave() {
@@ -64,7 +75,7 @@ int Clave::hidratar(char* bloque){
 	unsigned int tamanioClave;
 	string clave = " ";
 	//Aca usar constante de tamanioBloque
-	char bloqueAux[TAMANIO_MAXIMO_BLOQUE] = " ";
+	char bloqueAux[tamanioMaximoBloque];
 
 	memcpy(&tamanioClave, bloque, tamanioInt);
 	bytesLeidos += tamanioInt;

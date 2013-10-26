@@ -23,7 +23,8 @@ LectorConfig::LectorConfig(string rutaArchivo) {
 	ifstream archivo;
 
 	archivo.open(rutaArchivo.c_str());
-	if(!archivo) throw ExcepcionArchivoInexistente();
+	if(!archivo)
+		throw ExcepcionArchivoInexistente();
 
 	this->leerArchivoConfig(archivo);
 

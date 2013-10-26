@@ -14,7 +14,7 @@
 #include "Clave.h"
 #include "string.h"
 #include "RegistroArbol.h"
-#include "Constantes.h"
+#include "../../Aplicacion/constantes.h"
 
 using namespace std;
 

@@ -10,7 +10,8 @@
 
 #include <iostream>
 #include "string.h"
-#include "Constantes.h"
+#include "../../Aplicacion/constantes.h"
+#include "../../Aplicacion/LectorConfig/LectorConfig.h"
 
 using namespace std;
 
@@ -19,6 +20,8 @@ class Clave {
 private:
 
 	string id;
+
+	static unsigned int tamanioMaximoBloque;
 
 public:
 

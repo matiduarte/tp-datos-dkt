@@ -23,6 +23,9 @@ private:
 	list<unsigned int> hijos;
 	list<Clave> claves;
 
+	static unsigned int tamanioMaximoBloque;
+	static unsigned int tamanioMaximoClave;
+
 public:
         NodoInterno();
         NodoInterno(ArchivoBloque * arch);

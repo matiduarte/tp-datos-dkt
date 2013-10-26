@@ -10,7 +10,7 @@
 
 #include "../../Excepcion.h"
 
-class ExcepcionPosicionEnEspacioLibre : Excepcion{
+class ExcepcionPosicionEnEspacioLibre : public Excepcion{
 public:
 	ExcepcionPosicionEnEspacioLibre();
 };

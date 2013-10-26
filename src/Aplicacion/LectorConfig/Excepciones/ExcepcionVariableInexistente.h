@@ -10,7 +10,7 @@
 
 #include "../../../Excepcion.h"
 
-class ExcepcionVariableInexistente: Excepcion {
+class ExcepcionVariableInexistente: public Excepcion {
 public:
 	ExcepcionVariableInexistente();
 };

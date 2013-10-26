@@ -10,7 +10,7 @@
 
 #include "../../Excepcion.h"
 
-class ExcepcionOverflowTamBloque: Excepcion {
+class ExcepcionOverflowTamBloque: public Excepcion {
 public:
 	ExcepcionOverflowTamBloque();
 };

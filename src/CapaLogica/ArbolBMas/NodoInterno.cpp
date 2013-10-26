@@ -7,14 +7,26 @@
 
 #include "NodoInterno.h"
 
+unsigned int NodoInterno::tamanioMaximoBloque;
+unsigned int NodoInterno::tamanioMaximoClave;
+
 NodoInterno::NodoInterno() {
 	// TODO Auto-generated constructor stub
+	try{
+		LectorConfig* lector = LectorConfig::getLector("//Aplicacion/config");
+    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+    	this->tamanioMaximoClave = lector->stringToInt(lector->getValor("tamanioClave"));
+	}
+	catch(Excepcion& e){
 
+		this->tamanioMaximoBloque = TAMANIOBLOQUE_DEFAULT;
+		this->tamanioMaximoClave = TAMANIOCLAVE_DEFAULT;
+	}
 }
 
 NodoInterno::NodoInterno(ArchivoBloque* archivo){
 
-	char bloque[TAMANIO_MAXIMO_BLOQUE]; //CAMBIAR ESTOOOOOOO
+	char bloque[tamanioMaximoBloque]; //CAMBIAR ESTOOOOOOO
 	unsigned int numeroDeBloque = archivo->escribir(bloque);
 	this->setNumeroDeBloque(numeroDeBloque);
 
@@ -148,7 +160,7 @@ bool NodoInterno::capacidadMinima(){
 
 NodoInterno* NodoInterno::cargar(ArchivoBloque* archivo, unsigned int indice){
 
-	char* bloque = new char[TAMANIO_MAXIMO_BLOQUE]; // modificar esto
+	char* bloque = new char[tamanioMaximoBloque];
 	archivo->leer(bloque, indice);
 	return NodoInterno::hidratar(bloque,indice);
 }
@@ -242,7 +254,7 @@ int NodoInterno::buscarClave(Clave clave){
 void NodoInterno::persistir(ArchivoBloque * archivo){
 
 	// [nivel| nroDeBloque |cantidadDeClaves| refHijIzq| clave | refHijoDer]
-	char bloque[TAMANIO_MAXIMO_BLOQUE]; //MODIFICAR ESTO
+	char bloque[tamanioMaximoBloque];
 
 	unsigned int cantidadDeClaves = this->getCantidadDeClaves();
 	unsigned int nroDeBloque = this->getNumeroDeBloque();
@@ -322,7 +334,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 	while (contador < cantidadDeClaves) {
 
 		contador++;
-		char bloqueAux[TAMANIO_MAXIMO_CLAVE]= " ";; //VER ESTO
+		char bloqueAux[tamanioMaximoClave]; //VER ESTO (ya lo hice- Marian)
 		string clave = " ";
 		unsigned int tamanioClave = 0;
 

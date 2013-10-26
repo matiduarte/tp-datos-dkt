@@ -1,3 +1,4 @@
 # poner nombre=valor, sin espacios en el =
 
 tamanioBloque=1024
+tamanioClave=50
