@@ -77,7 +77,7 @@ int Clave::hidratar(char* bloque){
 	//Aca usar constante de tamanioBloque
 	char bloqueAux[tamanioMaximoBloque];
 
-	memcpy(&tamanioClave, bloque, tamanioInt);
+	memcpy((char*)&tamanioClave, bloque, tamanioInt);
 	bytesLeidos += tamanioInt;
 	memcpy(bloqueAux, bloque + tamanioInt, tamanioClave);
 	bytesLeidos += tamanioClave;

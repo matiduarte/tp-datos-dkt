@@ -14,7 +14,6 @@ ArbolBMas::ArbolBMas(){
 ArbolBMas::ArbolBMas(string nombre) {
 	// TODO Auto-generated constructor stub
 	this->archivo = new ArchivoBloque(nombre);
-	unsigned int tamanioInt = sizeof(unsigned int);
 	unsigned int cantidadDeBloque = this->archivo->getCantidadBloques();
 	if (cantidadDeBloque == 0){
 		//es un archivo nuevo
@@ -22,7 +21,7 @@ ArbolBMas::ArbolBMas(string nombre) {
 		this->raiz->persistir(archivo);
 	} else {
 		//busco el bloque raiz
-		this->raiz = Nodo::cargar(archivo, tamanioInt);
+		this->raiz = Nodo::cargar(archivo, 0);
 	}
 
 }
