@@ -65,6 +65,18 @@ void Indice::eliminarServicio(Servicio* servicio){
 	}
 }
 
+void Indice::agregarConsulta(Consulta* consulta){
+	this->indiceConsulta->insertarElemento(Convertidor::intToString(consulta->getId()),consulta->serializar());
+	//La clave se forma con un string con el idServicio y idUsuario -> idServicio+ separador + idUsuario
+	string claveString = Convertidor::intToString(consulta->getIdServicio()) + separadorCamposClave + Convertidor::intToString(consulta->getIdUsuario()); 
+	Clave* claveArbol = new Clave(claveString);
+	this->indiceConsultaPorIdServicioIdUsuario->agregarValor(*claveArbol,consulta->serializar());
+}
+
+void Indice::modificarConsulta(Consulta* consulta){
+	
+}
+
 Indice::~Indice(){
 	
 }

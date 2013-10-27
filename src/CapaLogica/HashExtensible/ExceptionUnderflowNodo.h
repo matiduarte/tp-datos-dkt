@@ -1,10 +1,3 @@
-/*
- * ExceptionEliminarBucket.h
- *
- *  Created on: 14/04/2010
- *      Author: gonzalo
- */
-
 #ifndef EXCEPTIONUNDERFLOWNODO_H_
 #define EXCEPTIONUNDERFLOWNODO_H_
 

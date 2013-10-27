@@ -1,10 +1,3 @@
-/*
- * Serializable.h
- *
- *  Created on: 08/04/2010
- *      Author: gonzalo
- */
-
 #ifndef SERIALIZABLE_H_
 #define SERIALIZABLE_H_
 

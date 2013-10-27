@@ -1,10 +1,3 @@
-/*
- * HashNodeInterpreter.h
- *
- *  Created on: 01/04/2010
- *      Author: gonzalo
- */
-
 #ifndef HASHNODEINTERPRETER_H_
 #define HASHNODEINTERPRETER_H_
 

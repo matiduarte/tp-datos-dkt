@@ -1,10 +1,3 @@
-/*
- * ExceptionTamTabla.h
- *
- *  Created on: 29/04/2010
- *      Author: hmike
- */
-
 #ifndef EXCEPTIONTAMTABLA_H_
 #define EXCEPTIONTAMTABLA_H_
 

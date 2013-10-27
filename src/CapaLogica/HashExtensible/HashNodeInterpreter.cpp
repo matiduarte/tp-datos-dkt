@@ -1,10 +1,3 @@
-/*
- * HashNodeInterpreter.cpp
- *
- *  Created on: 01/04/2010
- *      Author: gonzalo
- */
-
 #include "HashNodeInterpreter.h"
 
 HashNodeInterpreter::HashNodeInterpreter(const string& ruta, const bool& sobreEscribir)

@@ -1,10 +1,3 @@
-/*
- * ExceptionBucketVacio.h
- *
- *  Created on: 30/04/2010
- *      Author: hmike
- */
-
 #ifndef EXCEPTIONBUCKETVACIO_H_
 #define EXCEPTIONBUCKETVACIO_H_
 

@@ -1,10 +1,3 @@
-/*
- * ExceptionElementoNoEncontrado.h
- *
- *  Created on: 28/04/2010
- *      Author: gonzalo
- */
-
 #ifndef EXCEPTIONELEMENTONOENCONTRADO_H_
 #define EXCEPTIONELEMENTONOENCONTRADO_H_
 

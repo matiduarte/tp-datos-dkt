@@ -7,6 +7,8 @@
 #include "../../CapaLogica/HashExtensible/Convertidor.h"
 #include "../Entidades/Usuario.h"
 #include "../Entidades/Servicio.h"
+#include "../Entidades/Consulta.h"
+#include "../../Aplicacion/constantes.h"
 #include <string.h>
 
 using namespace std;
@@ -46,6 +48,10 @@ public:
 	void agregarServicio(Servicio* servicio);
 	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	void eliminarServicio(Servicio* servicio);
+
+	//Metodos consulta
+	void agregarConsulta(Consulta* consulta);
+	void modificarConsulta(Consulta* consulta);
 };
 
 #endif /*INDICE_H_*/

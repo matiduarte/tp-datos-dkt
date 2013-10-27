@@ -1,10 +1,3 @@
-/*
- * ExceptionElementoKeyYaIngresado.h
- *
- *  Created on: 28/04/2010
- *      Author: gonzalo
- */
-
 #ifndef EXCEPTIONELEMENTOKEYYAINGRESADO_H_
 #define EXCEPTIONELEMENTOKEYYAINGRESADO_H_
 

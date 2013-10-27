@@ -1,10 +1,3 @@
-/*
- * Salvable.h
- *
- *  Created on: 08/04/2010
- *      Author: gonzalo
- */
-
 #ifndef SALVABLE_H_
 #define SALVABLE_H_
 

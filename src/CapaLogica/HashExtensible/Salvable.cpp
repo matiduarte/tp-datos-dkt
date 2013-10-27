@@ -1,10 +1,3 @@
-/*
- * Salvable.cpp
- *
- *  Created on: 08/04/2010
- *      Author: gonzalo
- */
-
 #include "Salvable.h"
 
 using namespace std;

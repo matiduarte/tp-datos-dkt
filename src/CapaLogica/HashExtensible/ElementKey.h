@@ -1,10 +1,3 @@
-/*
- * ElementKey.h
- *
- *  Created on: 08/04/2010
- *      Author: gonzalo
- */
-
 #ifndef ELEMENTKEY_H_
 #define ELEMENTKEY_H_
 
