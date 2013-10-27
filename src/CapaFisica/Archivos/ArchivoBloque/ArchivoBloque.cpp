@@ -111,7 +111,7 @@ unsigned int ArchivoBloque::siguientePosicionLibre(){
 	     vectorMapaBits.push_back('1');
 	else vectorMapaBits.at(pos) = '1';
 
-	return (pos + sizeof(unsigned int));
+	return pos;
 }
 
 void ArchivoBloque::leer(char* &bloque, unsigned int numBloque){
