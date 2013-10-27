@@ -33,6 +33,34 @@ void Indice::modificarUsuario(Usuario* usuario){
 	}
 }
 
+void Indice::elimininarUsuario(Usuario* usuario){
+	this->indiceUsuario->elminarElemento(Convertidor::intToString(usuario->getDni()));
+	this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),Convertidor::intToString(usuario->getDni()));
+	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),Convertidor::intToString(usuario->getDni()));
+}
+
+void Indice::agregarServicio(Servicio* servicio){
+	this->indiceServicio->insertarElemento(Convertidor::intToString(servicio->getId()),servicio->serializar());
+	vector<Categoria*> categorias = servicio->getCategorias();
+	
+	//Agrego al indice secundario referencias por cada categoria
+	for(unsigned int i=0; i < categorias.size();i++){
+		Categoria* catActual = categorias.at(i);
+		this->indiceServicioPorCategoria->agregarValor(*(new Clave(catActual->getNombre())),Convertidor::intToString(servicio->getId()));
+	}
+}
+
+void Indice::eliminarServicio(Servicio* servicio){
+	this->indiceUsuario->elminarElemento(Convertidor::intToString(servicio->getId()));
+	vector<Categoria*> categorias = servicio->getCategorias();
+	
+	//Elimino al indice secundario referencias de cada categoria
+	for(unsigned int i=0; i < categorias.size();i++){
+		Categoria* catActual = categorias.at(i);
+		this->indiceServicioPorCategoria->borrarValor(*(new Clave(catActual->getNombre())),Convertidor::intToString(servicio->getId()));
+	}
+}
+
 Indice::~Indice(){
 	
 }

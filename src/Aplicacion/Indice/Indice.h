@@ -6,6 +6,7 @@
 #include "../../CapaLogica/ListaInvertida/ListaInvertida.h"
 #include "../../CapaLogica/HashExtensible/Convertidor.h"
 #include "../Entidades/Usuario.h"
+#include "../Entidades/Servicio.h"
 #include <string.h>
 
 using namespace std;
@@ -31,8 +32,15 @@ private:
 public:
 	Indice();
 	~Indice();
+	
+	//Metodos de usuarios
 	void agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
+	void elimininarUsuario(Usuario* usuario);
+	
+	//Metodos servicios
+	void agregarServicio(Servicio* servicio);
+	void eliminarServicio(Servicio* servicio);
 };
 
 #endif /*INDICE_H_*/
