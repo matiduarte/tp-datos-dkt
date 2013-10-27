@@ -2,3 +2,7 @@
 
 tamanioBloque=1024
 tamanioClave=50
+pathArchivoTabla=tabla.dat
+pathArchivoNodos=nodos.dat
+pathArchivoExport=export.txt
+sobreescrbir=false

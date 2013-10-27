@@ -20,6 +20,7 @@ public:
 	Usuario();
 	~Usuario();
 	string serializar();
+	void desSerializar(string aDeserealizar);
 	
 	//Getters
 	int getDni();

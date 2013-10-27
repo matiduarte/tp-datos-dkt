@@ -31,7 +31,8 @@ private:
 public:
 	Indice();
 	~Indice();
-	void agregarUsuario(Usuario usuario);
+	void agregarUsuario(Usuario* usuario);
+	void modificarUsuario(Usuario* usuario);
 };
 
 #endif /*INDICE_H_*/

@@ -8,6 +8,10 @@ string Usuario::serializar(){
 	return "";
 }
 
+void Usuario::desSerializar(string aDeserealizar){
+	
+}
+
 int Usuario::getDni(){
 	return this->dni;
 }
