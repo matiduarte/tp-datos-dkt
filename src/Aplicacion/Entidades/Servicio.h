@@ -15,6 +15,7 @@ private:
 	string nombre;
 	string descripcion;
 	string tipo;
+	int posicionCategorias;
 	vector<Categoria*> categorias;
 	
 public:
@@ -29,6 +30,7 @@ public:
 	string getNombre();
 	string getDescripcion();
 	string getTipo();
+	int getPosicionCategorias();
 	vector<Categoria*> getCategorias();
 	
 	//Setters
@@ -37,6 +39,7 @@ public:
 	void setNombre(string nombre);
 	void setDescripcion(string apellido);
 	void setTipo(string tipo);
+	void setPosicionCategorias(int posicion);
 	void setCategoria(Categoria* categoria);
 };
 

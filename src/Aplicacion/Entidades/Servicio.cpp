@@ -32,6 +32,10 @@ string Servicio::getTipo(){
 	return this->tipo;
 }
 
+int Servicio::getPosicionCategorias(){
+	return this->posicionCategorias;
+}
+
 vector<Categoria*> Servicio::getCategorias(){
 	return this->categorias;
 }
@@ -54,6 +58,10 @@ void Servicio::setDescripcion(string descripcion){
 
 void Servicio::setTipo(string tipo){
 	this->tipo = tipo; 
+}
+
+void Servicio::setPosicionCategorias(int posicion){
+	this->posicionCategorias = posicion;
 }
 
 void Servicio::setCategoria(Categoria* categoria){

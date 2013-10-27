@@ -19,6 +19,10 @@ private:
 	Hash* indiceServicio;
 	Hash* indiceConsulta;
 
+	//Necesito otro hash para las categorias. No esta en el enunciado pero se necesita
+	Hash* indiceCategorias;
+	ListaInvertida* listaCategoriasPorServicio;
+	
 	//Indices secundarios
 	ArbolBMas* indiceUsuarioPorProvincia;
 	ArbolBMas* indiceUsuarioPorTipo;
@@ -40,6 +44,7 @@ public:
 	
 	//Metodos servicios
 	void agregarServicio(Servicio* servicio);
+	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	void eliminarServicio(Servicio* servicio);
 };
 

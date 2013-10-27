@@ -50,6 +50,10 @@ void Indice::agregarServicio(Servicio* servicio){
 	}
 }
 
+void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
+	this->indiceServicioPorCategoria->borrarValor(*(new Clave(categoria->getNombre())),Convertidor::intToString(servicio->getId()));
+}
+
 void Indice::eliminarServicio(Servicio* servicio){
 	this->indiceUsuario->elminarElemento(Convertidor::intToString(servicio->getId()));
 	vector<Categoria*> categorias = servicio->getCategorias();
