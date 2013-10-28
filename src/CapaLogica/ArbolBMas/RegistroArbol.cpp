@@ -141,7 +141,7 @@ RegistroArbol* RegistroArbol::hidratar(char* bloque){
 
 	//Me fijo cuantos bytes tengo que leer para el dato
 	memcpy(&(tamanioValor),bloque + bytesLeidosClave, tamanioInt);
-	char bloqueAux[1024]; // ESTO MOFIDICAR POR CONSTANTE TAM BLOQUE
+	char bloqueAux[TAMANIOBLOQUE_DEFAULT];
 	memcpy(&(bloqueAux),bloque + bytesLeidosClave + tamanioInt, tamanioValor);
 	string valor = bloqueAux;
 

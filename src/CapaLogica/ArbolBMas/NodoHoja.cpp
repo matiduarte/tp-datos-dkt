@@ -277,6 +277,9 @@ int NodoHoja::baja(Clave clave, string valor){
                         // Seteo el indicador para que informe que se
                         // borro exitosamente
                         indicador = 2;
+
+                        //decremento la cantidad de elementos
+                        this->decrementarCantidadDeElementos();
                 }
         } else{
                 //Si no tiene la clave devuelve 1
