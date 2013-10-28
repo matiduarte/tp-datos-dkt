@@ -353,6 +353,7 @@ int NodoHoja::agregar(RegistroArbol * reg){
 
         } else{
                 this->getElementos()->push_back(reg);
+                this->incrementarCantidadDeElementos();
         }
         if (hayOverflow()){
                 indicador = 2;
@@ -390,6 +391,7 @@ list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
                         reg = this->getElementos()->back();
                         this->getElementos()->pop_back();
                         mitad_derecha->push_front(reg);
+                        this->decrementarCantidadDeElementos();
                 }
                 aux ++;
         }
