@@ -31,7 +31,7 @@ public:
         NodoInterno(ArchivoBloque * arch);
         virtual ~NodoInterno();
 
-        int alta(string cancion, string valor);
+        int alta(string clave, string valor);
         void persistir(ArchivoBloque* &archivo);
 
         static NodoInterno* hidratar(char* bloque, unsigned int indice);
