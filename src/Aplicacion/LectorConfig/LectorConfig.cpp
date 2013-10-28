@@ -28,12 +28,23 @@ LectorConfig::LectorConfig(string rutaArchivo) {
 
 	this->leerArchivoConfig(archivo);
 
+	this->nombreArchivo = rutaArchivo;
 	archivo.close();
 }
 
 LectorConfig::~LectorConfig() {
 
-	vectorDatos.~vector();
+	FILE *archivo;
+	archivo = fopen(nombreArchivo.c_str(),"w");
+
+
+	for(unsigned int i=0; i< vectorDatos.size(); i++){
+
+		string linea = vectorDatos.at(i).nombreVariable + '=' + vectorDatos.at(i).valorVariable;
+		fprintf(archivo,"%s\n",linea.c_str());
+	}
+
+	fclose(archivo);
 }
 
 string LectorConfig::getValor(string nombre){
@@ -45,6 +56,19 @@ string LectorConfig::getValor(string nombre){
 	if(i == vectorDatos.size()) throw ExcepcionVariableInexistente();
 
 	return vectorDatos[i].valorVariable;
+}
+
+void LectorConfig::setValor(string nombreVariable, string nuevoValorVariable){
+
+	bool variableEncontrada= false;
+
+	for(unsigned int i=0; i<vectorDatos.size(); i++){
+		if(this->vectorDatos.at(i).nombreVariable == nombreVariable){
+			this->vectorDatos.at(i).valorVariable = nuevoValorVariable;
+			variableEncontrada = true;
+		}
+	}
+	if( !variableEncontrada ) throw ExcepcionVariableInexistente();
 }
 
 void LectorConfig::leerArchivoConfig(ifstream &archivo){

@@ -31,7 +31,7 @@ public:
 
 	//le pasas como parametro el nombre de una variable dentro del archivo y te devuelve un string con su valor
 	string getValor(string nombreVariable);
-
+	void setValor(string nobreVariable, string valorVariable);
 	//para convertir de string a int
 	int stringToInt(const string& valor);
 	virtual ~LectorConfig();
@@ -39,7 +39,7 @@ public:
 private:
 	static LectorConfig* pLector;
 	LectorConfig(string rutaArchivoConfig);
-
+	string nombreArchivo;
 	int tamanioLinea;
 	vector<Dato> vectorDatos;
 	void leerArchivoConfig(ifstream &archivo);
