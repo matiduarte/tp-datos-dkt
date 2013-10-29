@@ -59,6 +59,7 @@ void NodoInterno::agregarClave(Clave clave){
 	if (this->claves.empty()){
 		this->claves.push_back(clave);
 		seAgrego = true;
+		this->incrementarCantidadDeElementos();
 	}
 
 	list<Clave>::iterator it_claves;
@@ -67,12 +68,14 @@ void NodoInterno::agregarClave(Clave clave){
 		if ((*it_claves).getClave() > clave.getClave()){
 			this->claves.insert(it_claves,clave);
 			seAgrego = true;
+			this->incrementarCantidadDeElementos();
 		}
 		it_claves++;
 	}
 
 	if(!seAgrego)
 		this->claves.push_back(clave);
+		this->incrementarCantidadDeElementos();
 
 }
 
@@ -200,7 +203,7 @@ int NodoInterno::tamanioOcupado(){
 
 int NodoInterno::getCantidadDeClaves(){
 
-	return this->claves.size();
+	return this->getCantidadDeElementos();
 
 }
 
@@ -340,6 +343,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 
 	memcpy((char*)&cantidadDeClaves, bloque + bytesHidratados ,tamanioInt);
   	bytesHidratados += tamanioInt;
+  	nodoHidratado->setCantidadDeElementos(cantidadDeClaves);
 
 	while (contador < cantidadDeClaves) {
 
@@ -402,6 +406,7 @@ void NodoInterno::PartirNodoADerecha(NodoInterno* hermanoDerecho, NodoInterno* p
 	while(contador <= cantDeClaves){
 		if (contador > (cantDeClaves/2)){
 			claves.pop_back();
+			this->decrementarCantidadDeElementos();
 		}
 		contador++;
 	}
@@ -441,6 +446,7 @@ list<Clave>* NodoInterno::getMitadDerechaClaves(){
 			if (contador>cantDeClaves/2){
 				clave = claves.back();
 				claves.pop_back();
+				this->decrementarCantidadDeElementos();
 				mitadDerClaves->push_front(clave);
 			}
 			contador++;
@@ -450,6 +456,7 @@ list<Clave>* NodoInterno::getMitadDerechaClaves(){
 			if (contador > cantDeClaves/2){
 				clave = claves.back();
 				claves.pop_back();
+				this->decrementarCantidadDeElementos();
 				mitadDerClaves->push_front(clave);
 			}
 			contador++;
@@ -506,18 +513,23 @@ void NodoInterno::borrarClave(Clave clave){
 		claveActual = *it_claves;
 		if (claveActual.getClave() == clave.getClave()){
 			claves.erase(it_claves);
+			this->decrementarCantidadDeElementos();
 			encontrado = true;
 		}else if (claveActual.getClave() > clave.getClave()){
 			if (it_claves != claves.begin()){
 				it_claves--;
 				claves.erase(it_claves);
+				this->decrementarCantidadDeElementos();
 				encontrado = true;
 			}
 		}
 		it_claves++;
      }
 	//Si llego hasta aca es la ultima
-	if(!encontrado)	claves.pop_back();
+	if(!encontrado){
+		claves.pop_back();
+		this->decrementarCantidadDeElementos();
+	}
 }
 
 void NodoInterno::borrarReferencia(unsigned int hijo){
