@@ -20,7 +20,7 @@ private:
 	void resolverOverflowNodo(const ExceptionOverflowNodo e, const HashClave& key);
 
 public:
-	Hash(const string& pathArchTabla, const string& pathArchNodos, bool sobreEscribir);
+	Hash(const string& pathArchTabla, const string& pathArchNodos);
 	void insertarElemento(const string& clave, const string& valor);
 	void modificarElemento(const string& clave, const string& valor);
 	string buscarElemento(const string& clave);

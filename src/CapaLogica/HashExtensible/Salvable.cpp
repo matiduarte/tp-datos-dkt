@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Salvable::Salvable(const string& ruta, const bool& sobreEscribir){
+Salvable::Salvable(const string& ruta){
 	//archivo = new ArchivoBloque(ruta, tamElem, sobreEscribir);
 	archivo = new ArchivoBloque(ruta);
 }

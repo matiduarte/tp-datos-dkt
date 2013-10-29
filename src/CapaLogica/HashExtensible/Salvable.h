@@ -13,7 +13,7 @@ private:
 	ArchivoBloque* archivo;
 
 public:
-	Salvable(const string& ruta,const bool& sobreEscribir);
+	Salvable(const string& ruta);
 	virtual ~Salvable();
 
 protected:

@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-HashTable::HashTable(const string& ruta,const bool& sobreEscribir)
-: Salvable(ruta,sobreEscribir){
-	if (sobreEscribir){
+HashTable::HashTable(const string& ruta)
+: Salvable(ruta){
+	if (this->getCantidadDeBloques () == 0){
 		//armo una nueva tabla (tabla vacia)...
 		tamTabla = 0;
 		//guardo en el tamano de la tabla...

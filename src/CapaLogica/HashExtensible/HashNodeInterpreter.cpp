@@ -1,9 +1,9 @@
 #include "HashNodeInterpreter.h"
 
-HashNodeInterpreter::HashNodeInterpreter(const string& ruta, const bool& sobreEscribir)
-: Salvable(ruta,sobreEscribir){
+HashNodeInterpreter::HashNodeInterpreter(const string& ruta)
+: Salvable(ruta){
 	//escribo un bloque vacio...
-	if (sobreEscribir){
+	if (this->getCantidadDeBloques () == 0){
 		nodo = new HashNode(1);
 		escribirBloque(nodo->serializar(), 0);
 		delete nodo;
