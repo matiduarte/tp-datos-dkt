@@ -25,7 +25,7 @@ NodoHoja::NodoHoja(){
 
 NodoHoja::NodoHoja(ArchivoBloque* archivo) {
         // TODO Auto-generated constructor stub
-        char bloque[2] = " ";
+        char bloque[archivo->getTamanoBloque()];
         unsigned int numeroDeBloque = archivo->escribir(bloque);
         this->setNumeroDeBloque(numeroDeBloque);
         this->referenciaAlSiguiente = 0;

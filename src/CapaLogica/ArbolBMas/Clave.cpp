@@ -39,7 +39,7 @@ string Clave::getClave(){
 
 int Clave::getTamanioClave() {
 
-	return this->id.size();
+	return strlen(id.c_str()) +1;
 }
 
 void Clave::setClave(string clave){
@@ -53,14 +53,14 @@ int Clave::persistir(char* bloque){
 
 	//Devuelve la cantidad de bytes almacenados
 	unsigned int bytesAlmacenados = 0;
-	unsigned int tamanioClave = this->id.size();
+	unsigned int tamanioClave = getTamanioClave();
 	unsigned int tamanioInt = sizeof(unsigned int);
 
 	//Agrego el tamanio de la clave
 	memcpy(bloque, (char*)&tamanioClave, tamanioInt);
 	bytesAlmacenados += tamanioInt;
 	//Agrego la clave
-	memcpy(bloque + bytesAlmacenados, this->id.c_str(), tamanioClave);
+	memcpy(bloque + bytesAlmacenados, id.c_str(), tamanioClave);
 	bytesAlmacenados += tamanioClave;
 
 	return bytesAlmacenados;
@@ -72,16 +72,16 @@ int Clave::hidratar(char* bloque){
 	//Devuelve la cantidad de bytes hidratados
 	int bytesLeidos = 0;
 	unsigned int tamanioInt = sizeof(unsigned int);
-	unsigned int tamanioClave = 0;
-	string clave = " ";
-	//Aca usar constante de tamanioBloque
-	char bloqueAux[tamanioMaximoBloque];
+	unsigned int tamanioClave;
 
 	memcpy((char*)&tamanioClave, bloque, tamanioInt);
 	bytesLeidos += tamanioInt;
+
+	char bloqueAux[tamanioClave];
 	memcpy(bloqueAux, bloque + tamanioInt, tamanioClave);
 	bytesLeidos += tamanioClave;
-	clave = bloqueAux;
+
+	string clave(bloqueAux);
 	//Seteo la clave nueva
 	this->setClave(clave);
 

@@ -73,9 +73,10 @@ void NodoInterno::agregarClave(Clave clave){
 		it_claves++;
 	}
 
-	if(!seAgrego)
+	if(!seAgrego){
 		this->claves.push_back(clave);
 		this->incrementarCantidadDeElementos();
+	}
 
 }
 
@@ -333,7 +334,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 
 	NodoInterno* nodoHidratado = new NodoInterno();
 
-	memcpy(&(nivel), bloque, tamanioInt);
+	memcpy((char*)&nivel, bloque, tamanioInt);
   	bytesHidratados += tamanioInt;
   	nodoHidratado->setNivel(nivel);
 
@@ -348,9 +349,7 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 	while (contador < cantidadDeClaves) {
 
 		contador++;
-		char bloqueAux[tamanioMaximoClave]; //VER ESTO (ya lo hice- Marian)
-		string clave = " ";
-		unsigned int tamanioClave = 0;
+		unsigned int tamanioClave;
 
 		memcpy((char*)&refHijos,bloque + bytesHidratados, tamanioInt);
 		nodoHidratado->hijos.push_back(refHijos);
@@ -359,9 +358,12 @@ NodoInterno* NodoInterno::hidratar(char* bloque, unsigned int indice){
 		memcpy((char*)&tamanioClave, bloque + bytesHidratados, tamanioInt);
 		bytesHidratados += tamanioInt;
 
+		char bloqueAux[tamanioClave]; //VER ESTO (ya lo hice- Marian)
+
 		memcpy(bloqueAux, bloque + bytesHidratados, tamanioClave);
-		clave = bloqueAux;
 		bytesHidratados += tamanioClave;
+
+		string clave(bloqueAux);
 
 
 		nodoHidratado->claves.push_back(clave);

@@ -43,7 +43,7 @@ string RegistroArbol::getValor(){
 
 int RegistroArbol::getTamanioValor(){
 
-	return this->valor.size();
+	return strlen(this->valor.c_str())+1;
 
 }
 
@@ -118,13 +118,13 @@ int RegistroArbol::persistir(char* bloque){
 
 	unsigned int bytesAlmacenados = this->clave.persistir(bloque);
 	unsigned int tamanioInt = sizeof (unsigned int);
-	unsigned int tamanioValor = this->valor.size();
+	unsigned int tamanioValor = strlen(valor.c_str()) +1;
 
 	//Primero agrego el tamanio del valor
 	memcpy(bloque + bytesAlmacenados, (char*)&tamanioValor, tamanioInt);
 	bytesAlmacenados += tamanioInt;
 	//Luego el dato
-	memcpy(bloque + bytesAlmacenados, this->valor.c_str(), tamanioValor);
+	memcpy(bloque + bytesAlmacenados, valor.c_str(), tamanioValor);
 	bytesAlmacenados += tamanioValor;
 
 	return bytesAlmacenados;
@@ -138,13 +138,14 @@ RegistroArbol* RegistroArbol::hidratar(char* bloque){
 	unsigned int tamanioInt = sizeof(unsigned int);
 	string clave = this->clave.getClave();
 	unsigned int tamanioValor = 0;
-	string valor = " ";
 
 	//Me fijo cuantos bytes tengo que leer para el dato
-	memcpy(&(tamanioValor),bloque + bytesLeidosClave, tamanioInt);
-	char bloqueAux[TAMANIOBLOQUE_DEFAULT];
-	memcpy(&(bloqueAux),bloque + bytesLeidosClave + tamanioInt, tamanioValor);
-	valor = bloqueAux;
+	memcpy((char*)&tamanioValor, bloque + bytesLeidosClave, tamanioInt);
+
+	char bloqueAux[tamanioValor];
+
+	memcpy((char*)&bloqueAux,bloque + bytesLeidosClave + tamanioInt, tamanioValor);
+	string valor(bloqueAux);
 
 	RegistroArbol* registro = new RegistroArbol(clave, valor);
 
