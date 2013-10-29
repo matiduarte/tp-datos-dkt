@@ -72,7 +72,7 @@ int Clave::hidratar(char* bloque){
 	//Devuelve la cantidad de bytes hidratados
 	int bytesLeidos = 0;
 	unsigned int tamanioInt = sizeof(unsigned int);
-	unsigned int tamanioClave;
+	unsigned int tamanioClave = 0;
 	string clave = " ";
 	//Aca usar constante de tamanioBloque
 	char bloqueAux[tamanioMaximoBloque];

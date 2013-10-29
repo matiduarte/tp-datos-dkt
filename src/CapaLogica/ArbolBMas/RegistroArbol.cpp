@@ -137,13 +137,14 @@ RegistroArbol* RegistroArbol::hidratar(char* bloque){
 	unsigned int bytesLeidosClave = this->clave.hidratar(bloque);
 	unsigned int tamanioInt = sizeof(unsigned int);
 	string clave = this->clave.getClave();
-	unsigned int tamanioValor;
+	unsigned int tamanioValor = 0;
+	string valor = " ";
 
 	//Me fijo cuantos bytes tengo que leer para el dato
 	memcpy(&(tamanioValor),bloque + bytesLeidosClave, tamanioInt);
 	char bloqueAux[TAMANIOBLOQUE_DEFAULT];
 	memcpy(&(bloqueAux),bloque + bytesLeidosClave + tamanioInt, tamanioValor);
-	string valor = bloqueAux;
+	valor = bloqueAux;
 
 	RegistroArbol* registro = new RegistroArbol(clave, valor);
 

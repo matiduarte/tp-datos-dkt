@@ -203,7 +203,7 @@ int NodoInterno::tamanioOcupado(){
 
 int NodoInterno::getCantidadDeClaves(){
 
-	return this->getCantidadDeElementos();
+	return this->claves.size();
 
 }
 
