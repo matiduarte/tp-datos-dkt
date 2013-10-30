@@ -84,8 +84,6 @@ vector<string> Indice::parsearConsulta(string consulta){
 	
 	for(unsigned int i=0; i<terminos.size();i++){
 		if(!dic->esStopWord(terminos.at(i))){
-			//printf("termino es stop word: %s\n",terminos.at(i).c_str());
-			//cout << "size es:" << this->stopWords.size()<<endl;
 			terminosRelevantes.push_back(terminos.at(i));
 		}
 	}
