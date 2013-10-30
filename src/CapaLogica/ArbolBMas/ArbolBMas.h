@@ -36,6 +36,10 @@ public:
     int borrarValor(Clave clave, string valor);
     int borrarRecursivamente(Nodo* nodo, Clave clave, string valor);
 
+    void mostrarRaiz();
+    void mostrarArbol();
+    void mostrarArbolRecursivo(Nodo* nodo);
+
 	int partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
 	int partirNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 

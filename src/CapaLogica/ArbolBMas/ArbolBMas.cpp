@@ -55,6 +55,48 @@ string ArbolBMas::buscarEnLaRaizHoja(Clave clave){
 	return ((NodoHoja*)raiz)->buscarClave(clave);
 }
 
+void ArbolBMas::mostrarArbol(){
+
+	return mostrarRaiz();
+}
+
+void ArbolBMas::mostrarRaiz(){
+        if (raiz->getNivel()==0){
+                ((NodoHoja *)raiz)->mostrar();
+                return;
+        }else{
+                ((NodoInterno * )raiz)->mostrar();
+                list<unsigned int> hijos = ((NodoInterno*)raiz)->getHijos();
+                list<unsigned int>::iterator it_hijos;
+                for (it_hijos = hijos.begin(); it_hijos != hijos.end(); it_hijos++){
+                        //los cargo y devuelvo mostrar recursivo de c/u
+                        Nodo* nodo_hijo = Nodo::cargar(this->archivo,*it_hijos);
+                        mostrarArbolRecursivo(nodo_hijo);
+                }
+        }
+}
+
+void ArbolBMas::mostrarArbolRecursivo(Nodo* nodo_actual){
+        if (nodo_actual->getNivel()==0){
+                //si es un nodo hoja se muestra
+                ((NodoHoja*)nodo_actual)->mostrar();
+                delete nodo_actual;
+        }else{
+                ((NodoInterno*)nodo_actual)->mostrar();
+                //si es un nodo interno obtengo una lista de hijos
+                list<unsigned int> hijos = ((NodoInterno*)nodo_actual)->getHijos();
+                //cargo uno por uno
+                list<unsigned int>::iterator it_hijos;
+                for (it_hijos = hijos.begin(); it_hijos != hijos.end(); it_hijos++){
+                                //los cargo y devuelvo mostrar recursivo de c/u
+                                Nodo* nodo_hijo = Nodo::cargar(this->archivo,*it_hijos);
+                                mostrarArbolRecursivo(nodo_hijo);
+                                //delete nodo_hijo;
+                }
+                delete nodo_actual;
+        }
+
+}
 string ArbolBMas::buscarClaveRecursivo(Clave clave, Nodo* nodoActual){
 
 

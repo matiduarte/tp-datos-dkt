@@ -47,6 +47,28 @@ NodoInterno::~NodoInterno() {
 
 }
 
+void NodoInterno::mostrar(){
+        cout << "Nro de nodo: ";
+        cout << this->getNumeroDeBloque();
+        cout << " , ";
+        list<Clave>::iterator it_c;//claves
+        list<unsigned int>::iterator it_r;//refs
+        it_r = hijos.begin();
+        cout << (*it_r); //muestra la primer referencia
+        it_r++;
+        it_c = claves.begin();
+        while (it_c != claves.end()){
+                cout<<"(";
+                cout<<(*it_c).getClave();
+                cout<<") ";
+                cout<<(*it_r);
+                cout<<" ";
+                it_c++;
+                it_r++;
+        }
+        cout << "\n";
+}
+
 bool NodoInterno::estaVacio(){
 
 	return this->claves.empty();

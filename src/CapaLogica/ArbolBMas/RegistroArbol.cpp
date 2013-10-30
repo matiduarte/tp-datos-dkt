@@ -40,6 +40,12 @@ string RegistroArbol::getValor(){
 	return this->valor;
 
 }
+void RegistroArbol::mostrar(){
+
+	cout << "(" << this->getClave() << ")";
+	cout << " " << "(" << this->getValor() << ")" << endl;
+
+}
 
 int RegistroArbol::getTamanioValor(){
 

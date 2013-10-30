@@ -60,6 +60,19 @@ NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 	return NodoHoja::hidratar(bloque);
 }
 
+void NodoHoja::mostrar(){
+        cout << "Nro de nodo: ";
+        cout << this->getNumeroDeBloque();
+        cout << " ,";
+        list<RegistroArbol*>::iterator it;
+        for (it = elementos->begin(); it != elementos->end(); it++){
+                (*it)->mostrar();
+        }
+        cout << ", ";
+        cout << this->referenciaAlSiguiente;
+        cout << "\n";
+
+}
 void NodoHoja::persistir(ArchivoBloque *& archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 	//persisto nivel, cantidadDeElementos, NumeroDeBloque:

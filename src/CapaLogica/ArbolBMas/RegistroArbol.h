@@ -35,6 +35,7 @@ public:
 	int persistir (char* bloque);
 	RegistroArbol* hidratar(char* bloque);
 
+	void mostrar();
 	void setClave(string clave);
 	void setValor(string valor);
 	Clave getClaveEntera();

@@ -33,7 +33,7 @@ public:
 
         int alta(string clave, string valor);
         void persistir(ArchivoBloque* &archivo);
-
+        void mostrar();
         static NodoInterno* hidratar(char* bloque, unsigned int indice);
         static NodoInterno* cargar(ArchivoBloque* archivo, unsigned int indice);
         bool capacidadMinima();
