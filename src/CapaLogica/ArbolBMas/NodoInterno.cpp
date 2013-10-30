@@ -268,13 +268,14 @@ int NodoInterno::buscarClave(Clave clave){
 	//Busca el indice del nodo donde se quiere agregar la clave
 	//Devuelve -1 si la clave es mayor a todas
 
-	int indice = 0;
+	signed int indice = 0;
 	bool mayor = true;
 	list<Clave>::iterator it_claves;
 	it_claves = claves.begin();
 	while (it_claves != claves.end()){
 		if ((*it_claves)>(clave)){
 			mayor = false;
+			break;
 		}
 		indice++;
 		it_claves++;
