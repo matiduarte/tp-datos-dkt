@@ -9,6 +9,7 @@
 #include "../Entidades/Servicio.h"
 #include "../Entidades/Consulta.h"
 #include "../../Aplicacion/constantes.h"
+#include "../Diccionario/Diccionario.h"
 #include <string.h>
 
 using namespace std;
@@ -52,6 +53,7 @@ public:
 	//Metodos consulta
 	void agregarConsulta(Consulta* consulta);
 	void modificarConsulta(Consulta* consulta);
+	vector<string> parsearConsulta(string consulta);
 };
 
 #endif /*INDICE_H_*/

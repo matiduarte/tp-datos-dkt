@@ -77,6 +77,22 @@ void Indice::modificarConsulta(Consulta* consulta){
 	
 }
 
+vector<string> Indice::parsearConsulta(string consulta){
+	Diccionario* dic = new Diccionario();
+	vector<string> terminos = StringUtil::split(consulta,' ');
+	vector<string> terminosRelevantes;
+	
+	for(unsigned int i=0; i<terminos.size();i++){
+		if(!dic->esStopWord(terminos.at(i))){
+			//printf("termino es stop word: %s\n",terminos.at(i).c_str());
+			//cout << "size es:" << this->stopWords.size()<<endl;
+			terminosRelevantes.push_back(terminos.at(i));
+		}
+	}
+	
+	return terminosRelevantes;
+}
+
 Indice::~Indice(){
 	
 }

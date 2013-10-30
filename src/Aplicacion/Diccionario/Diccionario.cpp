@@ -2,12 +2,12 @@
 
 Diccionario::Diccionario(){
 	this->cargarDiccionario();
-	cout << "size es:" << this->stopWords.size()<<endl;
 }
 
 void Diccionario::cargarDiccionario(){
 	ifstream archivoPalabras(rutaConfig_Dic.c_str());
 	if(archivoPalabras.fail()){
+		cout << "no cargo:" << this->stopWords.size()<<endl;
 		return;
 	}
     map<string, int> dicPalabras;
