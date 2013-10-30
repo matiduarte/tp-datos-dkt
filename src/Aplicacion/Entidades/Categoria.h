@@ -2,6 +2,8 @@
 #define CATEGORIA_H_
 
 #include <string>
+#include "..//Utiles/StringUtil.h"
+#include "../../Aplicacion/constantes.h"
 
 using namespace std;
 

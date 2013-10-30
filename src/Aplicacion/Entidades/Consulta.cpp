@@ -5,10 +5,49 @@ Consulta::Consulta(){
 }
 
 string Consulta::serializar(){
-	return "";
+	string retorno;
+    retorno = StringUtil::int2string(this->id);
+    retorno += separadorCamposEntidades;
+    retorno += StringUtil::int2string(this->idServicio);
+    retorno += separadorCamposEntidades;
+    retorno += StringUtil::int2string(this->idUsuario);
+    retorno += separadorCamposEntidades;
+    retorno += this->consulta;
+    retorno += separadorCamposEntidades;
+    retorno += this->fechaConsulta;
+    retorno += separadorCamposEntidades;
+    retorno += this->horaConsulta;
+    retorno += this->respuesta;
+    retorno += separadorCamposEntidades;
+    retorno += this->fechaRespuesta;
+    retorno += separadorCamposEntidades;
+    retorno += this->horaRespuesta;
+    retorno += separadorCamposEntidades;
+    if(this->oculta){
+    	retorno += "1";
+    }else{
+    	retorno += "0";
+    }
+    
+    return retorno;
 }
 
 void Consulta::desSerializar(string aDeserealizar){
+	vector<string> atributos = StringUtil::split(aDeserealizar,separadorCamposEntidades);
+	this->id = StringUtil::str2int(atributos.at(0));
+	this->idServicio = StringUtil::str2int(atributos.at(0));
+	this->idUsuario = StringUtil::str2int(atributos.at(0));
+	this->consulta = atributos.at(1);
+	this->fechaConsulta = atributos.at(2);
+	this->horaConsulta = atributos.at(3);
+	this->respuesta = atributos.at(4);
+	this->fechaRespuesta = atributos.at(5);
+	this->horaRespuesta = atributos.at(6);
+	this->oculta = false;
+	string oculta = atributos.at(7);
+	if(oculta == "1"){
+		this->oculta = true;
+	}
 }
 
 int Consulta::getId(){

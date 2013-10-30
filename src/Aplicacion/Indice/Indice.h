@@ -4,7 +4,7 @@
 #include "../../CapaLogica/HashExtensible/Hash.h"
 #include "../../CapaLogica/ArbolBMas/ArbolBMas.h"
 #include "../../CapaLogica/ListaInvertida/ListaInvertida.h"
-#include "../../CapaLogica/HashExtensible/Convertidor.h"
+#include "..//Utiles/StringUtil.h"
 #include "../Entidades/Usuario.h"
 #include "../Entidades/Servicio.h"
 #include "../Entidades/Consulta.h"

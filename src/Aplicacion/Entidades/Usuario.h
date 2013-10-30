@@ -3,6 +3,8 @@
 
 #include <string>
 #include <vector>
+#include "..//Utiles/StringUtil.h"
+#include "../../Aplicacion/constantes.h"
 
 using namespace std;
 

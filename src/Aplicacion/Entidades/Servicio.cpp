@@ -5,11 +5,31 @@ Servicio::Servicio(){
 }
 
 string Servicio::serializar(){
-	return "";
+	string retorno;
+    retorno = StringUtil::int2string(this->id);
+    retorno += separadorCamposEntidades;
+    retorno += StringUtil::int2string(this->idProveedor);;
+    retorno += separadorCamposEntidades;
+    retorno += this->nombre;
+    retorno += separadorCamposEntidades;
+    retorno += this->descripcion;
+    retorno += separadorCamposEntidades;
+    retorno += this->tipo;
+    retorno += separadorCamposEntidades;
+    
+    //Tengo el puntero a la lista invertida de categorias
+    retorno += StringUtil::int2string(this->posicionCategorias);
+    return retorno;
 }
 
 void Servicio::desSerializar(string aDeserealizar){
-	
+	vector<string> atributos = StringUtil::split(aDeserealizar,separadorCamposEntidades);
+	this->id = StringUtil::str2int(atributos.at(0));
+	this->idProveedor = StringUtil::str2int(atributos.at(1));
+	this->nombre = atributos.at(2);
+	this->descripcion = atributos.at(3);
+	this->tipo = atributos.at(4);
+	this->posicionCategorias = StringUtil::str2int(atributos.at(5));
 }
 
 int Servicio::getId(){

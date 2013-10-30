@@ -5,53 +5,53 @@ Indice::Indice(){
 }
 
 void Indice::agregarUsuario(Usuario* usuario){
-	this->indiceUsuario->insertarElemento(Convertidor::intToString(usuario->getDni()),usuario->serializar());
-	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),Convertidor::intToString(usuario->getDni()));
-	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),Convertidor::intToString(usuario->getDni()));
+	this->indiceUsuario->insertarElemento(StringUtil::int2string(usuario->getDni()),usuario->serializar());
+	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
+	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 	//Creo que no tengo que hacer nada mas cuando se crea un usuario
 }
 
 void Indice::modificarUsuario(Usuario* usuario){
 	//Obtengo el usuario anterior
 	Usuario* usuarioAnterior = new Usuario();
-	string aDeserealizar = this->indiceUsuario->buscarElemento(Convertidor::intToString(usuario->getDni()));
+	string aDeserealizar = this->indiceUsuario->buscarElemento(StringUtil::int2string(usuario->getDni()));
 	usuarioAnterior->desSerializar(aDeserealizar);
 	
-	this->indiceUsuario->modificarElemento(Convertidor::intToString(usuario->getDni()),usuario->serializar());
+	this->indiceUsuario->modificarElemento(StringUtil::int2string(usuario->getDni()),usuario->serializar());
 	
 	if(usuarioAnterior->getProvincia() != usuario->getProvincia()){
 		//Como cambio la provincia tengo el elminar el antiguo registros del indice secundario y agrego uno nuevo
-		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),Convertidor::intToString(usuario->getDni()));
-		this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),Convertidor::intToString(usuario->getDni()));
+		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
+		this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 
 	}
 	if(usuarioAnterior->getTipo() != usuario->getTipo()){
 		//Como cambio el tipo tengo el elminar el antiguo registros del indice secundario y agrego uno nuevo
-		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),Convertidor::intToString(usuario->getDni()));
-		this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),Convertidor::intToString(usuario->getDni()));
+		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+		this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 
 	}
 }
 
 void Indice::elimininarUsuario(Usuario* usuario){
-	this->indiceUsuario->elminarElemento(Convertidor::intToString(usuario->getDni()));
-	this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),Convertidor::intToString(usuario->getDni()));
-	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),Convertidor::intToString(usuario->getDni()));
+	this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
+	this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
+	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 }
 
 void Indice::agregarServicio(Servicio* servicio){
-	this->indiceServicio->insertarElemento(Convertidor::intToString(servicio->getId()),servicio->serializar());
+	this->indiceServicio->insertarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
 	vector<Categoria*> categorias = servicio->getCategorias();
 	
 	//Agrego al indice secundario referencias por cada categoria
 	for(unsigned int i=0; i < categorias.size();i++){
 		Categoria* catActual = categorias.at(i);
-		this->indiceServicioPorCategoria->agregarValor(*(new Clave(catActual->getNombre())),Convertidor::intToString(servicio->getId()));
+		this->indiceServicioPorCategoria->agregarValor(*(new Clave(catActual->getNombre())),StringUtil::int2string(servicio->getId()));
 	}
 }
 
 void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
-	this->indiceServicioPorCategoria->borrarValor(*(new Clave(categoria->getNombre())),Convertidor::intToString(servicio->getId()));
+	this->indiceServicioPorCategoria->borrarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(servicio->getId()));
 }
 
 void Indice::eliminarServicio(Servicio* servicio){
@@ -61,14 +61,14 @@ void Indice::eliminarServicio(Servicio* servicio){
 	//Elimino al indice secundario referencias de cada categoria
 	for(unsigned int i=0; i < categorias.size();i++){
 		Categoria* catActual = categorias.at(i);
-		this->indiceServicioPorCategoria->borrarValor(*(new Clave(catActual->getNombre())),Convertidor::intToString(servicio->getId()));
+		this->indiceServicioPorCategoria->borrarValor(*(new Clave(catActual->getNombre())),StringUtil::int2string(servicio->getId()));
 	}
 }
 
 void Indice::agregarConsulta(Consulta* consulta){
 	this->indiceConsulta->insertarElemento(Convertidor::intToString(consulta->getId()),consulta->serializar());
 	//La clave se forma con un string con el idServicio y idUsuario -> idServicio+ separador + idUsuario
-	string claveString = Convertidor::intToString(consulta->getIdServicio()) + separadorCamposClave + Convertidor::intToString(consulta->getIdUsuario()); 
+	string claveString = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + StringUtil::int2string(consulta->getIdUsuario()); 
 	Clave* claveArbol = new Clave(claveString);
 	this->indiceConsultaPorIdServicioIdUsuario->agregarValor(*claveArbol,consulta->serializar());
 }

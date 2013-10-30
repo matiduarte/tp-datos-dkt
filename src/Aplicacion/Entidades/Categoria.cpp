@@ -5,11 +5,21 @@ Categoria::Categoria(){
 }
 
 string Categoria::serializar(){
-	return "";
+	string retorno;
+    retorno = StringUtil::int2string(this->id);
+    retorno += separadorCamposEntidades;
+    retorno += this->nombre;
+    retorno += separadorCamposEntidades;
+    retorno += this->descripcion;
+    
+    return retorno;
 }
 
 void Categoria::desSerializar(string aDeserealizar){
-	
+	vector<string> atributos = StringUtil::split(aDeserealizar,separadorCamposEntidades);
+	this->id = StringUtil::str2int(atributos.at(0));
+	this->nombre = atributos.at(1);
+	this->descripcion = atributos.at(2);
 }
 
 int Categoria::getId(){

@@ -7,7 +7,7 @@ using namespace std;
 
 class Serializable {
 public:
-	Serializable(const string separador = "@");
+	Serializable(const string separador = "|");
 	//Solo para cuando se crean objetos en memoria en primer instancia
 	//despues tienen q usar siempre el constructor de arriba
 	virtual ~Serializable();
