@@ -141,7 +141,7 @@ NodoHoja* NodoHoja::hidratar(char* bloque){
 
 
         //hidrato la referencia al siguiente:
-        memcpy( (char *)&referenciaAlSiguiente ,bloque, sizeof (unsigned int));
+        memcpy( (char *)&referenciaAlSiguiente + bytesRecorridos ,bloque, sizeof (unsigned int));
         nodoAdevolver->setSiguiente(referenciaAlSiguiente);
         bytesRecorridos+=sizeof (unsigned int);
 
