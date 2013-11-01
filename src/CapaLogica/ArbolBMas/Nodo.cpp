@@ -84,13 +84,13 @@ void Nodo::decrementarNivel(){this->nivel--;}
 
 int Nodo::getTamanioUnderflow(){
 
-	return tamanioMaximoBloque * 0.5; //MODIFICAR ESTO
+	return tamanioMaximoBloque * 0.25;
 
 }
 
 int Nodo::getTamanioOverflow(){
 
-	return tamanioMaximoBloque * 0.8; //MODIFICAR ESTO
+	return tamanioMaximoBloque * 0.8;
 
 }
 
