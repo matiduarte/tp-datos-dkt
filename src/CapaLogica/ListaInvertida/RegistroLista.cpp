@@ -1,18 +1,18 @@
 #include "RegistroLista.h"
 
-RegistroLista::RegistroLista(const string aDeserealizar){	
+RegistroLista::RegistroLista(const string aDeserealizar): Serializable(";"){	
 	this->desSerializar(aDeserealizar);
 }
 
-RegistroLista::RegistroLista(string idPalabra, string valor): Serializable(";"){
-	this->idPalabra = idPalabra;
+RegistroLista::RegistroLista(string idElemento, string valor): Serializable(";"){
+	this->idElemento = idElemento;
 	this->valor = valor;
 }
 
 string RegistroLista::serializar()const {
 	string retorno;
 
-	retorno = this->idPalabra ;
+	retorno = this->idElemento ;
 	retorno+= separadorElem;
 	retorno+= this->valor;
 	
@@ -24,13 +24,21 @@ void RegistroLista::desSerializar(const string elemSerializado){
 	istringstream iss(elemSerializado);
 
 	getline(iss, token, separadorElem.c_str()[0]);
-	this->idPalabra = token;
+	this->idElemento = token;
 	getline(iss, token, separadorElem.c_str()[0]);
 	this->valor = token;
 }
 
+string RegistroLista::getIdElemento(){
+	return this->idElemento;
+}
+
 string RegistroLista::getValor(){
 	return this->valor;
+}
+
+void RegistroLista::setValor(string valor){
+	this->valor = valor;
 }
 
 RegistroLista::~RegistroLista(){

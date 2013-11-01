@@ -8,14 +8,21 @@ unsigned int ListaInvertida::insertar(string idPalabra, string valor){
 	RegistroLista* regLista = new RegistroLista(idPalabra, valor);
 	return archivo->escribir((char*)regLista->serializar().c_str());
 }
-void ListaInvertida::modificar(int posLista, string valor){
-		//TODO: falta metodo de Marian
+unsigned int ListaInvertida::modificar(int posLista, string valor){
+	string buffer = string(this->archivo->sacar(posLista));
+	RegistroLista* reg = new RegistroLista(buffer);
+	return this->insertar(reg->getIdElemento(),valor);
 }
 
 string ListaInvertida::obtener(unsigned int posicionLista){
-	string buffer = string(this->archivo->sacar(posicionLista)); //me parece que deberias escribirlo nuevamente (el sacar lo borra del archivo)
+	string buffer = string(this->archivo->sacar(posicionLista));
 	RegistroLista* reg = new RegistroLista(buffer);
+	this->insertar(reg->getIdElemento(),reg->getValor());
 	return reg->getValor();
+}
+
+void ListaInvertida::borrar(unsigned int posicionLista){
+	this->archivo->borrar(posicionLista);
 }
 
 ListaInvertida::~ListaInvertida(){

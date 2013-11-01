@@ -25,6 +25,8 @@ public:
 	~Servicio();
 	string serializar();
 	void desSerializar(string aDeserealizar);
+	string serializarCategorias();
+	void deserializarCategorias(string aDeserializar);
 	
 	//Getters
 	int getId();

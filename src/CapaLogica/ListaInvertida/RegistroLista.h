@@ -10,15 +10,17 @@ using namespace std;
 class RegistroLista : public Serializable {
 
 private:
-	string idPalabra;
+	string idElemento;
 	string valor;
 
 public:
 	RegistroLista(const string aDeserealizar);
-	RegistroLista(string idPalabra, string valor);
+	RegistroLista(string idElemento, string valor);
 	virtual ~RegistroLista();
 	virtual string serializar()const;
+	string getIdElemento();
 	string getValor();
+	void setValor(string valor);
 private:
 	virtual void desSerializar(const string data);
 };

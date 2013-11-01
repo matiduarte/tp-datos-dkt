@@ -32,6 +32,27 @@ void Servicio::desSerializar(string aDeserealizar){
 	this->posicionCategorias = StringUtil::str2int(atributos.at(5));
 }
 
+string Servicio::serializarCategorias(){
+	string retorno;
+	for(unsigned int i=0; i<this->categorias.size();i++){
+    	retorno += StringUtil::int2string(this->categorias.at(i)->getId());
+    	retorno += separadorCamposEntidades;
+    }
+	
+    return retorno;
+}
+
+void Servicio::deserializarCategorias(string aDeserializar){
+	vector<string> catIds = StringUtil::split(aDeserializar,separadorCamposEntidades);
+	for(unsigned int i=0; i<catIds.size();i++){
+		Categoria* catAct = new Categoria();
+		catAct->setId(StringUtil::str2int(catIds.at(i)));
+		if(catAct->getId() > 0){;
+			this->setCategoria(catAct);
+		}
+	}
+}
+
 int Servicio::getId(){
 	return this->id;
 }

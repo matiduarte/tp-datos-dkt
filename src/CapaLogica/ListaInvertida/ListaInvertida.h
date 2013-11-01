@@ -16,8 +16,9 @@ public:
 	ListaInvertida();
 	ListaInvertida(const string& rutaArchList);
 	unsigned int insertar(string idPalabra, string valor);
-	void modificar(int posLista, string valor);
+	unsigned int modificar(int posLista, string valor);
 	string obtener(unsigned int posicionLista);
+	void borrar(unsigned int posicionLista);
 	~ListaInvertida();
 };
 
