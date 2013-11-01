@@ -95,12 +95,14 @@ void NodoHoja::persistir(ArchivoBloque *& archivo){
         memcpy(bloqueApersistir+bytesOcupados, (char *)&numeroDeBloque, sizeof(unsigned int) );
         bytesOcupados += sizeof(unsigned int);
 
-        //Persisto los registros
-        bytesOcupados += this->persistirRegistros(bloqueApersistir + bytesOcupados);
-
         //Persisto la referencia al siguiente
         memcpy(bloqueApersistir+bytesOcupados,(char *)&referenciaAlSiguiente,sizeof(unsigned int));
         bytesOcupados += sizeof (unsigned int);
+
+        //Persisto los registros
+        bytesOcupados += this->persistirRegistros(bloqueApersistir + bytesOcupados);
+
+
 
         archivo->reescribir(bloqueApersistir, numeroDeBloque);
 
@@ -128,6 +130,12 @@ NodoHoja* NodoHoja::hidratar(char* bloque){
                nodoAdevolver->setNumeroDeBloque(numeroDeBloque);
                bytesRecorridos+= sizeof (unsigned int);
 
+        //hidrato la referencia al siguiente:
+        memcpy( (char *)&referenciaAlSiguiente ,bloque + bytesRecorridos , sizeof (unsigned int));
+        nodoAdevolver->setSiguiente(referenciaAlSiguiente);
+        bytesRecorridos+=sizeof (unsigned int);
+
+
         //hidrato los registros:
 
         RegistroArbol* registroAux = new RegistroArbol();
@@ -140,10 +148,6 @@ NodoHoja* NodoHoja::hidratar(char* bloque){
 
 
 
-        //hidrato la referencia al siguiente:
-        memcpy( (char *)&referenciaAlSiguiente ,bloque + bytesRecorridos , sizeof (unsigned int));
-        nodoAdevolver->setSiguiente(referenciaAlSiguiente);
-        bytesRecorridos+=sizeof (unsigned int);
 
         return nodoAdevolver;
 
