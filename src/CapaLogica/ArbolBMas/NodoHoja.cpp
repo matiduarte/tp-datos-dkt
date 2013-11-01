@@ -310,6 +310,7 @@ int NodoHoja::baja(Clave clave, string valor){
 
 void NodoHoja::setElementos(list<RegistroArbol*> * listaElementos){
 	this->elementos = listaElementos;
+	this->setCantidadDeElementos(listaElementos->size());
 }
 
 
