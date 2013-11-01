@@ -630,16 +630,20 @@ unsigned int NodoInterno::getNodoAnteriorA(unsigned int indice){
 	// si no lo encuentra, devuelve 0
 
 	int nodoAnterior = 0;
+	bool encontrado = false;
 	list<unsigned int>::iterator it_hijos;
 	it_hijos = hijos.begin();
 
 	while (it_hijos != hijos.end()){
 		if (*it_hijos == indice){
+			encontrado = true;
 			return nodoAnterior;
 		}
 		nodoAnterior = *it_hijos;
 		it_hijos++;
 	}
+
+	if (!encontrado) nodoAnterior = 0;
 
 	return nodoAnterior;
 }

@@ -320,7 +320,7 @@ list<RegistroArbol*> * NodoHoja::getElementos(){
 
 bool NodoHoja::capacidadMinima(){
         //Devuelve true si se encuentra en la capacidad minima
-        int aux = tamanioMaximoBloque * 0.5;
+        int aux = tamanioMaximoBloque * 0.25;
         RegistroArbol *reg;
         reg = this->getElementos()->back();
         int tamUltimoRegistro = reg->cantidadDeBytesOcupados();
