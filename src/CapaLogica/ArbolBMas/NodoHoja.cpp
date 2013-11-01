@@ -245,7 +245,7 @@ int NodoHoja::tamanioOcupado(){
 RegistroArbol* NodoHoja::getRegistro(Clave clave){
         //Devuelve el registro correspondiente a la clave
         list<RegistroArbol*>::iterator it;
-        RegistroArbol * reg_actual = NULL;
+        RegistroArbol * reg_actual = new RegistroArbol();
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
                 reg_actual = *it;
                 Clave aux = (reg_actual)->getClaveEntera();
