@@ -436,3 +436,21 @@ Clave NodoHoja::getClaveDelMedio(){
 	return claveRetorno;
 }
 
+list<string> * NodoHoja::buscarYlistar(Clave clave){
+
+	list<string>* listaAdevolver = new list<string>();
+	list<RegistroArbol*>::iterator it;
+	RegistroArbol * registro;
+	Clave claveAux;
+	it = this->getElementos()->begin();
+
+	while ( it != this->getElementos()->end()){
+	        registro = *it;
+	        claveAux  = registro->getClave();
+	        if (claveAux==clave){
+	        listaAdevolver->push_back(registro->getValor());
+	        }
+	        it++;
+	}
+	return listaAdevolver;
+}

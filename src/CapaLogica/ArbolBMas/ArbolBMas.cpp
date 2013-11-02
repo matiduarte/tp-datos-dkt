@@ -851,3 +851,28 @@ int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoIntern
         return 0;
 }
 
+list<string> * ArbolBMas::elementosConIgualClave(Clave clave){
+
+	list<string>* listaAdevolver = new list<string>();
+	list<string>* listaAux = new list<string>();
+
+	if( this->raiz->getNivel() == 0){
+		return ((NodoHoja*)this->raiz)->buscarYlistar(clave);
+	}
+		else{
+			Nodo *nodoAux = new Nodo();
+			nodoAux = (this->raiz);
+			while (nodoAux->getNivel() != 0){
+				nodoAux = Nodo::cargar(this->archivo,((NodoInterno*)nodoAux)->getHijos().front());
+			}
+
+			while(((NodoHoja*)nodoAux)->getSiguiente() != 0){
+				listaAux = ((NodoHoja*)nodoAux)->buscarYlistar(clave);
+				listaAdevolver->splice(listaAdevolver->end(),*listaAux);
+			nodoAux = Nodo::cargar(this->archivo,((NodoHoja*)nodoAux)->getSiguiente());
+			}
+			return listaAdevolver;
+		}
+
+}
+

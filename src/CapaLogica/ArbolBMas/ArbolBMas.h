@@ -64,6 +64,8 @@ public:
 	string buscarClaveRecursivo(Clave clave, Nodo* nodoActual);
 
 	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
+
+	 list<string> * elementosConIgualClave(Clave clave);
 };
 
 #endif /* ARBOLBMAS_H_ */

@@ -74,18 +74,12 @@ bool RegistroArbol::existe(string clave){
 int RegistroArbol::agregar(Clave clave, string valor){
 
 	string id = clave.getClave();
-	int resultado;
 
-	if (!(this->existe(id))){
 			this->setClave(id);
 			this->setValor(valor);
-			resultado = 1;
-		} else {
-			//Ya existe la clave
-			resultado = 3;
-		}
 
-	return resultado;
+
+	return 1;
 
 }
 
