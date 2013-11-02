@@ -27,7 +27,13 @@ void Programa::ejecutarPrograma(){
 
 		case MENU_PRINCIPAL:	estado = menuPrincipal();
 								break;
-		case REGISTRO:			estado = registro();
+		case RECUPERAR_PASS:	estado = recuperacion();
+								break;
+		case REGISTRO_U:		estado = registrarNuevoUsuario("U");
+								break;
+		case REGISTRO_A:		estado = registrarNuevoUsuario("A");
+								break;
+		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);
 								break;
 		case INICIAR_SESION:	estado = iniciarSesion(usuario);
 								break;
@@ -45,7 +51,7 @@ void Programa::ejecutarPrograma(){
 								break;
 		case BAJA_PRODUCTO:		estado = bajaProducto();
 								break;
-		case ADMINISTRACION:	estado = administrar();
+		case ADMINISTRACION:	estado = opcionesAdministrador();
 								break;
 		default:				break;
 		}
@@ -57,22 +63,34 @@ void Programa::ejecutarPrograma(){
 estadoPrograma Programa::menuPrincipal(){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
-	int cantidadOpciones = 3;
+	int cantidadOpciones = 4;
 
 	gotoXY(0, 0);	cout<<"MENU PRINCIPAL:";
 	gotoXY(0, 2);	cout<<"1 - Iniciar sesion.";
 	gotoXY(0, 3);	cout<<"2 - Registrarse.";
-	gotoXY(0, 4);	cout<<"3 - Salir del programa.";
+	gotoXY(0, 4);	cout<<"3 - Recuperar contraseña.";
+	gotoXY(0, 5);	cout<<"4 - Salir del programa.";
 
 	int opcion = leerOpcion(cantidadOpciones);
 	if(opcion == 1) estado = INICIAR_SESION;
-	if(opcion == 2) estado = REGISTRO;
-	if(opcion == 3) estado = TERMINAR;
+	if(opcion == 2) estado = REGISTRO_U;
+	if(opcion == 3) estado = RECUPERAR_PASS;
+	if(opcion == 4) estado = TERMINAR;
 
 	return estado;
 }
 
-estadoPrograma Programa::registro(){
+estadoPrograma Programa::recuperacion(){
+	 //se puede llegar a hacer busqueda de usuario, pero este metodo es de juguete, no vale la pena
+	string nombre="";
+	gotoXY(0,0);	cout<<"RECUPERAR CONTRASEÑA:";
+	gotoXY(0,2);	cout<<"Usuario: ";	cin>>nombre;
+	gotoXY(0,9);	cout<<"Se ha enviado un mail con su contraseña, ah re que no hacia nada.";
+
+	return MENU_PRINCIPAL;
+}
+
+estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	Usuario* nuevoUsuario = new Usuario();
@@ -82,25 +100,24 @@ estadoPrograma Programa::registro(){
 	int posY=2;
 
 	gotoXY(0, 0);		cout<<"REGISTRO:";
-	//cuando se registra un nuevo usuario, siempre es de tipo U
-	nuevoUsuario->setTipo("U");
-	gotoXY(0, posY);	cout<<"Nombre: ";	cin>>nombre;	nuevoUsuario->setNombre(nombre);		posY++;
-	gotoXY(0, posY);	cout<<"Apellido: ";	cin>>apellido;	nuevoUsuario->setApellido(apellido);	posY++;
+	nuevoUsuario->setTipo(tipo);
+	gotoXY(0, posY);	cout<<"Nombre:     ";	cin>>nombre;	nuevoUsuario->setNombre(nombre);		posY++;
+	gotoXY(0, posY);	cout<<"Apellido:   ";	cin>>apellido;	nuevoUsuario->setApellido(apellido);	posY++;
 
 	do{
 		gotoXY(0, posY); 	cout<<"                      ";
-		gotoXY(0, posY);	cout<<"DNI: ";		cin>>DNI;
+		gotoXY(0, posY);	cout<<"DNI:        ";		cin>>DNI;
 	}while(atoi(DNI.c_str()) == 0);
 
 	nuevoUsuario->setDni(atoi(DNI.c_str()));posY++;
 
-	gotoXY(0, posY); 	cout<<"Provincia: ";cin>>provincia;	nuevoUsuario->setProvincia(provincia);	posY++;
+	gotoXY(0, posY); 	cout<<"Provincia:  ";cin>>provincia;	nuevoUsuario->setProvincia(provincia);	posY++;
 
 	bool otroMail = true;
 	//pido hasta 3 mails
 	for(int i=1; (i<4)&&(otroMail); i++){
 
-	gotoXY(0, posY);	cout<<"E-Mail "<<i<<": ";	cin>>mail; 		nuevoUsuario->setEmail(mail);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	cin>>mail; 		nuevoUsuario->setEmail(mail);	posY++;
 		if(i<3){
 			do{
 				gotoXY(0, posY+1); cout<<"Desea agregar otra direccion de E-Mail? (s/n) ";
@@ -119,9 +136,40 @@ estadoPrograma Programa::registro(){
 
 	gotoXY(0, posY+2);
 	if(usuarioAgregado)	cout<<"Usuario ingresado exitosamente!";
-	else cout<<"No se pudo agregar el usuario.";
+	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
+	if(tipo == "A") estado = ADMINISTRACION;
 	return estado;
+}
+
+string Programa::modificar(string queCosa, string valorActual, int posicionDato){
+
+	string respuesta, datoNuevo;
+	do{
+		gotoXY(0, 9);
+		cout<<"Desea modificar "<<queCosa<<"(s/n)"; cin>>respuesta;
+	}while((respuesta != "s")&&(respuesta != "n"));
+
+	if(respuesta == "n") datoNuevo = valorActual;
+	if(respuesta == "s"){
+		gotoXY(12, posicionDato); cout<<"                                    "; //borro lo que haya
+		gotoXY(12, posicionDato);
+		cin>>datoNuevo;
+	}
+	return datoNuevo;
+}
+
+estadoPrograma Programa::modificarDatosUsuario(Usuario* &usuario){
+
+	gotoXY(0, 0); cout<<"REGISTRO:";
+	emitirDatosUsuario(usuario);
+
+	usuario->setNombre(modificar("el nombre? ", usuario->getNombre(), 2));
+	usuario->setApellido(modificar("el apellido? ", usuario->getApellido(), 3));
+	usuario->setProvincia(modificar("la provincia? ", usuario->getProvincia(), 5));
+	usuario->setContrasena(modificar("la contraseña? ", usuario->getContrasena(), 6 + usuario->getEmails().size()));
+
+	return OPCIONES_USUARIO;
 }
 
 estadoPrograma Programa::iniciarSesion(Usuario* &usuario){
@@ -139,15 +187,13 @@ estadoPrograma Programa::iniciarSesion(Usuario* &usuario){
 	cin>>contrasena;
 	activarEcho();
 
-	bool usuarioExistente=true; //IMPLEMENTAR BUSQUEDA DE USUARIOS!!
+	bool error=false;
 	// usuario = buscarUsuario(nombre, contrasena, error);
 
-	if(usuarioExistente){
-		estado = OPCIONES_USUARIO;
-		if(usuario->getTipo() == "A") estado = ADMINISTRACION;
-	}
-	if(!usuarioExistente){
-		gotoXY(0, 9); cout<<"Usuario y/o contrasena invalidos!";
+	if(!error) estado = OPCIONES_USUARIO;
+
+	if(error){
+		gotoXY(0, 9); cout<<"Datos de usuario invalidos!";
 	}
 
 	return estado;
@@ -165,7 +211,7 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 	gotoXY(0, 6);	cout << "5 - Volver al menu principal";
 
 	int opcion = leerOpcion(cantidadOpciones);
-	if (opcion == 1) estado = REGISTRO;
+	if (opcion == 1) estado = CAMBIAR_DATOS;
 	if (opcion == 3) estado = CONSULTA_SERVICIO;
 	if (opcion == 4) estado = PUBLICAR;
 	if (opcion == 5) estado = MENU_PRINCIPAL;
@@ -178,7 +224,7 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 	return estado;
 }
 
-estadoPrograma Programa::opcionesUsuarioProveedor(){
+estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	int cantidadOpciones = 7;
@@ -191,7 +237,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(){
 	gotoXY(0, 7);	cout<<"7 - Volver al menu principal.";
 
 	int opcion = leerOpcion(cantidadOpciones);
-	if(opcion == 1) estado = REGISTRO;
+	if(opcion == 1) estado = CAMBIAR_DATOS;
 	if(opcion == 3) estado = CONSULTA_SERVICIO;
 	if(opcion == 4) estado = PUBLICAR;
 	if(opcion == 5) estado = RESPONDER;
@@ -199,15 +245,14 @@ estadoPrograma Programa::opcionesUsuarioProveedor(){
 	if(opcion == 7) estado = MENU_PRINCIPAL;
 
 	if (opcion == 2){
-		bool eliminado = eliminarUsuario(new Usuario()); //cambiar esto
+		bool eliminado = eliminarUsuario(usuario);
 		if(eliminado) estado = MENU_PRINCIPAL;
 		else estado = OPCIONES_USUARIO;
 	}
 	return estado;
-	return estado;
 }
 
-estadoPrograma Programa::opcionesAdministrador(){ //FALTA ESTA
+estadoPrograma Programa::opcionesAdministrador(){ //FALta
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	int cantidadOpciones = 6;
@@ -220,8 +265,8 @@ estadoPrograma Programa::opcionesAdministrador(){ //FALTA ESTA
 	gotoXY(0, 5);	cout<<"6 - Listado de usuarios.";
 
 	int opcion = leerOpcion(cantidadOpciones);
-	if(opcion == 1) estado = INICIAR_SESION;
-	if(opcion == 2) estado = REGISTRO;
+	if(opcion == 1) estado = REGISTRO_A;
+	if(opcion == 2) estado = REGISTRO_A;
 	if(opcion == 3) estado = TERMINAR;
 
 	return estado;
@@ -230,13 +275,11 @@ estadoPrograma Programa::opcionesAdministrador(){ //FALTA ESTA
 estadoPrograma Programa::menuOpcionesUsuario(Usuario* &usuario){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
-	usuario->setTipo("U");	//quitar esto
-	usuario->setNombre("Marian"); //y esto
 	string tipoUsuario = usuario->getTipo();
-	gotoXY(0, 0);	cout<<"OPCIONES:                             Usuario: "<<usuario->getNombre();
+	gotoXY(0, 0);	cout<<"OPCIONES:                             "<<imprimirTipoDeUsuario(tipoUsuario)<<": "<<usuario->getNombre();
 
 	if(tipoUsuario == "U") estado = opcionesUsuarioNormal(usuario);
-	if(tipoUsuario == "P") estado = opcionesUsuarioProveedor();
+	if(tipoUsuario == "P") estado = opcionesUsuarioProveedor(usuario);
 	if(tipoUsuario == "A") estado = opcionesAdministrador();
 
 	return estado;
@@ -307,10 +350,37 @@ int Programa::leerOpcion(int cantOpciones){
 	return N;
 }
 
-bool Programa::eliminarUsuario(Usuario* usuario){
+void Programa::emitirDatosUsuario(Usuario* usuario){
+
+	int posY=2;
+
+	gotoXY(0, posY);	cout<<"Nombre:     ";	usuario->getNombre();		posY++;
+	gotoXY(0, posY);	cout<<"Apellido:   ";	usuario->getApellido();		posY++;
+	gotoXY(0, posY);	cout<<"DNI:        ";	usuario->getDni();			posY++;
+	gotoXY(0, posY); 	cout<<"Provincia:  ";	usuario->getProvincia();	posY++;
+
+	for(unsigned int i=1; i< usuario->getEmails().size(); i++){
+	gotoXY(0, posY);	cout<<"E-Mail      "<<i<<": "; usuario->getEmails().at(i);	posY++;
+	}
+
+	gotoXY(0, posY);	cout<<"Contraseña: ";	usuario->getContrasena(); posY++;
+
+}
+
+string Programa::imprimirTipoDeUsuario(string tipo){
 
 	string respuesta;
-	bool usuarioEliminado=true;
+	if(tipo == "U") respuesta = "Usuario";
+	if(tipo == "P") respuesta = "Proveedor";
+	if(tipo == "A") respuesta = "Administrador";
+
+	return respuesta;
+}
+
+bool Programa::eliminarUsuario(Usuario* usuario){
+
+	bool usuarioEliminado= false;
+	string respuesta;
 	do {
 		gotoXY(0, 8);
 		cout<< "Esta seguro que desea eliminar al usuario? (s/n) (Las publicaciones, preguntas y respuestas no serán borradas)";
@@ -318,7 +388,7 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 	} while ((respuesta != "s") && (respuesta != "n"));
 
 	if (respuesta == "s"){
-		//buscar y eliminar
+//		usuarioEliminado = indice->elimininarUsuario(usuario);
 		gotoXY(0, 8);
 		if(usuarioEliminado){
 			cout << "Usuario eliminado correctamente!                                                                                   ";
@@ -326,8 +396,6 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 			cout <<"No se pudo eliminar al usuario.                                                                                     ";
 		}
 	}
-
-	if(respuesta == "n") usuarioEliminado = false;
 
 	return usuarioEliminado;
 }

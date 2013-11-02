@@ -40,17 +40,21 @@ public:
 	Indice();
 	~Indice();
 	
-	//NECESITO ESTOS METODOS: -MARIAN.
 
 	//a partir de nombre y contraseña, buscar y devolver el usuario, error=true si no se encuentra
-	//Usuario* buscarUsuario(string nombre, string contrasena, bool &error);
+	//	Usuario* buscarUsuario(string nombre, string contrasena, bool &error);
 
 	//necesito hacer:
-	//busqueda de productos segun usuario, (que cada usuario tenga su listado de productos)
-	//productos segun palabas claves, para que un usuario pueda buscar
-	//y preguntas hechas a un usuario
+	//un metodo que me devuelva una lista de preguntas / cotizaciones hechas a determinado usuario
+	//un metodo para buscar productos segun: usuario / palabras clave / servicio / categoria
+	//un metodo que me devuelva una lista de todos los usuarios en el sistema
+	//
+	//que los dos metodos de eliminar devuelvan un bool
+
+	//creo que nada mas... con esto ya tengo para rato :P
 
 	//Metodos de usuarios
+
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
 	void elimininarUsuario(Usuario* usuario);

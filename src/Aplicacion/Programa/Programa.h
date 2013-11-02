@@ -20,7 +20,9 @@ using namespace std;
 
 typedef enum{
 	MENU_PRINCIPAL,
-	REGISTRO,
+	REGISTRO_U,
+	REGISTRO_A,
+	CAMBIAR_DATOS,
 	INICIAR_SESION,
 	OPCIONES_USUARIO,
 	CONSULTA_SERVICIO,
@@ -30,6 +32,7 @@ typedef enum{
 	RESPONDER,
 	BAJA_PRODUCTO,
 	ADMINISTRACION,
+	RECUPERAR_PASS,
 	TERMINAR,
 }estadoPrograma;
 
@@ -43,7 +46,8 @@ private:
 	Indice* indice;
 
 	estadoPrograma menuPrincipal();
-	estadoPrograma registro();
+	estadoPrograma registrarNuevoUsuario(string tipoUsuario);
+	estadoPrograma modificarDatosUsuario(Usuario* &usuario);
 	estadoPrograma iniciarSesion(Usuario* &usuario);
 	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
 	estadoPrograma consultarServicio();
@@ -54,10 +58,14 @@ private:
 	estadoPrograma bajaProducto();
 	estadoPrograma administrar();
 	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
-	estadoPrograma opcionesUsuarioProveedor();
+	estadoPrograma opcionesUsuarioProveedor(Usuario* &usuario);
 	estadoPrograma opcionesAdministrador();
+	estadoPrograma recuperacion();
 
 	bool eliminarUsuario(Usuario* usuario);
+	string imprimirTipoDeUsuario(string tipo);
+	void emitirDatosUsuario(Usuario* usuario);
+	string modificar(string queCosa, string valorActual, int posicionDato);
 
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();

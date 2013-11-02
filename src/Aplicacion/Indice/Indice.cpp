@@ -26,7 +26,7 @@ Indice::Indice(){
 bool Indice::agregarUsuario(Usuario* usuario){
 	try {
 		this->indiceUsuario->insertarElemento(StringUtil::int2string(usuario->getDni()),usuario->serializar());
-	} catch (ExceptionElementoKeyYaIngresado e){
+	} catch (ExceptionElementoKeyYaIngresado& e){
 			return false;
 	}
 	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));

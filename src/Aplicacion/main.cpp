@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
 		delete programa;
 
 	}catch(Excepcion &e){
-
+		cout<< "Se ha producido un error inesperado, abortando..."<<endl;
 	}
 
 	return 0;
