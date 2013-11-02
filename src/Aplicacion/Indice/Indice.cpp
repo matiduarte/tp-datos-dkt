@@ -296,5 +296,19 @@ string Indice::obtenerNuevoId(string tipoId){
 }
 
 Indice::~Indice(){
-	
+	delete(indiceUsuario);
+	delete(indiceServicio);
+	delete(indiceConsulta);
+	delete(indiceCategorias);
+	delete(listaCategoriasPorServicio);
+	delete(indiceUsuarioPorProvincia);
+	delete(indiceUsuarioPorTipo);
+	delete(indiceServicioPorCategoria);
+	delete(indiceServicioPorIdProveedor);
+	delete(indiceConsultaPorIdServicio);
+	delete(indiceConsultaPorIdUsuario);
+	delete(indiceConsultaPorIdServicioFechaHora);
+	delete(indiceOcurrenciasTerminos);
+	delete(indiceTerminosId);
+	delete(indiceTerminos);
 }
