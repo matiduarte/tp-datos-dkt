@@ -26,10 +26,7 @@ void ListaInvertida::borrar(unsigned int posicionLista){
 }
 
 ListaInvertida::~ListaInvertida(){
-//	if (tabla){
-//		delete tabla;
-//	}
-//	if (interpreteNodo){
-//		delete interpreteNodo;
-//	}
+	if (this->archivo){
+		delete this->archivo;
+	}
 }

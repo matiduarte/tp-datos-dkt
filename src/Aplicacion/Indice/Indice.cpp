@@ -15,6 +15,7 @@ Indice::Indice(){
 	this->indiceUsuarioPorProvincia = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorProvincia");
 	this->indiceUsuarioPorTipo = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorTipo");
 	this->indiceServicioPorCategoria = new ArbolBMas(rutaBaseIndice+"ArbolServicioPorCategoria");
+	this->indiceServicioPorIdProveedor = new ArbolBMas(rutaBaseIndice+"ArbolServicioPorIdProveedor");
 	this->indiceConsultaPorIdServicio = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicio");
 	this->indiceConsultaPorIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdUsuario");
 	this->indiceConsultaPorIdServicioFechaHora = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioFechaHora");
@@ -22,6 +23,10 @@ Indice::Indice(){
 	//Listas
 	this->listaCategoriasPorServicio = new ListaInvertida(rutaBaseIndice+"ListaCategoriasPorServicio");
 	this->indiceOcurrenciasTerminos = new ListaInvertida(rutaBaseIndice+"ListaOcurrenciasPorTermino");
+
+	
+	this->indiceTerminosId = new ArbolBMas(rutaBaseIndice+"ArbolTerminosId");
+	this->indiceTerminos = new Hash(rutaBaseIndice+"Terminos"+rutaTabla,rutaBaseIndice+"Terminos"+rutaNodos);;
 }
 
 bool Indice::agregarUsuario(Usuario* usuario){
