@@ -562,10 +562,13 @@ void NodoInterno::borrarReferencia(unsigned int hijo){
 	list<unsigned int>::iterator it_hijos;
 	it_hijos = hijos.begin();
 	while (it_hijos != hijos.end()){
-		if (*it_hijos == hijo)
+		if (*it_hijos == hijo){
 			hijos.erase(it_hijos);
+			return;
+		}
 		it_hijos++;
     }
+	return;
 }
 
 
