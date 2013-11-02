@@ -15,7 +15,8 @@ Indice::Indice(){
 	this->indiceUsuarioPorProvincia = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorProvincia");
 	this->indiceUsuarioPorTipo = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorTipo");
 	this->indiceServicioPorCategoria = new ArbolBMas(rutaBaseIndice+"ArbolServicioPorCategoria");
-	this->indiceConsultaPorIdServicioIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioIdUsuario");
+	this->indiceConsultaPorIdServicio = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicio");
+	this->indiceConsultaPorIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdUsuario");
 	this->indiceConsultaPorIdServicioFechaHora = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioFechaHora");
 	
 	//Listas
@@ -64,12 +65,36 @@ void Indice::elimininarUsuario(Usuario* usuario){
 	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 }
 
+
+Usuario* Indice::buscarUsuario(string dni, string contrasena, bool &error){
+	
+	try{
+		string usuarioSerializado = this->indiceUsuario->buscarElemento(dni);
+		Usuario* usuario = new Usuario();
+		usuario->desSerializar(usuarioSerializado);
+		if(usuario->getContrasena() == contrasena){
+			//Contrasena correcta
+			error = false;
+			return usuario;
+		}
+		//Contrasena incorrecta. Devuelvo usuario vacio
+		error = true;
+		return new Usuario();
+	} catch (ExceptionElementoNoEncontrado e){
+		error = true;
+		return new Usuario();
+	}
+	
+}
+
 bool Indice::agregarServicio(Servicio* servicio){
 	try {
 		this->indiceServicio->insertarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
 	} catch (ExceptionElementoKeyYaIngresado e){
 		return false;
 	}
+	
+	this->indiceServicioPorIdProveedor->agregarValor(*(new Clave(StringUtil::int2string(servicio->getIdProveedor()))),StringUtil::int2string(servicio->getId()));
 	
 	vector<Categoria*> categorias = servicio->getCategorias();
 	
@@ -99,6 +124,8 @@ void Indice::eliminarServicio(Servicio* servicio){
 	this->indiceServicio->elminarElemento(StringUtil::int2string(servicio->getId()));
 	vector<Categoria*> categorias = servicio->getCategorias();
 	
+	this->indiceServicioPorIdProveedor->borrarValor(*(new Clave(StringUtil::int2string(servicio->getIdProveedor()))),StringUtil::int2string(servicio->getId()));
+	
 	//Elimino al indice secundario referencias de cada categoria
 	for(unsigned int i=0; i < categorias.size();i++){
 		Categoria* catActual = categorias.at(i);
@@ -109,6 +136,21 @@ void Indice::eliminarServicio(Servicio* servicio){
 	this->listaCategoriasPorServicio->borrar(servicio->getPosicionCategorias());
 }
 
+vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
+	string valor = this->indiceServicioPorIdProveedor->buscarClave(StringUtil::int2string(usuario->getDni()));
+	//Obtengo todos los ids de servicios dado un usuario proveedor
+	vector<string> idsServicios;
+	vector<Servicio*> resultadoServicios;
+	for(unsigned int i=0; i<idsServicios.size();i++){
+		Servicio* ser = new Servicio();
+		string servicioSerializado = this->indiceServicio->buscarElemento(idsServicios.at(i));
+		ser->desSerializar(servicioSerializado);
+		resultadoServicios.push_back(ser);
+	}
+	return resultadoServicios;
+}
+
+
 bool Indice::agregarConsulta(Consulta* consulta){
 	try {
 		this->indiceConsulta->insertarElemento(StringUtil::int2string(consulta->getId()),consulta->serializar());
@@ -116,10 +158,8 @@ bool Indice::agregarConsulta(Consulta* consulta){
 		return false;
 	}
 	
-	//La clave se forma con un string con el idServicio y idUsuario -> idServicio+ separador + idUsuario
-	string claveString = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + StringUtil::int2string(consulta->getIdUsuario()); 
-	Clave* claveArbol = new Clave(claveString);
-	this->indiceConsultaPorIdServicioIdUsuario->agregarValor(*claveArbol,StringUtil::int2string(consulta->getId()));
+	this->indiceConsultaPorIdServicio->agregarValor(*(new Clave(StringUtil::int2string(consulta->getIdServicio()))),StringUtil::int2string(consulta->getId()));
+	this->indiceConsultaPorIdUsuario->agregarValor(StringUtil::int2string(consulta->getIdUsuario()),StringUtil::int2string(consulta->getId()));
 	
 	//Esta clave se forma de manera analoga a la anterior
 	string claveString2 = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + consulta->getFechaConsulta() + separadorCamposClave + consulta->getHoraConsulta();
@@ -144,6 +184,27 @@ vector<string> Indice::parsearConsulta(string consulta){
 	}
 	
 	return terminosRelevantes;
+}
+
+vector<Consulta*> Indice::buscarConsultasHechasAUsuario(Usuario* usuario){
+	string valor = this->indiceServicioPorIdProveedor->buscarClave(StringUtil::int2string(usuario->getDni()));
+	//Aca tengo que tener todos los ids de los servicios del provvedor. Asi busco las preguntas de cada servicio
+	vector<string> idsServicios;
+	vector<string> idsConsulta;
+	for(unsigned int i=0; i< idsServicios.size();i++){
+		string valor2 = this->indiceConsultaPorIdServicio->buscarClave(idsServicios.at(i));
+		//Obtengo los ids de consultas dado un servicio. Y lo agrego al vector idsConsulta
+	}
+	
+	vector<Consulta*> resultadoConsultas;
+	for(unsigned int j=0; j < idsConsulta.size();j++){
+		Consulta* cons = new Consulta();
+		string consultaSerializada = this->indiceConsulta->buscarElemento(idsServicios.at(j));
+		cons->desSerializar(consultaSerializada);
+		resultadoConsultas.push_back(cons);
+	}
+	return resultadoConsultas;
+
 }
 
 Indice::~Indice(){

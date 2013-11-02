@@ -30,7 +30,10 @@ private:
 	ArbolBMas* indiceUsuarioPorProvincia;
 	ArbolBMas* indiceUsuarioPorTipo;
 	ArbolBMas* indiceServicioPorCategoria;
-	ArbolBMas* indiceConsultaPorIdServicioIdUsuario;
+	ArbolBMas* indiceServicioPorIdProveedor;
+	//ArbolBMas* indiceConsultaPorIdServicioIdUsuario;
+	ArbolBMas* indiceConsultaPorIdServicio;
+	ArbolBMas* indiceConsultaPorIdUsuario;
 	ArbolBMas* indiceConsultaPorIdServicioFechaHora;
 	
 	//Indice invertido
@@ -41,12 +44,8 @@ public:
 	~Indice();
 	
 
-	//a partir de nombre y contraseña, buscar y devolver el usuario, error=true si no se encuentra
-	//	Usuario* buscarUsuario(string nombre, string contrasena, bool &error);
-
 	//necesito hacer:
-	//un metodo que me devuelva una lista de preguntas / cotizaciones hechas a determinado usuario
-	//un metodo para buscar productos segun: usuario / palabras clave / servicio / categoria
+	//un metodo para buscar productos segun: usuario / palabras clave / categoria
 	//un metodo que me devuelva una lista de todos los usuarios en el sistema
 	//
 	//que los dos metodos de eliminar devuelvan un bool
@@ -58,16 +57,19 @@ public:
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
 	void elimininarUsuario(Usuario* usuario);
+	Usuario* buscarUsuario(string dni, string contrasena, bool &error);
 	
 	//Metodos servicios
 	bool agregarServicio(Servicio* servicio);
 	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	void eliminarServicio(Servicio* servicio);
+	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);
 	void modificarConsulta(Consulta* consulta);
 	vector<string> parsearConsulta(string consulta);
+	vector<Consulta*> buscarConsultasHechasAUsuario(Usuario* usuario);
 };
 
 #endif /*INDICE_H_*/
