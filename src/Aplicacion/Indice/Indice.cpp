@@ -1,7 +1,7 @@
 #include "Indice.h" 
 
 Indice::Indice(){
-	LectorConfig* pLector = LectorConfig::getLector("../Aplicacion/config");
+	LectorConfig* pLector = LectorConfig::getLector(rutaConfig_ArchivoBloque);
 	string rutaBaseIndice = "archivos";//pLector->getValor("rutaBaseIndice");
 	string rutaTabla = pLector->getValor("pathArchivoTabla");
 	string rutaNodos = pLector->getValor("pathArchivoNodos");
