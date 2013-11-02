@@ -41,17 +41,17 @@ public:
 	~Indice();
 	
 	//Metodos de usuarios
-	void agregarUsuario(Usuario* usuario);
+	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
 	void elimininarUsuario(Usuario* usuario);
 	
 	//Metodos servicios
-	void agregarServicio(Servicio* servicio);
+	bool agregarServicio(Servicio* servicio);
 	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	void eliminarServicio(Servicio* servicio);
 
 	//Metodos consulta
-	void agregarConsulta(Consulta* consulta);
+	bool agregarConsulta(Consulta* consulta);
 	void modificarConsulta(Consulta* consulta);
 	vector<string> parsearConsulta(string consulta);
 };

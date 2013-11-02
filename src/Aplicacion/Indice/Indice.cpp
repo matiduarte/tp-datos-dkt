@@ -1,14 +1,40 @@
 #include "Indice.h" 
 
 Indice::Indice(){
+	LectorConfig* pLector = LectorConfig::getLector("../Aplicacion/config");
+	string rutaBaseIndice = "archivos";//pLector->getValor("rutaBaseIndice");
+	string rutaTabla = pLector->getValor("pathArchivoTabla");
+	string rutaNodos = pLector->getValor("pathArchivoNodos");
 	
+	//Indices principales
+	this->indiceUsuario = new Hash(rutaBaseIndice+"Usuario"+rutaTabla,rutaBaseIndice+"Usuario"+rutaNodos);
+	this->indiceServicio = new Hash(rutaBaseIndice+"Servicio"+rutaTabla,rutaBaseIndice+"Servicio"+rutaNodos);
+	this->indiceConsulta = new Hash(rutaBaseIndice+"Consulta"+rutaTabla,rutaBaseIndice+"Consulta"+rutaNodos);
+	this->indiceCategorias = new Hash(rutaBaseIndice+"Categoria"+rutaTabla,rutaBaseIndice+"Categoria"+rutaNodos);
+	
+	//Indices secundarios
+	this->indiceUsuarioPorProvincia = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorProvincia");
+	this->indiceUsuarioPorTipo = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorTipo");
+	this->indiceServicioPorCategoria = new ArbolBMas(rutaBaseIndice+"ArbolServicioPorCategoria");
+	this->indiceConsultaPorIdServicioIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioIdUsuario");
+	this->indiceConsultaPorIdServicioFechaHora = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioFechaHora");
+	
+	//Listas
+	this->listaCategoriasPorServicio = new ListaInvertida(rutaBaseIndice+"ListaCategoriasPorServicio");
+	this->indiceOcurrenciasTerminos = new ListaInvertida(rutaBaseIndice+"ListaOcurrenciasPorTermino");
 }
 
-void Indice::agregarUsuario(Usuario* usuario){
-	this->indiceUsuario->insertarElemento(StringUtil::int2string(usuario->getDni()),usuario->serializar());
+bool Indice::agregarUsuario(Usuario* usuario){
+	try {
+		this->indiceUsuario->insertarElemento(StringUtil::int2string(usuario->getDni()),usuario->serializar());
+	} catch (ExceptionElementoKeyYaIngresado e){
+			return false;
+	}
 	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 	//Creo que no tengo que hacer nada mas cuando se crea un usuario
+	
+	return true;
 }
 
 void Indice::modificarUsuario(Usuario* usuario){
@@ -39,8 +65,13 @@ void Indice::elimininarUsuario(Usuario* usuario){
 	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
 }
 
-void Indice::agregarServicio(Servicio* servicio){
-	this->indiceServicio->insertarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
+bool Indice::agregarServicio(Servicio* servicio){
+	try {
+		this->indiceServicio->insertarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
+	} catch (ExceptionElementoKeyYaIngresado e){
+		return false;
+	}
+	
 	vector<Categoria*> categorias = servicio->getCategorias();
 	
 	//Agrego al indice secundario referencias por cada categoria
@@ -52,6 +83,8 @@ void Indice::agregarServicio(Servicio* servicio){
 	//Agrego las categorias a la lista invertida
 	int nuevaPosicion = this->listaCategoriasPorServicio->insertar(StringUtil::int2string(servicio->getId()), servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
+	
+	return true;
 }
 
 void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
@@ -77,8 +110,12 @@ void Indice::eliminarServicio(Servicio* servicio){
 	this->listaCategoriasPorServicio->borrar(servicio->getPosicionCategorias());
 }
 
-void Indice::agregarConsulta(Consulta* consulta){
-	this->indiceConsulta->insertarElemento(StringUtil::int2string(consulta->getId()),consulta->serializar());
+bool Indice::agregarConsulta(Consulta* consulta){
+	try {
+		this->indiceConsulta->insertarElemento(StringUtil::int2string(consulta->getId()),consulta->serializar());
+	} catch (ExceptionElementoKeyYaIngresado e){
+		return false;
+	}
 	
 	//La clave se forma con un string con el idServicio y idUsuario -> idServicio+ separador + idUsuario
 	string claveString = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + StringUtil::int2string(consulta->getIdUsuario()); 
@@ -89,6 +126,7 @@ void Indice::agregarConsulta(Consulta* consulta){
 	string claveString2 = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + consulta->getFechaConsulta() + separadorCamposClave + consulta->getHoraConsulta();
 	Clave* claveArbol2 = new Clave(claveString2);
 	this->indiceConsultaPorIdServicioFechaHora->agregarValor(*claveArbol2, StringUtil::int2string(consulta->getId()));
+	return true;
 }
 
 void Indice::modificarConsulta(Consulta* consulta){

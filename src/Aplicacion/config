@@ -4,5 +4,6 @@ tamanioBloque=1024
 tamanioClave=50
 pathArchivoTabla=tabla.dat
 pathArchivoNodos=nodos.dat
+rutaBaseIndice=archivos
 pathArchivoExport=export.txt
 sobreescrbir=false
