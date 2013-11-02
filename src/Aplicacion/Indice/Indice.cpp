@@ -108,6 +108,9 @@ bool Indice::agregarServicio(Servicio* servicio){
 	int nuevaPosicion = this->listaCategoriasPorServicio->insertar(StringUtil::int2string(servicio->getId()), servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
 	
+	//Agrego la descripcion a terminos relevantes para busquedas
+	this->agregarCadenaATerminosRelevantes(servicio->getDescripcion(),StringUtil::int2string(servicio->getId()));
+	
 	return true;
 }
 
@@ -150,6 +153,37 @@ vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
 	return resultadoServicios;
 }
 
+vector<Servicio*> Indice::buscarServiciosPorPalabrasClave(string query){
+	vector<string> terminosRelevantes = this->parsearConsulta(query);
+	vector<Servicio*> resultadoServicio;
+	for(unsigned int i=0;i<terminosRelevantes.size();i++){
+		string terminoActual = terminosRelevantes.at(i);
+		string idTermino = this->indiceTerminosId->buscarClave(*(new Clave(terminoActual)));
+		if(idTermino != "NO EXISTE"){
+			//Encontre el termino en el arbol, quiere decir que fue indexado
+			string posLista = this->indiceTerminos->buscarElemento(idTermino);
+			int nuevaPosicion;
+			//Con la posicion de la lista busco en la lista invertida para obtener los servicios asociados a la palabra
+			string listaSerializada = this->indiceOcurrenciasTerminos->obtener(StringUtil::str2int(posLista),&nuevaPosicion);
+			//Como cada vez que busco en la listaInvertida se modifica la posicion tengo que actualizar
+			this->indiceTerminos->modificarElemento(idTermino,StringUtil::int2string(nuevaPosicion));
+			vector<string> idsServicio = StringUtil::split(listaSerializada,separadorCamposEntidades);
+			
+			//Por cada termino agrego los servicios en los que aparece
+			for(unsigned int j=0;j<idsServicio.size();j++){
+				if(StringUtil::str2int(idsServicio.at(i)) > 0){
+					Servicio* ser = new Servicio();
+					string servicioSerializado = this->indiceServicio->buscarElemento(idsServicio.at(j));
+					ser->deserializarCategorias(servicioSerializado);
+					resultadoServicio.push_back(ser);
+				}
+			}
+		}
+	}
+	
+	return resultadoServicio;
+}
+
 
 bool Indice::agregarConsulta(Consulta* consulta){
 	try {
@@ -165,6 +199,11 @@ bool Indice::agregarConsulta(Consulta* consulta){
 	string claveString2 = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + consulta->getFechaConsulta() + separadorCamposClave + consulta->getHoraConsulta();
 	Clave* claveArbol2 = new Clave(claveString2);
 	this->indiceConsultaPorIdServicioFechaHora->agregarValor(*claveArbol2, StringUtil::int2string(consulta->getId()));
+	
+	//Agrego la consulta a terminos relevantes para busquedas
+	this->agregarCadenaATerminosRelevantes(consulta->getConsulta(),StringUtil::int2string(consulta->getIdServicio()));
+	
+	
 	return true;
 }
 
@@ -205,6 +244,50 @@ vector<Consulta*> Indice::buscarConsultasHechasAUsuario(Usuario* usuario){
 	}
 	return resultadoConsultas;
 
+}
+
+void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
+	vector<string> terminosRelevantes = this->parsearConsulta(cadena);
+	int posicionLista;
+	for(unsigned int i=0;i<terminosRelevantes.size();i++){
+		string terminoActual = terminosRelevantes.at(i);
+		//El valor representa el id del termino para buscar luego en el hash
+		string idTermino = this->indiceTerminosId->buscarClave(*(new Clave(terminoActual)));
+		string lista = "";
+		if(idTermino == "NO EXISTE"){
+			//Tengo que agregar la palabra porque no esta en el indice
+			string idTermino = this->obtenerNuevoId("idTerminoActual");
+			this->indiceTerminosId->agregarValor(*(new Clave(terminoActual)),idTermino);
+			this->indiceTerminos->insertarElemento(idTermino,"");
+			lista += idServicio + separadorCamposEntidades;
+			posicionLista = this->indiceOcurrenciasTerminos->insertar(terminoActual,lista);
+		}else{
+			string posLista = this->indiceTerminos->buscarElemento(idTermino);
+			int nuevaPosicion;
+			//El valor devuelto por el hash representa la posicion de la lista
+			lista = this->indiceOcurrenciasTerminos->obtener(StringUtil::str2int(posLista),&nuevaPosicion);
+			
+			//Tengo que agregar la nueva referencia al servicio a la lista si ya no esta el servicio
+			vector<string> idsServicioParaTermino = StringUtil::split(lista,separadorCamposEntidades);
+			if(!(std::find(idsServicioParaTermino.begin(), idsServicioParaTermino.end(), idServicio) != idsServicioParaTermino.end())) {
+				//Solo lo agrego si no estaba antes
+				lista += idServicio + separadorCamposEntidades;
+				posicionLista = this->indiceOcurrenciasTerminos->modificar(nuevaPosicion,lista);
+			}else{
+				posicionLista = nuevaPosicion;
+			}
+		}
+		this->indiceTerminos->modificarElemento(idTermino,StringUtil::int2string(posicionLista));
+	}
+}
+
+string Indice::obtenerNuevoId(string tipoId){
+	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
+	string actualValor = pLector->getValor(tipoId);
+	int nuevoId = StringUtil::str2int(actualValor) + 1;
+	string nuevoIdString = StringUtil::int2string(nuevoId);
+	pLector->setValor(tipoId,nuevoIdString);
+	return nuevoIdString;
 }
 
 Indice::~Indice(){

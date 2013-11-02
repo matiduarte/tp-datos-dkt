@@ -7,3 +7,4 @@ pathArchivoNodos=nodos.dat
 rutaBaseIndice=archivos
 pathArchivoExport=export.txt
 sobreescrbir=false
+idTerminoActual=0

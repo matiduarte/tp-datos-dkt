@@ -14,10 +14,10 @@ unsigned int ListaInvertida::modificar(int posLista, string valor){
 	return this->insertar(reg->getIdElemento(),valor);
 }
 
-string ListaInvertida::obtener(unsigned int posicionLista){
+string ListaInvertida::obtener(unsigned int posicionLista,int* nuevaPosicion){
 	string buffer = string(this->archivo->sacar(posicionLista));
 	RegistroLista* reg = new RegistroLista(buffer);
-	this->insertar(reg->getIdElemento(),reg->getValor());
+	posicionLista = this->insertar(reg->getIdElemento(),reg->getValor());
 	return reg->getValor();
 }
 

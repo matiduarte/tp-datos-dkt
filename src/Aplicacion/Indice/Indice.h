@@ -36,9 +36,14 @@ private:
 	ArbolBMas* indiceConsultaPorIdUsuario;
 	ArbolBMas* indiceConsultaPorIdServicioFechaHora;
 	
-	//Indice invertido
+	//Indice invertido y arbol de palabras para busqueda por terminos clave
 	ListaInvertida* indiceOcurrenciasTerminos;
+	ArbolBMas* indiceTerminosId;
+	Hash* indiceTerminos;
 	//Creo que necestio un arbol y un archivo para ir guardando los terminos que aparecen
+	void agregarCadenaATerminosRelevantes(string cadena, string idServicio);
+	string obtenerNuevoId(string tipoId);
+	
 public:
 	Indice();
 	~Indice();
@@ -64,6 +69,7 @@ public:
 	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	void eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
+	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);
