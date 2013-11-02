@@ -14,7 +14,7 @@ NodoHoja::NodoHoja(){
     this->elementos = new list<RegistroArbol*>();
 
 	try{
-		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig);
     	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
 	}
 	catch(Excepcion &e){
@@ -32,7 +32,7 @@ NodoHoja::NodoHoja(ArchivoBloque* archivo) {
         this->elementos = new list<RegistroArbol*>();
 
     	try{
-    		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+    		LectorConfig* lector = LectorConfig::getLector(rutaConfig);
         	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
     	}
     	catch(Excepcion &e){

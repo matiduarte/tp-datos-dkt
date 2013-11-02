@@ -40,6 +40,16 @@ public:
 	Indice();
 	~Indice();
 	
+	//NECESITO ESTOS METODOS: -MARIAN.
+
+	//a partir de nombre y contraseña, buscar y devolver el usuario, error=true si no se encuentra
+	//Usuario* buscarUsuario(string nombre, string contrasena, bool &error);
+
+	//necesito hacer:
+	//busqueda de productos segun usuario, (que cada usuario tenga su listado de productos)
+	//productos segun palabas claves, para que un usuario pueda buscar
+	//y preguntas hechas a un usuario
+
 	//Metodos de usuarios
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);

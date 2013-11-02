@@ -11,9 +11,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
+#include <termios.h>
 #include <iostream>
 #include "../constantes.h"
 #include "../Entidades/Usuario.h"
+#include "../Indice/Indice.h"
 using namespace std;
 
 typedef enum{
@@ -38,16 +40,12 @@ public:
 	void ejecutarPrograma();
 
 private:
-	unsigned int offsetY;
-	unsigned int offsetX;
-	void gotoXY(int x, int y);
-
-	int leerOpcion(int cantidadDeOpciones);
+	Indice* indice;
 
 	estadoPrograma menuPrincipal();
 	estadoPrograma registro();
-	estadoPrograma iniciarSesion();
-	estadoPrograma menuOpciones();
+	estadoPrograma iniciarSesion(Usuario* &usuario);
+	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
 	estadoPrograma consultarServicio();
 	estadoPrograma buscarServicio();
 	estadoPrograma emitirResultadoBusqueda();
@@ -55,6 +53,18 @@ private:
 	estadoPrograma responderPregunta();
 	estadoPrograma bajaProducto();
 	estadoPrograma administrar();
+	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
+	estadoPrograma opcionesUsuarioProveedor();
+	estadoPrograma opcionesAdministrador();
+
+	bool eliminarUsuario(Usuario* usuario);
+
+	//para ingresar la contraseña sin mostrarla
+	void desactivarEcho();
+	void activarEcho();
+
+	void gotoXY(int x, int y);
+	int leerOpcion(int cantidadDeOpciones);
 };
 
 #endif /* PROGRAMA_H_ */

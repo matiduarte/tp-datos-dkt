@@ -17,7 +17,7 @@ Nodo::Nodo() {
 	this->NumeroDeBloque = 0;
 
 	try{
-		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig);
     	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
 	}
 	catch(Excepcion &e){

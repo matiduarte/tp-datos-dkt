@@ -19,7 +19,7 @@ Clave::Clave(string clave) {
 	this->id = clave;
 
 	try{
-		LectorConfig* lector = LectorConfig::getLector(rutaConfig_Nodo);
+		LectorConfig* lector = LectorConfig::getLector(rutaConfig);
     	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
 	}
 	catch(Excepcion &e){
