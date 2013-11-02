@@ -66,7 +66,7 @@ private:
 	string imprimirTipoDeUsuario(string tipo);
 	void emitirDatosUsuario(Usuario* usuario);
 	string modificar(string queCosa, string valorActual, int posicionDato);
-
+	void emitirInformacion();
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
 	void activarEcho();

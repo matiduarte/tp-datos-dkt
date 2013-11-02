@@ -21,7 +21,7 @@ const string rutaBaseIndice = "\Aplicacion/Indice/Archivos/";
 const char separadorCamposClave = '#';
 const char separadorCamposEntidades = '#';
 
-const int offsetX = 8;
+const int offsetX = 6;
 const int offsetY = 5;
 
 #endif /* CONSTANTES_H_ */

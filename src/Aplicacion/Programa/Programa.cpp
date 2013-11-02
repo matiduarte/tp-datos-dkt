@@ -20,6 +20,7 @@ void Programa::ejecutarPrograma(){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	Usuario* usuario = new Usuario();
+	emitirInformacion();
 
 	while(estado != TERMINAR){
 
@@ -187,7 +188,7 @@ estadoPrograma Programa::iniciarSesion(Usuario* &usuario){
 	cin>>contrasena;
 	activarEcho();
 
-	bool error=false;
+	bool error=true;
 	// usuario = buscarUsuario(nombre, contrasena, error);
 
 	if(!error) estado = OPCIONES_USUARIO;
@@ -398,6 +399,12 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 	}
 
 	return usuarioEliminado;
+}
+
+void Programa::emitirInformacion(){
+
+	gotoXY(0, -5); 	cout<<"Organizacion de Datos - Catedra Servetto - 2do C. 2013";
+	gotoXY(0,-3);	cout<<"PAGINAS DORADAS - Drink Team.";
 }
 
 void Programa::gotoXY(int x, int y){
