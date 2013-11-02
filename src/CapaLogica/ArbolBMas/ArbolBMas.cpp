@@ -618,14 +618,19 @@ int ArbolBMas::equilibrarNodoHojaIzquierdo(NodoInterno* nodoPadre, NodoHoja* nod
 	//Recorro la lista con un sumador
 	//Cuando el sumador llega a la mitad del tam total parto la lista
 	//Le doy una a un nodo y la otra al otro
+	int contador = 0;
 	for (it = listaTotal->begin(); it != listaTotal->end(); it++){
 		sumador += (*it)->cantidadDeBytesOcupados();
 		if (sumador<= tamanio_total/2){
 			//Agregar a la lista
+			contador++;
 			listaDer->push_back(*it);
-			it = listaTotal->erase(it);
 		}else {break;}
 	}
+
+    for (int i = 0; i <contador; i++){
+    	listaTotal->pop_front();
+    }
 	//Quedo la lista derecha con las claves mas pequeñas y la lista total con las mas grandes
 	nodoIzq->setElementos(listaDer);
 	nodoDerecho->setElementos(listaTotal);
