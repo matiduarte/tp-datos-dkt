@@ -18,9 +18,7 @@ class NodoHoja: public Nodo {
 
         unsigned int referenciaAlSiguiente;
         list<RegistroArbol*> * elementos;
-
         static unsigned int tamanioMaximoBloque;
-
 
 public:
         NodoHoja();
@@ -31,7 +29,6 @@ public:
         int agregar(RegistroArbol * reg);
         int agregar(list<RegistroArbol*> *lista);
         int baja (Clave clave, string valor);
-
         bool tieneLaClave(Clave clave);
         bool hayOverflow();
         bool hayUnderflow();
@@ -39,24 +36,19 @@ public:
         bool estaVacio();
         int tamanioOcupado();
         void mostrar();
-
         int cantidadDeRegistros();
         string buscarClave(Clave clave);
         static NodoHoja* hidratar(char* bloque);
         static NodoHoja* cargar(ArchivoBloque* archivo, unsigned int nroDeBloque);
-
         void setSiguiente (unsigned int nrobloque);
         void setElementos(list<RegistroArbol*> * lista);
-
         unsigned int getSiguiente();
         RegistroArbol* getRegistro(Clave clave);
         Clave getPrimerClave();
         Clave getClaveDelMedio();
         list<RegistroArbol*> * getElementos();
         list<RegistroArbol*> * getMitadDerecha();
-
         list<string> * buscarYlistar(Clave clave);
-
 };
 
 

@@ -23,8 +23,9 @@ NodoHoja::NodoHoja(){
 	}
 }
 
+
 NodoHoja::NodoHoja(ArchivoBloque* archivo) {
-        // TODO Auto-generated constructor stub
+
         char bloque[archivo->getTamanoBloque()];
         unsigned int numeroDeBloque = archivo->escribir(bloque);
         this->setNumeroDeBloque(numeroDeBloque);
@@ -41,8 +42,9 @@ NodoHoja::NodoHoja(ArchivoBloque* archivo) {
     	}
 }
 
+
 NodoHoja::~NodoHoja() {
-        // TODO Auto-generated destructor stub
+
         list<RegistroArbol*>::iterator it;
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
                 RegistroArbol* r = *it;
@@ -53,12 +55,14 @@ NodoHoja::~NodoHoja() {
 
 }
 
+
 NodoHoja* NodoHoja::cargar(ArchivoBloque* archivo, unsigned int nroDeBloque){
 
 	char* bloque = new char[archivo->getTamanoBloque()];
 	archivo->leer(bloque, nroDeBloque);
 	return NodoHoja::hidratar(bloque);
 }
+
 
 void NodoHoja::mostrar(){
         cout << "Nro de nodo: ";
@@ -73,6 +77,8 @@ void NodoHoja::mostrar(){
         cout << "\n";
 
 }
+
+
 void NodoHoja::persistir(ArchivoBloque *& archivo){
 	//persisto de esta forma: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 	//persisto nivel, cantidadDeElementos, NumeroDeBloque:
@@ -109,8 +115,10 @@ void NodoHoja::persistir(ArchivoBloque *& archivo){
 }
 
 
+/*
+ * hidrato en este orden: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
+ */
 NodoHoja* NodoHoja::hidratar(char* bloque){
-	//hidrato en este orden: [ nivel|cantidadDeElementos|numeroDeBloque|registros|referenciaAlSiguiente ]
 
 		unsigned int nivel, cantidadDeElementos, numeroDeBloque, referenciaAlSiguiente;
 		NodoHoja* nodoAdevolver= new NodoHoja();
@@ -135,9 +143,7 @@ NodoHoja* NodoHoja::hidratar(char* bloque){
         nodoAdevolver->setSiguiente(referenciaAlSiguiente);
         bytesRecorridos+=sizeof (unsigned int);
 
-
         //hidrato los registros:
-
         RegistroArbol* registroAux = new RegistroArbol();
         RegistroArbol* registroHidratado;
         for(unsigned int i=0; i<cantidadDeElementos; i++){
@@ -145,13 +151,7 @@ NodoHoja* NodoHoja::hidratar(char* bloque){
 			nodoAdevolver->elementos->push_back(registroHidratado);
 			bytesRecorridos+= registroHidratado->cantidadDeBytesOcupados();
         }
-
-
-
-
         return nodoAdevolver;
-
-
 }
 
 
@@ -160,8 +160,11 @@ unsigned int NodoHoja::getSiguiente(){
 }
 
 
+/*
+ * Persiste todos registros y devuelve el cantidad de bytes escritos.
+ */
 int NodoHoja::persistirRegistros(char* bloque){
-        //Persiste los registros, devuelve la cantidad de bytes que fueron escritos.
+
         int contador = 0;
         list<RegistroArbol*>::iterator it;
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
@@ -176,12 +179,15 @@ void NodoHoja::setSiguiente (unsigned int nrobloque){
 }
 
 
+/*
+ * Agrega el registro al nodo.
+ * Devuelve:	0 si el nodo no se actualizo.
+ * 				1 si el nodo se actualizo.
+ * 				2 si el nodo se desbordo.
+ * 				3 si ya existe el valor que quiero agregar.
+ */
 int NodoHoja::agregar(Clave clave, string valor){
-        //Devuelve: 0 si el nodo no se actualizo
-        //1 si el nodo se actualizo
-        //2 si desbordo
-        //3 si ya existe el valor que quiero agregar
-        //Si ya tengo una clave igual, agrego a ese registro.
+
         int indicador = 1;
         if (this->tieneLaClave(clave)){
                 RegistroArbol * registro = this->getRegistro(clave);
@@ -193,7 +199,7 @@ int NodoHoja::agregar(Clave clave, string valor){
                 indicador = reg->agregar(clave ,valor);
                 it=this->elementos->begin();
 
-                while (  (agregado==false) && (it!=this->elementos->end())  ){ //Busco el lugar que le corresponde en la lista
+                while (  (agregado==false) && (it!=this->elementos->end())  ){
                         if (clave.getClave() < ((*it)->getClave())){
                                 this->elementos->insert(it,reg);
                                 agregado=true;
@@ -210,6 +216,7 @@ int NodoHoja::agregar(Clave clave, string valor){
         return indicador;
 }
 
+
 bool NodoHoja::tieneLaClave(Clave clave){
         Clave *claveAux = new Clave();
         list<RegistroArbol*>::iterator it;
@@ -223,10 +230,13 @@ bool NodoHoja::tieneLaClave(Clave clave){
         return false;
 }
 
-
+/*
+ * Devuelve el tamanio en bytes ocupado por el nodo.
+ */
 int NodoHoja::tamanioOcupado(){
-        //Devuelve el tamaño del nodo en el bloque
+
         int bytes_ocupados = 0;
+
         //itero la lista de registros sumando los bytes ocupados por cada uno
         list<RegistroArbol*>::iterator it;
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
@@ -241,9 +251,11 @@ int NodoHoja::tamanioOcupado(){
 }
 
 
-
+/*
+ * Devuelve el registro correspondiente a la clave.
+ */
 RegistroArbol* NodoHoja::getRegistro(Clave clave){
-        //Devuelve el registro correspondiente a la clave
+
         list<RegistroArbol*>::iterator it;
         RegistroArbol * reg_actual = new RegistroArbol();
         for (it = this->elementos->begin(); it != this->elementos->end(); it++){
@@ -256,12 +268,14 @@ RegistroArbol* NodoHoja::getRegistro(Clave clave){
         return reg_actual;
 }
 
+
 bool NodoHoja::hayOverflow(){
 
 	int tamanioMaximo = getTamanioOverflow();
 
 	return ((tamanioMaximo) < (this->tamanioOcupado()));
 }
+
 
 bool NodoHoja::hayUnderflow(){
 
@@ -270,16 +284,21 @@ bool NodoHoja::hayUnderflow(){
 	return ((tamanioMinimo) > (this->tamanioOcupado()));
 }
 
+
 bool NodoHoja::estaVacio(){
-	return this->getElementos()->empty();}
+	return this->getElementos()->empty();
+}
 
 
+/*
+ * Elimina el registro correspondiente al valor ingresado.
+ * Devuelve:	0 si hubo un error.
+ * 				1 si no encuentro la clave o valor.
+ * 				2 si se borro exitosamente.
+ * 				si el nodo quedo en underflow.
+ */
 int NodoHoja::baja(Clave clave, string valor){
-        //Elimino el registro completo del valor requerido.
-        //Devuelve 3 si quedo en underflow
-        //Devuelve 2 si se borro exitosamente
-        // 1 si no contiene esa clave o valor
-        // 0 si hubo un error
+
         int indicador = 1;
         if (this->tieneLaClave(clave)){
                 //Si tiene la clave la borro
@@ -289,24 +308,19 @@ int NodoHoja::baja(Clave clave, string valor){
                 if (indicador == 3){
                         //Lo elimino de la lista
                         this->getElementos()->remove(reg);
-                        //Y de memoria
                         delete reg;
-                        // Seteo el indicador para que informe que se
-                        // borro exitosamente
                         indicador = 2;
-
-                        //decremento la cantidad de elementos
                         this->decrementarCantidadDeElementos();
                 }
         } else{
-                //Si no tiene la clave devuelve 1
                 indicador = 1;
         }
-        if (this->hayUnderflow()){ //Si es raiz no
+        if (this->hayUnderflow()){
                 indicador = 3;
         }
         return indicador;
 }
+
 
 void NodoHoja::setElementos(list<RegistroArbol*> * listaElementos){
 	this->elementos = listaElementos;
@@ -318,8 +332,9 @@ list<RegistroArbol*> * NodoHoja::getElementos(){
 	return this->elementos;
 }
 
+
 bool NodoHoja::capacidadMinima(){
-        //Devuelve true si se encuentra en la capacidad minima
+
         int aux = tamanioMaximoBloque * 0.25;
         RegistroArbol *reg;
         reg = this->getElementos()->back();
@@ -332,17 +347,17 @@ bool NodoHoja::capacidadMinima(){
 }
 
 
-
 int NodoHoja::cantidadDeRegistros(){
         //Devuelve la cantidad de registros en el nodo
         return this->getElementos()->size();
 }
 
 
-
+/*
+ * Busca la clave en todos los registros del nodo, si la encuentra devuelve su valor.
+ */
 string NodoHoja::buscarClave (Clave clave){
-        //Busca en todos los registros del nodo si tiene la clave. Si la tiene devuelve
-        //la lista correspondiente al registro
+
         list<RegistroArbol*>::iterator it;
         RegistroArbol * registro;
         Clave claveAux;
@@ -358,12 +373,14 @@ string NodoHoja::buscarClave (Clave clave){
 }
 
 
+/*
+ * Devuelve:	0 si el nodo no se actualizo.
+ * 				1 si el nodo se actualizo.
+ * 				2 si el nodo se desbordo.
+ * 				3 si ya existe el valor que quiero agregar.
+ */
 int NodoHoja::agregar(RegistroArbol * reg){
-        //Devuelve: 0 si el nodo no se actualizo
-        //                      1 si el nodo se actualizo
-        //                      2 si desbordo
-        //                      3 si ya existe el valor que quiero agregar
-        //Si ya tengo una clave igual, agrego a ese registro.
+
         int indicador = 1;
         if (this->tieneLaClave(reg->getClave())){
                 RegistroArbol * registro = this->getRegistro(reg->getClave());
@@ -397,8 +414,12 @@ Clave NodoHoja::getPrimerClave(){
         return (this->getElementos()->front())->getClaveEntera();
 }
 
+
+/*
+ * Elimina la ultima mitad de los registros del nodo y los devuelve.
+ */
 list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
-        //Elimina la ultima mitad de los registros del nodo y los devuelve.
+
         list<RegistroArbol*>::iterator it;
         int cantidad = cantidadDeRegistros();
         int aux = 0;
@@ -417,10 +438,12 @@ list<RegistroArbol*> * NodoHoja::getMitadDerecha(){
         return mitad_derecha;
 }
 
+
+/*
+ * Devuelve la clave del medio, para luego insertarla en el nodo padre
+ */
 Clave NodoHoja::getClaveDelMedio(){
 
-	//Funcion que se llama si el nodo esta en overflow. Devuelve la clave del medio para
-	//insertarla en algun futuro nodo padre
 	list<RegistroArbol*>::iterator it;
 	int cantidad = this->getElementos()->size();
 	int aux = 0;
@@ -435,7 +458,11 @@ Clave NodoHoja::getClaveDelMedio(){
 
 	return claveRetorno;
 }
-//devuelve la lista de los valores de los registros con clave "clave".
+
+
+/*
+ * Devuelve una lista con los valores de los registros con la clave ingresada.
+ */
 list<string> * NodoHoja::buscarYlistar(Clave clave){
 
 	list<string>* listaAdevolver = new list<string>();

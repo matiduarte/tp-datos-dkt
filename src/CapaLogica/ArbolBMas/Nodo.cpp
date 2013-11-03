@@ -26,8 +26,9 @@ Nodo::Nodo() {
 	}
 }
 
+
 Nodo::~Nodo() {
-	// TODO Auto-generated destructor stub
+
 }
 
 
@@ -38,7 +39,17 @@ unsigned int Nodo::getCantidadDeElementos(){
 
 unsigned int Nodo::getNumeroDeBloque(){
 	return this->NumeroDeBloque;
-};
+}
+
+
+int Nodo::getTamanioUnderflow(){
+	return tamanioMaximoBloque * 0.25;
+}
+
+
+int Nodo::getTamanioOverflow(){
+	return tamanioMaximoBloque * 0.8;
+}
 
 
 void Nodo::setNumeroDeBloque(unsigned int numeroDeBloque){
@@ -49,6 +60,17 @@ void Nodo::setNumeroDeBloque(unsigned int numeroDeBloque){
 unsigned int Nodo::getNivel(){
 		return(this->nivel);
 }
+
+
+void Nodo::setNivel(unsigned int nivel){
+	this->nivel = nivel;
+}
+
+
+void Nodo::setCantidadDeElementos(unsigned int cantidad){
+	this->cantidadDeElementos = cantidad;
+}
+
 
 Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 
@@ -68,39 +90,22 @@ Nodo* Nodo::cargar(ArchivoBloque* archivo, unsigned int indice){
 	}
 }
 
-void Nodo::setNivel(unsigned int nivel){
-	this->nivel = nivel;
-}
-
-
-void Nodo::setCantidadDeElementos(unsigned int cantidad){
-	this->cantidadDeElementos = cantidad;
-}
 
 void Nodo::incrementarNivel(){this->nivel++;}
 
 
 void Nodo::decrementarNivel(){this->nivel--;}
 
-int Nodo::getTamanioUnderflow(){
-
-	return tamanioMaximoBloque * 0.25;
-
-}
-
-int Nodo::getTamanioOverflow(){
-
-	return tamanioMaximoBloque * 0.8;
-
-}
 
 void Nodo::incrementarCantidadDeElementos(){
 	this->setCantidadDeElementos((this->getCantidadDeElementos())+1);
 }
 
+
 void Nodo::decrementarCantidadDeElementos(){
 	this->setCantidadDeElementos((this->getCantidadDeElementos())-1);;
 }
+
 
 //Redefinidos en los hijos:
 void Nodo::persistir(ArchivoBloque*& archivo){}
