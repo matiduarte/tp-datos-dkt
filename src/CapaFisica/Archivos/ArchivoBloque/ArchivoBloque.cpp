@@ -26,7 +26,6 @@ ArchivoBloque::ArchivoBloque(string nombre) {
     	archivo.open(nombre.c_str(), fstream::in | fstream::out | fstream::binary | fstream::trunc);
     	cantidadBloques=0;
     }else{
-
     	archivo.seekg(0, ios::beg);
     	archivo.read((char*)&cantidadBloques, sizeof(cantidadBloques));
     }
@@ -37,7 +36,6 @@ ArchivoBloque::ArchivoBloque(string nombre) {
 }
 
 ArchivoBloque::~ArchivoBloque() {
-
 	escribirEspaciosLibres();
 	archivo.seekp(0, ios::beg);
 	archivo.write((char*)&cantidadBloques, sizeof(cantidadBloques));

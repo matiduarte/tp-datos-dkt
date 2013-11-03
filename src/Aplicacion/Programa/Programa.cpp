@@ -8,7 +8,7 @@
 #include "Programa.h"
 
 Programa::Programa(){
-	indice = new Indice();
+	indice = new Indice("");
 	system("clear");
 }
 

@@ -46,6 +46,7 @@ private:
 	
 public:
 	Indice();
+	Indice(string ruta);
 	~Indice();
 	
 

@@ -1,9 +1,12 @@
 #include "Indice.h" 
 
 Indice::Indice(){
+}
+
+Indice::Indice(string ruta){
 	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
-	string rutaTabla = pLector->getValor("pathArchivoTabla");
-	string rutaNodos = pLector->getValor("pathArchivoNodos");
+	string rutaTabla = "tabla.dat";pLector->getValor("pathArchivoTabla");
+	string rutaNodos = "nodos.dat";//pLector->getValor("pathArchivoNodos");
 	
 	//Indices principales
 	this->indiceUsuario = new Hash(rutaBaseIndice+"Usuario"+rutaTabla,rutaBaseIndice+"Usuario"+rutaNodos);
@@ -112,7 +115,6 @@ bool Indice::agregarServicio(Servicio* servicio){
 	//Agrego las categorias a la lista invertida
 	int nuevaPosicion = this->listaCategoriasPorServicio->insertar(StringUtil::int2string(servicio->getId()), servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
-	
 	//Agrego la descripcion a terminos relevantes para busquedas
 	this->agregarCadenaATerminosRelevantes(servicio->getDescripcion(),StringUtil::int2string(servicio->getId()));
 	
@@ -261,7 +263,7 @@ void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 		string lista = "";
 		if(idTermino == "NO EXISTE"){
 			//Tengo que agregar la palabra porque no esta en el indice
-			string idTermino = this->obtenerNuevoId("idTerminoActual");
+			idTermino = this->obtenerNuevoId("idTerminoActual");
 			this->indiceTerminosId->agregarValor(*(new Clave(terminoActual)),idTermino);
 			this->indiceTerminos->insertarElemento(idTermino,"");
 			lista += idServicio + separadorCamposEntidades;
