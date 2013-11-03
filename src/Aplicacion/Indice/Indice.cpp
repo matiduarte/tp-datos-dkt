@@ -67,10 +67,14 @@ void Indice::modificarUsuario(Usuario* usuario){
 	}
 }
 
-void Indice::elimininarUsuario(Usuario* usuario){
-	this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
-	this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
-	this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+bool Indice::elimininarUsuario(Usuario* usuario){
+	try{
+		this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
+		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
+		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+	}catch(Excepcion& e){
+		return false;
+	}return true;
 }
 
 
@@ -130,20 +134,25 @@ void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	servicio->setPosicionCategorias(nuevaPosicion);
 }
 
-void Indice::eliminarServicio(Servicio* servicio){
-	this->indiceServicio->elminarElemento(StringUtil::int2string(servicio->getId()));
-	vector<Categoria*> categorias = servicio->getCategorias();
-	
-	this->indiceServicioPorIdProveedor->borrarValor(*(new Clave(StringUtil::int2string(servicio->getIdProveedor()))),StringUtil::int2string(servicio->getId()));
-	
-	//Elimino al indice secundario referencias de cada categoria
-	for(unsigned int i=0; i < categorias.size();i++){
-		Categoria* catActual = categorias.at(i);
-		this->indiceServicioPorCategoria->borrarValor(*(new Clave(catActual->getNombre())),StringUtil::int2string(servicio->getId()));
+bool Indice::eliminarServicio(Servicio* servicio){
+	try{
+		this->indiceServicio->elminarElemento(StringUtil::int2string(servicio->getId()));
+		vector<Categoria*> categorias = servicio->getCategorias();
+		
+		this->indiceServicioPorIdProveedor->borrarValor(*(new Clave(StringUtil::int2string(servicio->getIdProveedor()))),StringUtil::int2string(servicio->getId()));
+		
+		//Elimino al indice secundario referencias de cada categoria
+		for(unsigned int i=0; i < categorias.size();i++){
+			Categoria* catActual = categorias.at(i);
+			this->indiceServicioPorCategoria->borrarValor(*(new Clave(catActual->getNombre())),StringUtil::int2string(servicio->getId()));
+		}
+		
+		//Elimino la lista invertida
+		this->listaCategoriasPorServicio->borrar(servicio->getPosicionCategorias());
+	}catch(Excepcion& e){
+		return false;
 	}
-	
-	//Elimino la lista invertida
-	this->listaCategoriasPorServicio->borrar(servicio->getPosicionCategorias());
+	return true;
 }
 
 vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){

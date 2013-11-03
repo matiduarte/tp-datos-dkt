@@ -62,13 +62,13 @@ public:
 
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
-	void elimininarUsuario(Usuario* usuario);
+	bool elimininarUsuario(Usuario* usuario);
 	Usuario* buscarUsuario(string dni, string contrasena, bool &error);
 	
 	//Metodos servicios
 	bool agregarServicio(Servicio* servicio);
 	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
-	void eliminarServicio(Servicio* servicio);
+	bool eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);
 
