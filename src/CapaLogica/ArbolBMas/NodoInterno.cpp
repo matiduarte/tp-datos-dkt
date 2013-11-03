@@ -273,7 +273,7 @@ int NodoInterno::buscarClave(Clave clave){
 	list<Clave>::iterator it_claves;
 	it_claves = claves.begin();
 	while (it_claves != claves.end()){
-		if ((*it_claves)>(clave)){
+		if (((*it_claves).getClave()) > (clave.getClave())){
 			mayor = false;
 			break;
 		}

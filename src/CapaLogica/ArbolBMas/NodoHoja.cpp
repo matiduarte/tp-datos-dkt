@@ -194,7 +194,7 @@ int NodoHoja::agregar(Clave clave, string valor){
                 it=this->elementos->begin();
 
                 while (  (agregado==false) && (it!=this->elementos->end())  ){ //Busco el lugar que le corresponde en la lista
-                        if (clave<( (*it)->getClave() )){
+                        if (clave.getClave() < ((*it)->getClave())){
                                 this->elementos->insert(it,reg);
                                 agregado=true;
                         }
@@ -349,7 +349,7 @@ string NodoHoja::buscarClave (Clave clave){
         for (it = this->getElementos()->begin(); it != this->getElementos()->end(); ++it){
                 registro = *it;
                 claveAux  = registro->getClave();
-                if (claveAux==clave){
+                if (claveAux.getClave() == clave.getClave()){
                         return registro->getValor();
                 }
         }
@@ -447,7 +447,7 @@ list<string> * NodoHoja::buscarYlistar(Clave clave){
 	while ( it != this->getElementos()->end()){
 	        registro = *it;
 	        claveAux  = registro->getClave();
-	        if (claveAux==clave){
+	        if (claveAux.getClave() == clave.getClave()){
 	        listaAdevolver->push_back(registro->getValor());
 	        }
 	        it++;
