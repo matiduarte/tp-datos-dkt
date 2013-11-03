@@ -71,6 +71,7 @@ public:
 	bool eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);
+	vector<Servicio*> buscarServiciosCategoria(Categoria* categoria);
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);

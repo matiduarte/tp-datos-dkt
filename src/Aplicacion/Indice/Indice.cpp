@@ -119,6 +119,9 @@ bool Indice::agregarServicio(Servicio* servicio){
 	//Agrego las categorias a la lista invertida
 	int nuevaPosicion = this->listaCategoriasPorServicio->insertar(StringUtil::int2string(servicio->getId()), servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
+	this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
+	
+	
 	//Agrego la descripcion a terminos relevantes para busquedas
 	this->agregarCadenaATerminosRelevantes(servicio->getDescripcion(),StringUtil::int2string(servicio->getId()));
 	
@@ -132,6 +135,7 @@ void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	int posLista = servicio->getPosicionCategorias();
 	int nuevaPosicion = this->listaCategoriasPorServicio->modificar(posLista, servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
+	this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
 }
 
 bool Indice::eliminarServicio(Servicio* servicio){
@@ -198,6 +202,20 @@ vector<Servicio*> Indice::buscarServiciosPorPalabrasClave(string query){
 	}
 	
 	return resultadoServicio;
+}
+
+vector<Servicio*> Indice::buscarServiciosCategoria(Categoria* categoria){
+	list<string>* idsServicios = this->indiceServicioPorCategoria->elementosConIgualClave(*(new Clave(categoria->getNombre())));
+	vector<Servicio*> resultadoServicios;
+	for (std::list<string>::iterator it = idsServicios->begin(); it != idsServicios->end(); it++){
+		//Obtengo los ids de servicios
+		Servicio* ser = new Servicio();
+		string servicioSerializado = this->indiceServicio->buscarElemento(*it);
+		ser->desSerializar(servicioSerializado);
+		resultadoServicios.push_back(ser);
+	}
+	
+	return resultadoServicios;
 }
 
 
