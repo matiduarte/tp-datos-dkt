@@ -6,7 +6,8 @@ ListaInvertida::ListaInvertida(const string& rutaArchLista){
 
 unsigned int ListaInvertida::insertar(string idPalabra, string valor){
 	RegistroLista* regLista = new RegistroLista(idPalabra, valor);
-	return archivo->escribir((char*)regLista->serializar().c_str());
+	char* regSerializado = (char*)regLista->serializar().c_str();
+	return archivo->escribir(regSerializado);
 }
 unsigned int ListaInvertida::modificar(int posLista, string valor){
 	string buffer = string(this->archivo->sacar(posLista));
@@ -17,7 +18,7 @@ unsigned int ListaInvertida::modificar(int posLista, string valor){
 string ListaInvertida::obtener(unsigned int posicionLista,int* nuevaPosicion){
 	string buffer = string(this->archivo->sacar(posicionLista));
 	RegistroLista* reg = new RegistroLista(buffer);
-	posicionLista = this->insertar(reg->getIdElemento(),reg->getValor());
+	*nuevaPosicion = this->insertar(reg->getIdElemento(),reg->getValor());
 	return reg->getValor();
 }
 

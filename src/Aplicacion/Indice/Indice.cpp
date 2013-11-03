@@ -147,13 +147,13 @@ void Indice::eliminarServicio(Servicio* servicio){
 }
 
 vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
-	string valor = this->indiceServicioPorIdProveedor->buscarClave(StringUtil::int2string(usuario->getDni()));
 	//Obtengo todos los ids de servicios dado un usuario proveedor
-	vector<string> idsServicios;
+	list<string>* idsServicios = this->indiceServicioPorIdProveedor->elementosConIgualClave(StringUtil::int2string(usuario->getDni()));
+
 	vector<Servicio*> resultadoServicios;
-	for(unsigned int i=0; i<idsServicios.size();i++){
+	 for (std::list<string>::iterator it = idsServicios->begin(); it != idsServicios->end(); it++){
 		Servicio* ser = new Servicio();
-		string servicioSerializado = this->indiceServicio->buscarElemento(idsServicios.at(i));
+		string servicioSerializado = this->indiceServicio->buscarElemento(*it);
 		ser->desSerializar(servicioSerializado);
 		resultadoServicios.push_back(ser);
 	}
@@ -233,19 +233,19 @@ vector<string> Indice::parsearConsulta(string consulta){
 }
 
 vector<Consulta*> Indice::buscarConsultasHechasAUsuario(Usuario* usuario){
-	string valor = this->indiceServicioPorIdProveedor->buscarClave(StringUtil::int2string(usuario->getDni()));
 	//Aca tengo que tener todos los ids de los servicios del provvedor. Asi busco las preguntas de cada servicio
-	vector<string> idsServicios;
-	vector<string> idsConsulta;
-	for(unsigned int i=0; i< idsServicios.size();i++){
-		string valor2 = this->indiceConsultaPorIdServicio->buscarClave(idsServicios.at(i));
-		//Obtengo los ids de consultas dado un servicio. Y lo agrego al vector idsConsulta
+	list<string>* idsServicios  = this->indiceServicioPorIdProveedor->elementosConIgualClave(StringUtil::int2string(usuario->getDni()));
+
+	list<string>* idsConsulta;
+	for (std::list<string>::iterator it = idsServicios->begin(); it != idsServicios->end(); it++){
+		//Obtengo los ids de consultas dado un servicio
+		idsConsulta = this->indiceConsultaPorIdServicio->elementosConIgualClave(*it);
 	}
 	
 	vector<Consulta*> resultadoConsultas;
-	for(unsigned int j=0; j < idsConsulta.size();j++){
+	for (std::list<string>::iterator itCons = idsConsulta->begin(); itCons != idsConsulta->end(); itCons++){
 		Consulta* cons = new Consulta();
-		string consultaSerializada = this->indiceConsulta->buscarElemento(idsServicios.at(j));
+		string consultaSerializada = this->indiceConsulta->buscarElemento(*itCons);
 		cons->desSerializar(consultaSerializada);
 		resultadoConsultas.push_back(cons);
 	}
