@@ -72,7 +72,7 @@ bool RegistroArbol::existe(string clave){
 }
 
 int RegistroArbol::agregar(Clave clave, string valor){
-
+//TODO: refactorizar aqui.
 	string id = clave.getClave();
 
 			this->setClave(id);

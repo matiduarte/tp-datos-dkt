@@ -435,7 +435,7 @@ Clave NodoHoja::getClaveDelMedio(){
 
 	return claveRetorno;
 }
-
+//devuelve la lista de los valores de los registros con clave "clave".
 list<string> * NodoHoja::buscarYlistar(Clave clave){
 
 	list<string>* listaAdevolver = new list<string>();

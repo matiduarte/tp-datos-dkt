@@ -851,11 +851,16 @@ int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoIntern
         return 0;
 }
 
+
+/*
+ * devuelve una lista con los elementos con la clave igual a "clave".
+ */
 list<string> * ArbolBMas::elementosConIgualClave(Clave clave){
 
 	list<string>* listaAdevolver = new list<string>();
 	list<string>* listaAux = new list<string>();
 
+//si la raiz es hoja,resuelve; sino recorre todas las hojas.
 	if( this->raiz->getNivel() == 0){
 		return ((NodoHoja*)this->raiz)->buscarYlistar(clave);
 	}
