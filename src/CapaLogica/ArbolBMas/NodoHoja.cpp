@@ -355,6 +355,7 @@ int NodoHoja::cantidadDeRegistros(){
 
 /*
  * Busca la clave en todos los registros del nodo, si la encuentra devuelve su valor.
+ * TODO: que hacemos si no existe? por ahora devuelve "NO EXISTE"
  */
 string NodoHoja::buscarClave (Clave clave){
 
@@ -369,7 +370,7 @@ string NodoHoja::buscarClave (Clave clave){
                 }
         }
 
-        return "NO EXISTE"; //ARREGLAR ESTO, HACER ALGO PORQUE NO EXISTE MAS
+        return "NO EXISTE";
 }
 
 
