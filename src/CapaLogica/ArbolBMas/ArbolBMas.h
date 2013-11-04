@@ -22,36 +22,29 @@ using namespace std;
 class ArbolBMas {
 
 private:
+
+	//Atributos
 	ArchivoBloque* archivo;
 	Nodo* raiz;
 
-public:
-	ArbolBMas();
-	ArbolBMas(string);
-	virtual ~ArbolBMas();
-	void persistir();
+	//Metodos
+	int agregarRecursivamente (Nodo* nodo, Clave clave, string valor);
+	int borrarRecursivamente(Nodo* nodo, Clave clave, string valor);
+	void mostrarArbolRecursivamente(Nodo* nodo);
 
-    int agregarValor(Clave clave, string valor);
-    int agregarRecursivamente (Nodo* nodo, Clave clave, string valor);
-    int borrarValor(Clave clave, string valor);
-    int borrarRecursivamente(Nodo* nodo, Clave clave, string valor);
+	void partirRaiz();
+	void partirRaizHoja();
+	void partirNodoRaizInterno();
 
-    void mostrarRaiz();
-    void mostrarArbol();
-    void mostrarArbolRecursivo(Nodo* nodo);
 
 	int partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
 	int partirNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 
-	void partirNodoRaiz();
-	void partirNodoRaizHoja();
-	void partirNodoRaizInterno();
-
+	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
 	int balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoNuevo);
-	int mergeNodoHojaDerecho(NodoInterno* nodoPadre, NodoHoja* nodoIzq, NodoHoja* nodoDer);
-	int equilibrarNodoHojaDerecho(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
-	int mergeNodoHojaIzquierdo(NodoInterno* nodoPadre,NodoHoja* nodoDer,NodoHoja* nodoIzq);
-	int equilibrarNodoHojaIzquierdo(NodoInterno* nodoPadre,NodoHoja* nodoDer,NodoHoja* nodoIzq);
+	int equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
+	int mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnder, NodoHoja* nodoBalanceo);
+
 
 	int balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nuevoNodoActual);
 	int mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
@@ -59,13 +52,23 @@ public:
 	int mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 
-    string buscarClave (Clave clave);
+	string buscarClaveRecursivamente(Clave clave, Nodo* nodoActual);
 	string buscarEnLaRaizHoja(Clave clave);
-	string buscarClaveRecursivo(Clave clave, Nodo* nodoActual);
 
-	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
+public:
 
-	 list<string> * elementosConIgualClave(Clave clave);
+	ArbolBMas();
+	ArbolBMas(string);
+	virtual ~ArbolBMas();
+	void persistir();
+
+    int agregarValor(Clave clave, string valor);
+    int borrarValor(Clave clave, string valor);
+
+    void mostrarArbol();
+
+    string buscarClave (Clave clave);
+    list<string> * elementosConIgualClave(Clave clave);
 };
 
 #endif /* ARBOLBMAS_H_ */

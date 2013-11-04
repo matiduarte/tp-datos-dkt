@@ -44,7 +44,7 @@ string ArbolBMas::buscarClave (Clave clave){
 	if (raiz->getNivel() == 0){
 		valor = buscarEnLaRaizHoja(clave);
 	}else{
-		valor = buscarClaveRecursivo(clave, this->raiz);
+		valor = this->buscarClaveRecursivamente(clave, this->raiz);
 	}
 
 	return valor;
@@ -55,49 +55,42 @@ string ArbolBMas::buscarEnLaRaizHoja(Clave clave){
 	return ((NodoHoja*)raiz)->buscarClave(clave);
 }
 
+
 void ArbolBMas::mostrarArbol(){
 
-	return mostrarRaiz();
+	if (raiz->getNivel()==0){
+		((NodoHoja *)raiz)->mostrar();
+		return;
+    }else{
+    	((NodoInterno * )raiz)->mostrar();
+    	list<unsigned int> hijos = ((NodoInterno*)raiz)->getHijos();
+    	list<unsigned int>::iterator it;
+    	for (it = hijos.begin(); it != hijos.end(); it++){
+    		Nodo* nodo = Nodo::cargar(this->archivo,*it);
+    		mostrarArbolRecursivamente(nodo);
+    	}
+    }
 }
 
-void ArbolBMas::mostrarRaiz(){
-        if (raiz->getNivel()==0){
-                ((NodoHoja *)raiz)->mostrar();
-                return;
-        }else{
-                ((NodoInterno * )raiz)->mostrar();
-                list<unsigned int> hijos = ((NodoInterno*)raiz)->getHijos();
-                list<unsigned int>::iterator it_hijos;
-                for (it_hijos = hijos.begin(); it_hijos != hijos.end(); it_hijos++){
-                        //los cargo y devuelvo mostrar recursivo de c/u
-                        Nodo* nodo_hijo = Nodo::cargar(this->archivo,*it_hijos);
-                        mostrarArbolRecursivo(nodo_hijo);
-                }
-        }
-}
+void ArbolBMas::mostrarArbolRecursivamente(Nodo* nodo){
 
-void ArbolBMas::mostrarArbolRecursivo(Nodo* nodo_actual){
-        if (nodo_actual->getNivel()==0){
-                //si es un nodo hoja se muestra
-                ((NodoHoja*)nodo_actual)->mostrar();
-                delete nodo_actual;
-        }else{
-                ((NodoInterno*)nodo_actual)->mostrar();
-                //si es un nodo interno obtengo una lista de hijos
-                list<unsigned int> hijos = ((NodoInterno*)nodo_actual)->getHijos();
-                //cargo uno por uno
-                list<unsigned int>::iterator it_hijos;
-                for (it_hijos = hijos.begin(); it_hijos != hijos.end(); it_hijos++){
-                                //los cargo y devuelvo mostrar recursivo de c/u
-                                Nodo* nodo_hijo = Nodo::cargar(this->archivo,*it_hijos);
-                                mostrarArbolRecursivo(nodo_hijo);
-                                //delete nodo_hijo;
-                }
-                delete nodo_actual;
-        }
+	if (nodo->getNivel()==0){
+		//Es hoja muestro directamente
+		((NodoHoja*)nodo)->mostrar();
+		delete nodo;
+    }else{
+    	((NodoInterno*)nodo)->mostrar();
+    	list<unsigned int> hijos = ((NodoInterno*)nodo)->getHijos();
+    	list<unsigned int>::iterator it;
+    	for (it = hijos.begin(); it != hijos.end(); it++){
+    		Nodo* nodoHijo = Nodo::cargar(this->archivo,*it);
+    		mostrarArbolRecursivamente(nodoHijo);
+    	}
+    	delete nodo;
+    }
 
 }
-string ArbolBMas::buscarClaveRecursivo(Clave clave, Nodo* nodoActual){
+string ArbolBMas::buscarClaveRecursivamente(Clave clave, Nodo* nodoActual){
 
 
 	string valor;
@@ -117,7 +110,7 @@ string ArbolBMas::buscarClaveRecursivo(Clave clave, Nodo* nodoActual){
             	nodoNuevo = nodoInt->buscarNodo(indice);
             }
     	Nodo* nodoNuevoHidratado = Nodo::cargar(this->archivo,nodoNuevo);
-    	valor =  buscarClaveRecursivo(clave,nodoNuevoHidratado);
+    	valor =  buscarClaveRecursivamente(clave,nodoNuevoHidratado);
     }
 
     return valor;
@@ -126,23 +119,22 @@ string ArbolBMas::buscarClaveRecursivo(Clave clave, Nodo* nodoActual){
 int ArbolBMas::agregarValor(Clave clave, string valor){
 
 	//Agrega una clave con su respectivo valor
-	//Devuelve: 0 si el nodo no se actualizo
-	//1 si el nodo se actualizo
-	//3 si ya existe el valor
+	// 0 --> Nodo no se actualizo
+	// 1 --> Nodo se actualizo correctamente
+	// 2 --> Raiz en Overflow
+	// 3 --> El conjunto clave - valor ya existe
 	int resultado = 0;
 	if (this->raiz->getNivel() == 0){
-		//Si la raiz tiene 0 de nivel entonces es un nodo hoja
+		//Es una hoja, agrego directamente
 		resultado = ((NodoHoja*)raiz)->agregar(clave,valor);
 		if (resultado == 2){
-			//Significa que la raiz esta en overflow
-			partirNodoRaiz();
+			this->partirRaiz();
 		}
 	}else{
-		//Si la raiz no es hoja agrego recursivamente
+		//Si no es una hoja, agrego recursivamente
 		resultado = this->agregarRecursivamente(raiz, clave, valor);
 		if (resultado == 2){
-			//Significa que la raiz esta en overflow
-			partirNodoRaiz();
+			this->partirRaiz();
 		}
     }
 	this->raiz->persistir(this->archivo);
@@ -150,47 +142,46 @@ int ArbolBMas::agregarValor(Clave clave, string valor){
 }
 
 
-void ArbolBMas::partirNodoRaiz(){
+void ArbolBMas::partirRaiz(){
 
 	//Decide cual metodo hay que utilizar
 	if (raiz->getNivel() == 0){
-		partirNodoRaizHoja();
+		this->partirRaizHoja();
     } else {
-    	partirNodoRaizInterno();
+    	this->partirNodoRaizInterno();
     }
 }
 
-void ArbolBMas::partirNodoRaizHoja(){
+void ArbolBMas::partirRaizHoja(){
 
 	/*
-	 * Parte el nodo raiz hoja y persiste lo necesario.
-	 * Deja el ex nodo raiz hoja como hijo izquierdo,
-	 * un nuevo nodo interno como raiz,
-	 * un nuevo nodo hoja derecho como hijo derecho.
+	 *  Parte a la raiz dejando su contenido como hijo izquierdo.
+	 *  Crea un nuevo nodo interno como raiz y
+	 *  un nuevo nodo hoja como hijo derecho
 	 *
-	 * Deja solamente el nodo raiz cargado en memoria.
-	 * Persiste los hijos.
 	 */
 
-	//Crea un nodo derecho
 	NodoHoja * nodoDerecho = new NodoHoja(this->archivo);
 
-	//Setea el siguiente del izquierdo como el derecho
-	((NodoHoja*)this->raiz)->setSiguiente(nodoDerecho->getNumeroDeBloque());
+	//El contenido de la raiz pasa al hijo izq
+	NodoHoja* nodoIzquierdo = ((NodoHoja*)this->raiz);
 
-	//Copio la referencia
-	Nodo* nodoIzquierdo = this->raiz;
-	//El nodo raiz ahora va a ser un nuevo nodo interno:
+	//Seteo ref al siguiente
+	nodoIzquierdo->setSiguiente(nodoDerecho->getNumeroDeBloque());
+
 	this->raiz = new NodoInterno(this->archivo);
-	//setea la referencia a izq de la raiz al nodo izq
 
-	balancearADerecha((NodoHoja*)nodoIzquierdo,nodoDerecho, ((NodoInterno*)this->raiz));
+	this->balancearADerecha(nodoIzquierdo , nodoDerecho, ((NodoInterno*)this->raiz));
+
+	//Seteo ref a hijos
 	((NodoInterno*)this->raiz)->setReferenciaAIzq(nodoIzquierdo);
 	((NodoInterno*)this->raiz)->setReferenciaADer(nodoDerecho);
 	((NodoInterno*)this->raiz)->incrementarNivel();
-	//persisto los nodos hijos, la raiz se persiste en otra funcion
+
+	//Persisto
 	nodoIzquierdo->persistir(archivo);
 	nodoDerecho->persistir(archivo);
+
 	delete nodoIzquierdo;
 	delete nodoDerecho;
 
@@ -230,16 +221,16 @@ void ArbolBMas::partirNodoRaizInterno() {
 
 void ArbolBMas::balancearADerecha(NodoHoja * nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre){
 
+
 	Clave claveMedio = nodoIzq->getClaveDelMedio();
 	list<RegistroArbol*> *mitadDerechaNodoIzq = nodoIzq->getMitadDerecha();
 
 	nodoDer->agregar(mitadDerechaNodoIzq);
-
 	nodoPadre->agregarClave(claveMedio);
-	//Cambio el numero de bloque del izq al padre.
+
 	unsigned int indiceNodoIzq = nodoIzq->getNumeroDeBloque();
 	unsigned int indiceNodoDer = nodoPadre->getNumeroDeBloque();
-	//intercambio
+
 	nodoIzq->setNumeroDeBloque(indiceNodoDer);
 	nodoPadre->setNumeroDeBloque(indiceNodoIzq);
 
@@ -399,31 +390,27 @@ int ArbolBMas::partirNodoInterno(NodoInterno* nodoPadre, NodoInterno* nodoHijo){
 int ArbolBMas::borrarRecursivamente(Nodo* nodoActual, Clave clave, string valor){
 
 	int estado = 0;
-	//Si es un nodo hoja hay que dar de baja desde ahi
+	//Si es hoja, borro directamente
 	if (nodoActual->getNivel() == 0){
 		int retorno = ((NodoHoja*)nodoActual)->baja(clave, valor);
 		((NodoHoja*)nodoActual)->persistir(this->archivo);
 		return retorno;
     }else{
-    	//Si es un nodo interno obtengo su indice
+    	//Si no es hoja, busco su indice
     	int indiceNodoInt = ((NodoInterno*)nodoActual)->buscarClave(clave);
     	unsigned int indiceArchivo = 0;
+    	//Clave mayor a todas
     	if (indiceNodoInt == -1){
-    		//Si el indice en el nodo interno es -1
-    		//la clave es la mayor de todas
     		indiceArchivo = ((NodoInterno*)nodoActual)->getUltimoNodo();
     	} else {
-    		//Si no es -1 obtengo el nodo con el indice que tengo
     		indiceArchivo = ((NodoInterno*)nodoActual)->buscarNodo(indiceNodoInt);
     	}
-    	//Hidrato el nodo
     	Nodo* nodoNuevo = Nodo::cargar(this->archivo,indiceArchivo);
     	estado = borrarRecursivamente (nodoNuevo, clave, valor);
+    	//Hay underflow
     	if (estado == 3){
-    		//Si el estado es 3, hay underflow
-    		//Me fijo si es en un nodo interno o un hoja
     		if (nodoNuevo->getNivel() == 0){
-    			//Nivel 0, es una hoja
+    			//Es hoja
     			return this->balancearNodoHoja((NodoInterno*)nodoActual, (NodoHoja*)nodoNuevo);
     		}else{
     			//Es un nodo interno
@@ -436,31 +423,29 @@ int ArbolBMas::borrarRecursivamente(Nodo* nodoActual, Clave clave, string valor)
 }
 
 
-int ArbolBMas::balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoNuevo){
+int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow){
 
-	//Nodo nuevo esta en underflow
-	//Tengo que conseguir otro nodo para balancearlo o hacer merge
-	if (nodoNuevo->getSiguiente()){
-		//Si tiene siguiente (a derecha) lo cargo y listo
-		Nodo* nodoABalancear = Nodo::cargar(this->archivo,nodoNuevo->getSiguiente());
-		// Tengo 2 casos, si el nodoBalanceo se encuentra en capacidad minima
-		// hay que hacer un merge
-		if (((NodoHoja*)nodoABalancear)->capacidadMinima()){
-			//Hay que hacer un merge
-			return mergeNodoHojaDerecho(nodoActual,nodoNuevo,(NodoHoja*)nodoABalancear);
+	// Busco un nodo para equilibrar o hacer merge
+	if (nodoUnderflow->getSiguiente()){
+		//Si tiene hermando derecho lo cargo directamente
+		Nodo* nodoParaBalancear = Nodo::cargar(this->archivo,nodoUnderflow->getSiguiente());
+		//Si tiene capacidad minima tengo que hacer merge
+		if (((NodoHoja*)nodoParaBalancear)->capacidadMinima()){
+			cout << "Opcion 1" << endl;
+			return this->mergeNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
 		}else{
-			//Balanceo
-			return equilibrarNodoHojaDerecho(nodoActual,nodoNuevo,(NodoHoja*)nodoABalancear);
+			//Si no balanceo
+			return this->equilibrarNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
 		}
     }else{
-    	// Si no tiene nodo a derecha busco al hijo izquierdo del padre
-    	unsigned int indiceNodoBalanceado =  nodoActual->getNodoAnteriorA(nodoNuevo->getNumeroDeBloque());
-    	Nodo* nodoABalancear = Nodo::cargar(this->archivo,indiceNodoBalanceado);
-    	if (((NodoHoja*)nodoABalancear)->capacidadMinima()){
-    		//Hay que hacer un merge
-    		return mergeNodoHojaIzquierdo(nodoActual,nodoNuevo,(NodoHoja*)nodoABalancear);
+    	//No tiene hermano derecho, busco el izquierdo
+    	unsigned int indiceNodoBuscado =  nodoPadre->getNodoAnteriorA(nodoUnderflow->getNumeroDeBloque());
+    	Nodo* nodoParaBalancear = Nodo::cargar(this->archivo,indiceNodoBuscado);
+    	if (((NodoHoja*)nodoParaBalancear)->capacidadMinima()){
+    		cout << "Opcion 2" << endl;
+    		return this->mergeNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
     	}else{
-    		return equilibrarNodoHojaIzquierdo(nodoActual,nodoNuevo,(NodoHoja*)nodoABalancear);
+    		return this->equilibrarNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
     	}
     }
 }
@@ -498,54 +483,58 @@ int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoNue
 	}
 }
 
-int ArbolBMas::mergeNodoHojaDerecho(NodoInterno* nodoPadre, NodoHoja* nodoIzq, NodoHoja* nodoDer){
+int ArbolBMas::mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow, NodoHoja* nodoParaBalancear){
 
-	/* Hace un merge al nodo de la derecha,
-	*  devuelve 1 si el padre queda en overflow, 0 si todo esta bien.
-	*/
-	list<RegistroArbol*> *listaDer = nodoDer->getElementos();
-	//Agrego todo al nodo de la izq
-	nodoIzq->agregar(listaDer);
-	nodoIzq->setSiguiente(nodoDer->getSiguiente());
+
+	list<RegistroArbol*> *listaElementos = nodoUnderflow->getElementos();
+
+	nodoParaBalancear->agregar(listaElementos);
+
+	unsigned int siguiente = nodoUnderflow->getSiguiente();
+	nodoParaBalancear->setSiguiente(siguiente);
+
 	//Busco la primer clave de la lista derecha,
 	//que la tengo que borrar en el nodo padre
-	Clave clave = (listaDer->front())->getClave();
+	Clave clave = (listaElementos->front())->getClave();
 	Clave claveAEliminar= clave;
 	//Busco el indice del nodo correspondiente a la clave
-	unsigned int i = nodoDer->getNumeroDeBloque();
+	unsigned int i = nodoUnderflow->getNumeroDeBloque();
 	//La borro
 	nodoPadre->borrarClave(claveAEliminar);
 	nodoPadre->borrarReferencia(i);
-	//Borro el de la derecha
-	this->archivo->borrar(nodoDer->getNumeroDeBloque());
+	//Borro el que estaba en underflow
+	unsigned int numeroDeBloque = nodoUnderflow->getNumeroDeBloque();
 
-	nodoIzq->persistir(this->archivo);
+	this->archivo->borrar(numeroDeBloque);
+
+	nodoParaBalancear->persistir(this->archivo);
 	nodoPadre->persistir(this->archivo);
-	delete nodoDer;
+
+	delete nodoUnderflow;
 		if (nodoPadre->hayUnderflow()) return 3;
 	return 0;
 }
 
-int ArbolBMas::equilibrarNodoHojaDerecho(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer){
+int ArbolBMas::equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer){
 
-	//Saco de los nodos sus respectivas listas y las 'concateno'
-	list<RegistroArbol*> * listaTotal = nodoIzq->getElementos();
+	//Consigo los elementos de los dos hijos
+	list<RegistroArbol*> * listaIzq = nodoIzq->getElementos();
 	list<RegistroArbol*> * listaDer = nodoDer->getElementos();
-	//Consigo la clave del nodo de la derecha porque despues me va a servir
+
 	Clave clave = listaDer->front()->getClaveEntera();
-	listaTotal->splice(listaTotal->end(), *listaDer);
-	//Me fijo cual es el tamaño total de los registros de la lista
+	//Agrego todo al hijo izquierdo
+	listaIzq->splice(listaIzq->end(), *listaDer);
+	//Busco el tamanio total de la lista
 	int tamanioTotal = 0;
 	int sumador = 0;
 	list<RegistroArbol*>::iterator it;
-	for (it = listaTotal->begin(); it != listaTotal->end(); it++){
+	for (it = listaIzq->begin(); it != listaIzq->end(); it++){
 		tamanioTotal += (*it)->cantidadDeBytesOcupados();
     }
-	//Recorro la lista con un sumador
-	//Cuando el sumador llega a la mitad del tam total parto la lista
-	//Le doy una a un nodo y la otra al otro
+
+	//Recorro la lista a la mitad y la agrego a la lista derecha
 	int contador = 0;
-	for (it = listaTotal->begin(); it != listaTotal->end(); it++){
+	for (it = listaIzq->begin(); it != listaIzq->end(); it++){
 		sumador += (*it)->cantidadDeBytesOcupados();
 		if (sumador <= tamanioTotal/2){
 			//Agregar a la lista
@@ -553,97 +542,27 @@ int ArbolBMas::equilibrarNodoHojaDerecho(NodoInterno* nodoPadre,NodoHoja* nodoIz
 			listaDer->push_back(*it);
 		}else {break;}
     }
+
+	//Elimino la mitad del comienzo
 	for (int i = 0; i <contador; i++){
-		listaTotal->pop_front();
+		listaIzq->pop_front();
     }
-	// Quedo la lista derecha con las claves mas pequeñas
-	// y la lista total con las mas grandes
+	// La lista derecha tiene las claves mas chicas
 	nodoIzq->setElementos(listaDer);
-	nodoDer->setElementos(listaTotal);
-	//Borro la ex clave del nodo de la derecha
+	nodoDer->setElementos(listaIzq);
+	//Elimino la clave del padre
 	nodoPadre->borrarClave(clave);
-	//Agrego la clave del primer elemento de la lista del nodo de la derecha
+	//Agrego la nueva clave al padre
 	nodoPadre->agregarClave(nodoDer->getElementos()->front()->getClaveEntera());
-	//Si antes no estaba en underflow ahora tampoco, porque tiene la misma cantidad de claves.
+
+
 	nodoIzq->persistir(this->archivo);
 	nodoPadre->persistir(this->archivo);
 	nodoDer->persistir(this->archivo);
+
 	return 0;
 }
 
-int ArbolBMas::mergeNodoHojaIzquierdo(NodoInterno* nodoPadre,NodoHoja* nodoDer,NodoHoja* nodoIzq){
-
-	//El nodo de la derecha es el que esta en underflow, hace merge con el nodo de la izquierda
-	//Devuelve 1 si el padre queda en over, 0 si todo esta bien
-	//Saco la lista del nodo de la derecha
-	list<RegistroArbol*> * listaDer = nodoDer->getElementos();
-	//Agrego todo al nodo de la izq
-	nodoIzq->agregar(listaDer);
-	nodoIzq->setSiguiente(nodoDer->getSiguiente());
-	//Busco la primer clave de la lista derecha, que la tengo que borrar en el nodo padre
-	Clave clave = (listaDer->front())->getClaveEntera();
-	Clave claveABorrar = clave;
-	//Busco el indice del nodo correspondiente a la clave
-	unsigned int i = nodoDer->getNumeroDeBloque();
-	//La borro
-	nodoPadre->borrarClave(claveABorrar);
-	nodoPadre->borrarReferencia(i);
-	//Borro el de la derecha
-	this->archivo->borrar(nodoDer->getNumeroDeBloque());
-	//Persisto
-	nodoIzq->persistir(this->archivo);
-	nodoPadre->persistir(this->archivo);
-	delete nodoDer;
-	if (nodoPadre->hayUnderflow()) return 3;
-	return 0;
-
-}
-
-int ArbolBMas::equilibrarNodoHojaIzquierdo(NodoInterno* nodoPadre, NodoHoja* nodoDerecho, NodoHoja* nodoIzq){
-
-	//Saco de los nodos sus respectivas listas y las 'concateno'
-	list<RegistroArbol*> *listaTotal = nodoIzq->getElementos();
-	list<RegistroArbol*> *listaDer = nodoDerecho->getElementos();
-	//Consigo la clave del nodo de la derecha porque despues me va a servir
-	Clave clave =  listaDer->front()->getClave();
-	Clave claveABorrar = clave;
-	listaTotal->splice(listaTotal->end(), *listaDer);
-	//Me fijo cual es el tamaño total de los registros de la lista
-	int tamanio_total=0;
-	int sumador = 0;
-	list<RegistroArbol*>::iterator it;
-	for (it = listaTotal->begin(); it != listaTotal->end(); it++){
-		tamanio_total += (*it)->cantidadDeBytesOcupados();
-    }
-	//Recorro la lista con un sumador
-	//Cuando el sumador llega a la mitad del tam total parto la lista
-	//Le doy una a un nodo y la otra al otro
-	int contador = 0;
-	for (it = listaTotal->begin(); it != listaTotal->end(); it++){
-		sumador += (*it)->cantidadDeBytesOcupados();
-		if (sumador<= tamanio_total/2){
-			//Agregar a la lista
-			contador++;
-			listaDer->push_back(*it);
-		}else {break;}
-	}
-
-    for (int i = 0; i <contador; i++){
-    	listaTotal->pop_front();
-    }
-	//Quedo la lista derecha con las claves mas pequeñas y la lista total con las mas grandes
-	nodoIzq->setElementos(listaDer);
-	nodoDerecho->setElementos(listaTotal);
-	//Borro la ex clave del nodo de la derecha
-	nodoPadre->borrarClave(claveABorrar);
-	//Agrego la clave del primer elemento de la lista del nodo de la derecha
-	nodoPadre->agregarClave(nodoDerecho->getElementos()->front()->getClaveEntera());
-	//Si antes no estaba en underflow ahora tampoco, porque tiene la misma cantidad de claves.
-	nodoIzq->persistir(this->archivo);
-	nodoPadre->persistir(this->archivo);
-	nodoDerecho->persistir(this->archivo);
-	return 0;
-}
 
 
 int ArbolBMas::mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
