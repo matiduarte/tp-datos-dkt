@@ -168,6 +168,11 @@ vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
 		Servicio* ser = new Servicio();
 		string servicioSerializado = this->indiceServicio->buscarElemento(*it);
 		ser->desSerializar(servicioSerializado);
+		int nuevaPos;
+		string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
+		ser->deserializarCategorias(catsSerializadas);
+		ser->setPosicionCategorias(nuevaPos);
+		this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 		resultadoServicios.push_back(ser);
 	}
 	return resultadoServicios;
@@ -195,6 +200,11 @@ vector<Servicio*> Indice::buscarServiciosPorPalabrasClave(string query){
 					Servicio* ser = new Servicio();
 					string servicioSerializado = this->indiceServicio->buscarElemento(idsServicio.at(j));
 					ser->deserializarCategorias(servicioSerializado);
+					int nuevaPos;
+					string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
+					ser->deserializarCategorias(catsSerializadas);
+					ser->setPosicionCategorias(nuevaPos);
+					this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 					resultadoServicio.push_back(ser);
 				}
 			}
@@ -212,6 +222,11 @@ vector<Servicio*> Indice::buscarServiciosCategoria(Categoria* categoria){
 		Servicio* ser = new Servicio();
 		string servicioSerializado = this->indiceServicio->buscarElemento(*it);
 		ser->desSerializar(servicioSerializado);
+		int nuevaPos;
+		string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
+		ser->deserializarCategorias(catsSerializadas);
+		ser->setPosicionCategorias(nuevaPos);
+		this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 		resultadoServicios.push_back(ser);
 	}
 	
