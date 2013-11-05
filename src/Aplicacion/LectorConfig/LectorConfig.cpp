@@ -37,7 +37,6 @@ LectorConfig::~LectorConfig() {
 	FILE *archivo;
 	archivo = fopen(nombreArchivo.c_str(),"w");
 
-
 	for(unsigned int i=0; i< vectorDatos.size(); i++){
 
 		string linea = vectorDatos.at(i).nombreVariable + '=' + vectorDatos.at(i).valorVariable;
@@ -93,6 +92,15 @@ int LectorConfig::stringToInt(const string& valor){
 	int retorno;
 	istringstream stream(valor);
 	return stream>>retorno? retorno:-1;
+}
+
+string LectorConfig::intToString(int value){
+	std::string s;
+	std::stringstream out;
+	out << value;
+	s = out.str();
+
+	return s;
 }
 
 Dato LectorConfig::parsearLinea(char linea[]){

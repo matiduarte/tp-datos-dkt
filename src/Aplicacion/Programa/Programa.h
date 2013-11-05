@@ -8,11 +8,11 @@
 #ifndef PROGRAMA_H_
 #define PROGRAMA_H_
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
-#include <termios.h>
+#include <stdlib.h>
 #include <iostream>
+#include <termios.h>
 #include "../constantes.h"
 #include "../Indice/Indice.h"
 using namespace std;

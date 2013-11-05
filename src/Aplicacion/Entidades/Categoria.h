@@ -4,6 +4,7 @@
 #include <string>
 #include "..//Utiles/StringUtil.h"
 #include "../../Aplicacion/constantes.h"
+#include "../../Aplicacion/LectorConfig/LectorConfig.h"
 
 using namespace std;
 
@@ -13,6 +14,7 @@ private:
 	int id;
 	string nombre;
 	string descripcion;
+
 public:
 	Categoria();
 	~Categoria();

@@ -2,8 +2,11 @@
 #define CONSULTA_H_
 
 #include <string>
-#include "..//Utiles/StringUtil.h"
+#include "../Utiles/StringUtil.h"
 #include "../../Aplicacion/constantes.h"
+#include "../../Aplicacion/LectorConfig/LectorConfig.h"
+
+#include "../Utiles/FechaYHora.h"
 
 using namespace std;
 
@@ -20,6 +23,7 @@ private:
 	string fechaRespuesta;
 	string horaRespuesta;
 	bool oculta;
+
 public:
 	Consulta();
 	~Consulta();

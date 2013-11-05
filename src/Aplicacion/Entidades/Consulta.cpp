@@ -2,6 +2,15 @@
 
 Consulta::Consulta(){
 	
+	LectorConfig* lector = LectorConfig::getLector(rutaConfig);
+	int identificador = lector->stringToInt(lector->getValor("idUltimaConsulta"));
+	identificador++;
+	lector->setValor("idUltimaConsulta", lector->intToString(identificador));
+	delete lector;	//para guardar en el archivo el nuevo valor
+
+	this->id = identificador;
+	this->fechaConsulta = FechaYHora::setFechaAAAAMMDD();
+	this->horaConsulta = FechaYHora::setHoraHHMM();
 }
 
 string Consulta::serializar(){

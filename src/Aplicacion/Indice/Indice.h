@@ -1,15 +1,16 @@
 #ifndef INDICE_H_
 #define INDICE_H_
 
+#include "../../CapaLogica/ListaInvertida/ListaInvertida.h"
 #include "../../CapaLogica/HashExtensible/Hash.h"
 #include "../../CapaLogica/ArbolBMas/ArbolBMas.h"
-#include "../../CapaLogica/ListaInvertida/ListaInvertida.h"
-#include "..//Utiles/StringUtil.h"
-#include "../Entidades/Usuario.h"
-#include "../Entidades/Servicio.h"
-#include "../Entidades/Consulta.h"
+#include "../LectorConfig/LectorConfig.h"
 #include "../../Aplicacion/constantes.h"
 #include "../Diccionario/Diccionario.h"
+#include "..//Utiles/StringUtil.h"
+#include "../Entidades/Servicio.h"
+#include "../Entidades/Consulta.h"
+#include "../Entidades/Usuario.h"
 #include <string.h>
 
 using namespace std;
