@@ -43,12 +43,9 @@ public:
 	bool getOculta();
 	
 	//Setters
-	void setId(int id);
 	void setIdServicio(int idServicio);
 	void setIdUsuario(int idUsuario);
 	void setConsulta(string consulta);
-	void setFechaConsulta(string fechaConsulta);
-	void setHoraConsulta(string horaConsulta);
 	void setRespuesta(string respuesta);
 	void setFechaRespuesta(string fechaRespuesta);
 	void setHoraRespuesta(string horaRespuesta);

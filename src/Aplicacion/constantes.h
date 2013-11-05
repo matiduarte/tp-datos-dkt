@@ -23,5 +23,6 @@ const char separadorCamposEntidades = '#';
 
 const int offsetX = 6;
 const int offsetY = 5;
+const unsigned int max_caracteres_pregunta = 140;
 
 #endif /* CONSTANTES_H_ */

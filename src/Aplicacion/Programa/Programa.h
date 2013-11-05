@@ -52,7 +52,7 @@ private:
 	estadoPrograma iniciarSesion(Usuario* &usuario);
 	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
 	estadoPrograma consultarServicio(vector<Servicio*> &resultados);
-	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados);
+	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados, Usuario* &usuario);
 	estadoPrograma publicarServicio();
 	estadoPrograma responderPregunta();
 	estadoPrograma bajaProducto();
@@ -69,9 +69,9 @@ private:
 	string modificar(string queCosa, string valorActual, int posicionDato);
 
 	void emitirResultado(Servicio* resultado,int &posY, bool enDetalle);
-	void detalleResultado(vector<Servicio*> &resultados, int posY);
+	void detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario, int posY);
 	void emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY);
-	void hacerPregunta(Servicio* &resultado, int posY);
+	void hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY);
 	void pedirCotizacion(Servicio* &resultado, int posY);
 
 	void emitirInformacion();

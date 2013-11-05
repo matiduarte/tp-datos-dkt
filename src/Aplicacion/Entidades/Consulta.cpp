@@ -96,10 +96,6 @@ bool Consulta::getOculta(){
 	return this->oculta;
 }
 
-void Consulta::setId(int id){
-	this->id = id;
-}
-
 void Consulta::setIdServicio(int idServicio){
 	this->idServicio = idServicio;
 }
@@ -110,14 +106,6 @@ void Consulta::setIdUsuario(int idUsuario){
 
 void Consulta::setConsulta(string consulta){
 	this->consulta = consulta;
-}
-
-void Consulta::setFechaConsulta(string fechaConsulta){
-	this->fechaConsulta = fechaConsulta;
-}
-
-void Consulta::setHoraConsulta(string horaConsulta){
-	this->horaConsulta = horaConsulta;
 }
 
 void Consulta::setRespuesta(string respuesta){

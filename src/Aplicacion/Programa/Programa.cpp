@@ -30,33 +30,20 @@ void Programa::ejecutar(){
 
 		switch(estado){
 
-		case MENU_PRINCIPAL:	estado = menuPrincipal();
-								break;
-		case RECUPERAR_PASS:	estado = recuperacion();
-								break;
-		case REGISTRO_U:		estado = registrarNuevoUsuario("U");
-								break;
-		case REGISTRO_A:		estado = registrarNuevoUsuario("A");
-								break;
-		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);
-								break;
-		case INICIAR_SESION:	estado = iniciarSesion(usuario);
-								break;
-		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);
-								break;
-		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);
-								break;
-		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados);
-								break;
-		case PUBLICAR:			estado = publicarServicio();
-								break;
-		case RESPONDER:			estado = responderPregunta();
-								break;
-		case BAJA_PRODUCTO:		estado = bajaProducto();
-								break;
-		case ADMINISTRACION:	estado = opcionesAdministrador();
-								break;
-		default:				break;
+		case MENU_PRINCIPAL:	estado = menuPrincipal();						break;
+		case RECUPERAR_PASS:	estado = recuperacion();						break;
+		case REGISTRO_U:		estado = registrarNuevoUsuario("U");			break;
+		case REGISTRO_A:		estado = registrarNuevoUsuario("A");			break;
+		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);		break;
+		case INICIAR_SESION:	estado = iniciarSesion(usuario);				break;
+		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);			break;
+		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);			break;
+		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, usuario);	break;
+		case PUBLICAR:			estado = publicarServicio();					break;
+		case RESPONDER:			estado = responderPregunta();					break;
+		case BAJA_PRODUCTO:		estado = bajaProducto();						break;
+		case ADMINISTRACION:	estado = opcionesAdministrador();				break;
+		default:																break;
 		}
 
 		system("clear");
@@ -84,11 +71,10 @@ estadoPrograma Programa::menuPrincipal(){
 }
 
 estadoPrograma Programa::recuperacion(){
-	//se puede llegar a hacer busqueda de usuario, pero este metodo es de juguete, no vale la pena
 	string nombre="";
 	gotoXY(0,0);	cout<<"RECUPERAR CONTRASEÑA:";
 	gotoXY(0,2);	cout<<"Usuario: ";	cin>>nombre;
-	gotoXY(0,9);	cout<<"Se ha enviado un mail con su contraseña a su casilla de correo, ah re que no hacia nada.";
+	gotoXY(0,9);	cout<<"Se ha enviado un mail con su contraseña a su casilla de correo.";
 
 	return MENU_PRINCIPAL;
 }
@@ -102,7 +88,7 @@ estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 	string respuestaMail;
 	int posY=2;
 
-	gotoXY(0, 0);		cout<<"REGISTRO:";
+	gotoXY(0, 0);		cout<<"REGISTRO: nuevo "<<imprimirTipoDeUsuario(tipo)<<".";
 	nuevoUsuario->setTipo(tipo);
 	gotoXY(0, posY);	cout<<"Nombre:     ";	cin>>nombre;	nuevoUsuario->setNombre(nombre);		posY++;
 	gotoXY(0, posY);	cout<<"Apellido:   ";	cin>>apellido;	nuevoUsuario->setApellido(apellido);	posY++;
@@ -138,7 +124,7 @@ estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 	usuarioAgregado = indice->agregarUsuario(nuevoUsuario);
 
 	gotoXY(0, posY+2);
-	if(usuarioAgregado)	cout<<"Usuario ingresado exitosamente!";
+	if(usuarioAgregado)	cout<<"Usuario registrado exitosamente!";
 	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
 	if(tipo == "A") estado = ADMINISTRACION;
@@ -214,13 +200,12 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 	gotoXY(0, 3);	cout << "2 - Darse de baja del sistema.";
 	gotoXY(0, 4);	cout << "3 - Consultar productos/servicios.";
 	gotoXY(0, 5);	cout << "4 - Publicar producto/servicio.";
-	gotoXY(0, 6);	cout << "5 - Volver al menu principal.";
+	gotoXY(0, 6);	cout << "5 - Cerrar sesion.";
 
-	int opcion = leerOpcion(cantidadOpciones, 6);
+	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if (opcion == 1) estado = CAMBIAR_DATOS;
 	if (opcion == 3) estado = CONSULTA_SERVICIO;
 	if (opcion == 4) estado = PUBLICAR;
-	if (opcion == 5) estado = MENU_PRINCIPAL;
 
 	if (opcion == 2){
 		bool eliminado = eliminarUsuario(usuario);
@@ -240,20 +225,18 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	gotoXY(0, 5);	cout<<"4 - Publicar producto/servicio.";
 	gotoXY(0, 5);	cout<<"5 - Responder preguntas/cotizaciones.";
 	gotoXY(0, 6);	cout<<"6 - Dar de baja un producto.";
-	gotoXY(0, 7);	cout<<"7 - Volver al menu principal.";
+	gotoXY(0, 7);	cout<<"7 - Cerrar sesion.";
 
-	int opcion = leerOpcion(cantidadOpciones, 7);
+	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = CAMBIAR_DATOS;
 	if(opcion == 3) estado = CONSULTA_SERVICIO;
 	if(opcion == 4) estado = PUBLICAR;
 	if(opcion == 5) estado = RESPONDER;
 	if(opcion == 6) estado = BAJA_PRODUCTO;
-	if(opcion == 7) estado = MENU_PRINCIPAL;
 
 	if (opcion == 2){
 		bool eliminado = eliminarUsuario(usuario);
-		if(eliminado) estado = MENU_PRINCIPAL;
-		else estado = OPCIONES_USUARIO;
+		if(!eliminado) estado = OPCIONES_USUARIO;
 	}
 	return estado;
 }
@@ -261,7 +244,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 estadoPrograma Programa::opcionesAdministrador(){ //FALta
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 6;
+	int cantidadOpciones = 7;
 
 	gotoXY(0, 2);	cout<<"1 - Agregar nuevo administrador.";
 	gotoXY(0, 3);	cout<<"2 - Eliminar administrador.";
@@ -269,8 +252,9 @@ estadoPrograma Programa::opcionesAdministrador(){ //FALta
 	gotoXY(0, 5);	cout<<"4 - Eliminar categoria.";
 	gotoXY(0, 6);	cout<<"5 - Moderar mensajes.";
 	gotoXY(0, 7);	cout<<"6 - Listado de usuarios.";
+	gotoXY(0, 8);	cout<<"7 - Cerrar sesion.";
 
-	int opcion = leerOpcion(cantidadOpciones, 7);
+	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = REGISTRO_A;
 	if(opcion == 2) estado = REGISTRO_A;
 	if(opcion == 3) estado = TERMINAR;
@@ -346,7 +330,7 @@ vector<Servicio*> Programa::buscarServicio(int opcion){
 	return resultado;
 }
 
-estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados){
+estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, Usuario* &usuario){
 
 	estadoPrograma estado = RESULTADOS;
 	gotoXY(0, 0);	cout<<"RESULTADOS DE LA BUSQUEDA: ";
@@ -362,18 +346,19 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados){
 	gotoXY(0,posY); cout<<"2 - Volver al menu de opciones.";
 
 	int opcion = leerOpcion(2, posY);
-	if(opcion == 1) detalleResultado(resultados, posY + 4);
+	if(opcion == 1) detalleResultado(resultados, usuario, posY + 4);
 	if(opcion == 2) estado = OPCIONES_USUARIO;
 
 	return estado;
 }
 
-void Programa::detalleResultado(vector<Servicio*> &resultados, int posY){
+void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario, int posY){
 
 	string numResultado;
 	unsigned int resultado;
 	do{
-		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.: ";cin>>numResultado;
+		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.:          ";
+		gotoXY(0, posY); cin>>numResultado;
 		resultado = atoi(numResultado.c_str());
 	}while((resultado < 1) || (resultado > resultados.size()));
 	resultado--;
@@ -388,7 +373,7 @@ void Programa::detalleResultado(vector<Servicio*> &resultados, int posY){
 	gotoXY(0, posY); cout<<"3 - Volver al listado de resultados.";
 	int opcion = leerOpcion(3, posY);
 
-	if(opcion == 1) hacerPregunta(resultados.at(resultado), posY + 4);
+	if(opcion == 1) hacerPregunta(resultados.at(resultado), usuario, posY + 4);
 	if(opcion == 2) pedirCotizacion(resultados.at(resultado), posY + 4);
 }
 
@@ -413,8 +398,28 @@ void Programa::emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY){
 	}
 }
 
-void Programa::hacerPregunta(Servicio* &resultado, int posY){
+void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 
+	bool preguntado=false;
+	string pregunta;
+	gotoXY(0, posY);	cout<<"Escriba su pregunta en "<<max_caracteres_pregunta<<" caracteres: "; cin>>pregunta;
+
+	gotoXY(0, posY+4);
+	if(pregunta.size()<= max_caracteres_pregunta){
+
+	Consulta* consulta = new Consulta();
+	consulta->setConsulta(pregunta);
+	consulta->setIdServicio(resultado->getId());
+	consulta->setIdUsuario(usuario->getDni());
+	consulta->setOculta(false);
+	preguntado = indice->agregarConsulta(consulta);
+
+	if(!preguntado) cout<<"La pregunta no se pudo agregar";
+	else cout<<"Pregunta agregada satisfactoriamente!";
+
+	}else{
+		cout<<"Su pregunta es demasiado larga.";
+	}
 }
 
 void Programa::pedirCotizacion(Servicio* &resultado, int posY){
@@ -448,7 +453,7 @@ int Programa::leerOpcion(int cantOpciones, int posY){
 	int N;
 	do{
 		gotoXY(0, posY +2);
-		cout<<"Ingrese opcion:            ";
+		cout<<"Ingrese opcion:                                          ";
 		gotoXY(16, posY + 2);
 		cin>>opcion;
 
@@ -511,14 +516,14 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 	bool usuarioEliminado= false;
 	string respuesta;
 	do {
-		gotoXY(0, 8);
+		gotoXY(0, 10);
 		cout<< "Esta seguro que desea eliminar al usuario? (s/n) (Las publicaciones, preguntas y respuestas no serán borradas)";
 		cin >> respuesta;
 	} while ((respuesta != "s") && (respuesta != "n"));
 
 	if (respuesta == "s"){
 		usuarioEliminado = indice->elimininarUsuario(usuario);
-		gotoXY(0, 9);
+		gotoXY(0, 10);
 		if(usuarioEliminado){
 			cout << "Usuario eliminado correctamente!                                                                                   ";
 		}else{

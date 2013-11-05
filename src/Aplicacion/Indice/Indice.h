@@ -48,17 +48,13 @@ private:
 	void agregarCadenaATerminosRelevantes(string cadena, string idServicio);
 	string obtenerNuevoId(string tipoId);
 	void hidratarCategoriasDeServicio(Servicio* servicio);
+	vector<string> parsearConsulta(string consulta);
 	
 public:
 	Indice();
 	Indice(string ruta);
 	~Indice();
 	
-
-	//necesito hacer:
-	//un metodo que me devuelva una lista de todos los usuarios en el sistema
-	//
-
 	//Metodos de usuarios
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
@@ -76,7 +72,6 @@ public:
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);
 	void modificarConsulta(Consulta* consulta);
-	vector<string> parsearConsulta(string consulta);
 	vector<Consulta*> buscarConsultasHechasAUsuario(Usuario* usuario);
 	vector<Consulta*> buscarConsultasPorServicio(Servicio* servicio);
 };
