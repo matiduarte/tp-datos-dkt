@@ -42,17 +42,12 @@ string ArbolBMas::buscarClave (Clave clave){
 	string valor;
 	//Si el nivel de la raiz es cero busco directamente ahi
 	if (raiz->getNivel() == 0){
-		valor = buscarEnLaRaizHoja(clave);
+		valor = ((NodoHoja*)raiz)->buscarClave(clave);
 	}else{
 		valor = this->buscarClaveRecursivamente(clave, this->raiz);
 	}
 
 	return valor;
-}
-
-string ArbolBMas::buscarEnLaRaizHoja(Clave clave){
-
-	return ((NodoHoja*)raiz)->buscarClave(clave);
 }
 
 
@@ -148,7 +143,7 @@ void ArbolBMas::partirRaiz(){
 	if (raiz->getNivel() == 0){
 		this->partirRaizHoja();
     } else {
-    	this->partirNodoRaizInterno();
+    	this->partirRaizInterna();
     }
 }
 
@@ -187,32 +182,29 @@ void ArbolBMas::partirRaizHoja(){
 
 }
 
-void ArbolBMas::partirNodoRaizInterno() {
+void ArbolBMas::partirRaizInterna() {
 
-	unsigned int numeroDeBloqueAux;
-
-	NodoInterno* nodoIzq = dynamic_cast<NodoInterno*>(this->raiz);
-	NodoInterno* nodoDer = dynamic_cast<NodoInterno*>(new NodoInterno(this->archivo));
-	//Creo un nuevo NodoInterno para la nueva raiz
+	NodoInterno* nodoIzq = ((NodoInterno*)this->raiz);
+	NodoInterno* nodoDer = new NodoInterno(this->archivo);
+	//Creo un nuevo nodo interno para la raiz
 	NodoInterno* nueavaRaiz = new NodoInterno(this->archivo);
 
-	//La raiz sera un nivel mas alto a lo que era
+	//La raiz crece un nivel
 	nueavaRaiz->setNivel((nodoIzq->getNivel()) + 1);
-	//El nuevo hermano derecho tendra el mismo nivel que el izquierdo (ex raiz)
+	//Hermano derecho mismo nivel que el izquierdo
 	nodoDer->setNivel(nodoIzq->getNivel());
 
-	//Reemplazo el numero de bloque de la antigua raiz con el nuevo asignado a la creacion de la raiz
-	//De esta manera la raiz tendra siempre como numero de bloque el valor 0
-	numeroDeBloqueAux = nueavaRaiz->getNumeroDeBloque();
+	// Dado que la raiz siempre se encuentra en el bloque cero
+	// Seteo la nuevaRaiz a esa posicion
+	// Y la vieja al numero de bloque con el que se creo la nueva raiz
+	unsigned int numeroDeBloqueAux = nueavaRaiz->getNumeroDeBloque();
 	nueavaRaiz->setNumeroDeBloque(nodoIzq->getNumeroDeBloque());
 	nodoIzq->setNumeroDeBloque(numeroDeBloqueAux);
 
-	//El nodo izquierdo se parte a la mitad dandole la primera clave de esa particion a la raiz yn
-	//el resto a su hermano, luego setea como ultimo hijo de la raiz al nodo derecho
 	nodoIzq->PartirNodoADerecha(nodoDer, nueavaRaiz);
 	this->raiz = nueavaRaiz;
 
-	//Persiste los hijos, la raiz se persiste en otro lado
+	//Persiste los hijos
 	nodoIzq->persistir(archivo);
 	nodoDer->persistir(archivo);
 	delete nodoIzq;
@@ -310,15 +302,16 @@ int ArbolBMas::agregarRecursivamente (Nodo* nodoActual, Clave clave, string valo
 
 int ArbolBMas::partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 
-	//Parte el nodo hoja, creando un nuevo nodo hoja y mandando la clave correspondiente
-	//al nodo padre. Persiste a los nodos hijos, el nodo padre solo si no queda en overflow
-	//Si queda el padre en overflow devuelve 2, sino 0
+	/* Parte la hoja, creando una nueva y subiendo la clave puente
+	 * hacia el padre. El hijo esta con sobreflujo.
+	 * Retorno:
+	 * 0--> No hay overflow
+	 * 2--> Hay overflow
+	 */
 
-	//El nodo hijo tiene overflow
-	//Recupero la clave del medio para mandarsela al nodo padre
 	Clave clave = nodoHijo->getClaveDelMedio();
 	NodoHoja * nuevoNodo = new NodoHoja(this->archivo);
-	//Agrego la clave y la referencia al nuevo nodo en el padre
+	//Se agregan la clave y la referencias al padre
 	nodoPadre->agregarReferencia(clave , nuevoNodo->getNumeroDeBloque());
 	//Agrego la mitad derecha del nodo hijo al nuevo nodo
 	list<RegistroArbol*> * mitadDerecha = nodoHijo->getMitadDerecha();
@@ -326,17 +319,18 @@ int ArbolBMas::partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 	for (it = mitadDerecha->begin(); it != mitadDerecha->end(); it++){
 		nuevoNodo->agregar(*it);
     }
-	//Seteo la referencia del viejo hijo al nuevo y del nuevo al siguiente
-	//del viejo
-	unsigned int viejoSiguiente = nodoHijo->getSiguiente();
+	//Seteo las referencias
+	unsigned int siguiente = nodoHijo->getSiguiente();
 	nodoHijo->setSiguiente(nuevoNodo->getNumeroDeBloque());
-	nuevoNodo->setSiguiente(viejoSiguiente);
+	nuevoNodo->setSiguiente(siguiente);
 
-	//Persisto los hijos y los borro de memoria.
+	//Persisto los hijos
 	nodoHijo->persistir(this->archivo);
 	nuevoNodo->persistir(this->archivo);
+
 	delete nuevoNodo;
 	delete nodoHijo;
+
 	if (nodoPadre->hayOverflow()){
 		return 2;
 	} else {
@@ -348,15 +342,17 @@ int ArbolBMas::partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 
 int ArbolBMas::partirNodoInterno(NodoInterno* nodoPadre, NodoInterno* nodoHijo){
 
-	//Parte el nodo interno, creando un nuevo nodo interno y mandando la clave correspondiente
-	//al nodo padre. Persiste a los nodos hijos, el nodo padre solo si no queda en overflow
-	//Si queda el padre en overflow devuelve 2, sino 0
+	/*
+	 * Parte el nodo interno, creando uno nuevo y subiendo la clave puente
+	*  hacia el padre. El hijo esta con sobreflujo
+	*  Retorno:
+	*  0 --> No hay overflow
+	*  2 --> Hay overflow
+	*/
 
-	//El nodo hijo tiene overflow
-	//Recupero la clave del medio para mandarsela al nodo padre
 	Clave clave = nodoHijo->getClaveDelMedio();
 	NodoInterno * nodoNuevo = new NodoInterno(this->archivo);
-	//Agrego la clave y la referencia al nuevo nodo en el padre
+	//Agrego clave y referencias al padre
 	nodoPadre->agregarReferencia(clave,nodoNuevo->getNumeroDeBloque());
 	nodoHijo->borrarClave(clave);
 	//Agrego la mitad derecha del nodo hijo al nuevo nodo
@@ -374,12 +370,14 @@ int ArbolBMas::partirNodoInterno(NodoInterno* nodoPadre, NodoInterno* nodoHijo){
     }
 	nodoNuevo->setNivel(nodoHijo->getNivel());
 
-	//Persisto los hijos y los borro de memoria.
+	//Persisto los hijos
 	nodoHijo->persistir(this->archivo);
 	nodoNuevo->persistir(this->archivo);
 	nodoPadre->persistir(this->archivo);
+
 	delete nodoNuevo;
 	delete nodoHijo;
+
 	if (nodoPadre->hayOverflow()){
 		return 2;
 	} else {
@@ -431,7 +429,6 @@ int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow
 		Nodo* nodoParaBalancear = Nodo::cargar(this->archivo,nodoUnderflow->getSiguiente());
 		//Si tiene capacidad minima tengo que hacer merge
 		if (((NodoHoja*)nodoParaBalancear)->capacidadMinima()){
-			cout << "Opcion 1" << endl;
 			return this->mergeNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
 		}else{
 			//Si no balanceo
@@ -442,43 +439,42 @@ int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow
     	unsigned int indiceNodoBuscado =  nodoPadre->getNodoAnteriorA(nodoUnderflow->getNumeroDeBloque());
     	Nodo* nodoParaBalancear = Nodo::cargar(this->archivo,indiceNodoBuscado);
     	if (((NodoHoja*)nodoParaBalancear)->capacidadMinima()){
-    		cout << "Opcion 2" << endl;
     		return this->mergeNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
     	}else{
-    		return this->equilibrarNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
+    		return this->equilibrarNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
     	}
     }
 }
 
-int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoNuevo){
+int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow){
 
-	//Nodo nuevo tiene underflow
-	//Tengo que conseguir un nodo para balancearlo o hacer merge
-	Clave clave = nodoNuevo->getClaveDelMedio();
+	// Busco un nodo para equilibrar o hacer merge
+	Clave clave = nodoUnderflow->getClaveDelMedio();
 	int indicador = nodoActual->buscarClave(clave);
 	if (indicador != -1){
-		//Si la clave del medio del hijo no es mayor a todas,
-		//tengo un nodo siguiente a la derecha
-		indicador ++ ; //Porque queda en la direccion a la izq
-		Nodo* nodoDerecho = Nodo::cargar(this->archivo,nodoActual->buscarNodo(indicador));
+		//Si la clave no es la mayor de todas, existe hermano derecho
+		indicador ++ ; //+1 para que agarre al derecho
+		Nodo* nodoParaBalancearDer = Nodo::cargar(this->archivo,nodoActual->buscarNodo(indicador));
 
-		if (((NodoInterno*)nodoDerecho)->capacidadMinima()){
-			//Si el siguiente a la derecha tiene capacidad minima, hago merge
-			return mergeNodoInternoDerecho(nodoActual, nodoNuevo, (NodoInterno*)nodoDerecho);
+		if (((NodoInterno*)nodoParaBalancearDer)->capacidadMinima()){
+			//Si tiene capacidad minima tengo que hacer merge
+			return mergeNodoInternoDerecho(nodoActual, nodoUnderflow, (NodoInterno*)nodoParaBalancearDer);
 		}else{
-			//Sino hago balanceo
-			return equilibrarNodoInternoDerecho(nodoActual, nodoNuevo, (NodoInterno*)nodoDerecho);
+			//No esta con capacidad minima, balanceo
+			return equilibrarNodoInternoDerecho(nodoActual, nodoUnderflow, (NodoInterno*)nodoParaBalancearDer);
 		}
 	}else{
-		//No tengo un nodo siguiente a la derecha, sino a la izquierda
-		int cantClaves = nodoActual->getCantidadDeClaves();//Este es el indice del ultimo
-		cantClaves--; //Indice del anteultimo
-		Nodo* nodoIzquierdo = Nodo::cargar(this->archivo, nodoActual->buscarNodo(cantClaves));
+		//No tengo hermano derecho, voy al izquierdo
+		int cantClaves = nodoActual->getCantidadDeClaves();
+		cantClaves--; //Indice del izquierdo
+		Nodo* nodoParaBalancearIzq = Nodo::cargar(this->archivo, nodoActual->buscarNodo(cantClaves));
 
-		if (((NodoInterno*)nodoIzquierdo)->capacidadMinima()){
-			return mergeNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoIzquierdo, nodoNuevo);
+		if (((NodoInterno*)nodoParaBalancearIzq)->capacidadMinima()){
+			//Hay capacidad minima, tengo que hacer merge
+			return mergeNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoParaBalancearIzq, nodoUnderflow);
 		}else{
-			return equilibrarNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoIzquierdo, nodoNuevo);
+			//Balanceo
+			return equilibrarNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoParaBalancearIzq, nodoUnderflow);
 		}
 	}
 }
@@ -565,52 +561,58 @@ int ArbolBMas::equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, Nodo
 
 
 
-int ArbolBMas::mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
+int ArbolBMas::mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoUnderflow, NodoInterno* nodoDer){
 
-	//El nodo izquierdo tiene underflow.
-	//Devuelve -1 si el padre queda en underflow
+
 	list<Clave> clavesDerechas = nodoDer->getClaves();
 	list<unsigned int> listaHijosDer = nodoDer->getHijos();
-	//Voy a tener que bajar la clave que 'une' a los dos nodos en el padre, al hijo izq
+	//Bajo la clave puente entre el padre y el hijo izquierdo
 	Clave primeraClave = clavesDerechas.front();
-	int indiceClaveBaja = nodoPadre->buscarClave(primeraClave);
-	indiceClaveBaja--; //porque quiero la anterior a la que es mas grande que la primer clave de la derecha
+	int indiceClaveAEliminar = nodoPadre->buscarClave(primeraClave);
+	//Quiero la anterior a la que es mas grande que la primer clave de la derecha
+	indiceClaveAEliminar--;
 	Clave claveABajar;
-	if (indiceClaveBaja == -2 ){//significa que buscar clave dio -1, osea que es la mayor de todas
+	if (indiceClaveAEliminar == -2 ){
+		//Clave mayor a todas
 		claveABajar = nodoPadre->getUltimaClave();
-    }else if(indiceClaveBaja == -1){//Significa que buscar clave dio 0, osea q es la primera
+    }else if(indiceClaveAEliminar == -1){
+    	//Es la primera
     	claveABajar = nodoPadre->getPrimerClave();
     	}else{
-    		claveABajar = nodoPadre->getClave(indiceClaveBaja);
+    		claveABajar = nodoPadre->getClave(indiceClaveAEliminar);
     	}
-        //Agrego al hijo izq la clave y la borro del padre
-        nodoIzq->agregarClave(claveABajar);
-        nodoPadre->borrarClave(claveABajar);
-        nodoPadre->borrarReferencia(nodoDer->getNumeroDeBloque());
-        //Como sabemos que las claves se ingresan ordenadas, podemos agregar los hijos al final simplemente
-        nodoIzq->agregarClaves(clavesDerechas);
-        nodoIzq->agregarHijos(listaHijosDer);
-        //Borro el nodo derecho
-        this->archivo->borrar(nodoDer->getNumeroDeBloque());
-        delete nodoDer;
-        //Persisto los otros
-        nodoPadre->persistir(this->archivo);
-        nodoIzq->persistir(this->archivo);
-        if (nodoPadre->hayUnderflow()) return 3;
-        return 0;
+
+	//Agrego al hijo izq la clave y la borro del padre
+	nodoUnderflow->agregarClave(claveABajar);
+	nodoPadre->borrarClave(claveABajar);
+	nodoPadre->borrarReferencia(nodoDer->getNumeroDeBloque());
+	//Agrego claves y ref a hijos
+	nodoUnderflow->agregarClaves(clavesDerechas);
+	nodoUnderflow->agregarHijos(listaHijosDer);
+	//Borro el nodo derecho
+	this->archivo->borrar(nodoDer->getNumeroDeBloque());
+	delete nodoDer;
+	//Persisto
+	nodoPadre->persistir(this->archivo);
+	nodoUnderflow->persistir(this->archivo);
+
+	if (nodoPadre->hayUnderflow()) return 3;
+
+	return 0;
 }
 
 int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
 
-	//Se llama cuando el nodo izquierdo tiene underflow
+	//Nodo izquierdo en underflow
 	list<Clave> clavesIzquierdas = nodoIzq->getClaves();
 	list<Clave> clavesDerechas = nodoDer->getClaves();
 	list<unsigned int> hijosIzquierdos = nodoIzq->getHijos();
 	list<unsigned int> hijosDerechos = nodoDer->getHijos();
-	//Creo los tamanios totales y de la izq
+
 	int tamanioTotal = 0;
 	int tamanioActualIzq = 0;
 	list<Clave>::iterator it;
+	//Calculo el tamanio de las claves izquierdas y el de ambas (total)
 	for (it = clavesIzquierdas.begin(); it != clavesIzquierdas.end(); it++){
 		tamanioTotal += (*it).getTamanioClave();
 		tamanioActualIzq += (*it).getTamanioClave();
@@ -618,21 +620,22 @@ int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno*
 	for (it = clavesDerechas.begin(); it != clavesDerechas.end(); it++){
 		tamanioTotal += (*it).getTamanioClave();
     }
+	//Suma de los hijos izquierdos y derechos
 	tamanioTotal += sizeof(unsigned int) * (hijosIzquierdos.size() + hijosDerechos.size());
+	//Solo los hijos izquierdos
 	tamanioActualIzq += sizeof(unsigned int)* hijosIzquierdos.size();
 
-	//Bajar la clave que corresponda del padre
-
+	//Baja la clave que corresponda del padre
 	int indiceClaveABajar = nodoPadre->buscarClave(clavesDerechas.front());
 	Clave claveABajar;
-	if (indiceClaveABajar == -1)//Si es mayor a todo...
+	if (indiceClaveABajar == -1)
+		//Es la mayor
 		claveABajar = nodoPadre->getUltimaClave();
     else
     	claveABajar = nodoPadre->getClave(indiceClaveABajar);
 
-	//Deja la union de las listas en un estado valido
-	//Agrega clave a bajar y la referencia de la derecha a la izquierda
-	//Borra estas 2 en sus originales
+
+	//Agrega la clave a eliminar y la referencia de la derecha a la izquierda
 	unsigned int ref = hijosDerechos.front();
 	hijosIzquierdos.push_back(ref);
 	tamanioActualIzq += sizeof(unsigned int);
@@ -641,11 +644,9 @@ int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno*
 	tamanioActualIzq += claveABajar.getTamanioClave();
 	nodoPadre->borrarClave(claveABajar);
 
-	// Hasta aca quedo un hueco en el nodo padre.
-	// Falta una clave que se agrega despues.
 
+	//Paso de derecha a izquierda la clave y la referencia
 	while(tamanioActualIzq < tamanioTotal/2){
-		//pasar de derecha a izquierda el par ref-clave
 		Clave clave = clavesDerechas.front();
 		unsigned int ref = hijosDerechos.front();
 		tamanioActualIzq += sizeof(unsigned int);
@@ -656,8 +657,7 @@ int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno*
 		hijosDerechos.pop_front();
 	}
 
-	// Cuando termino subo al padre la clave de la izquierda
-	// de la lista derecha y la popeo
+	//Subo al padre la clave de la izquierda de la lista derecha y la elimino
 	Clave claveASubir = clavesDerechas.front();
 	nodoPadre->agregarClave(claveASubir);
 	clavesDerechas.pop_front();
@@ -667,36 +667,38 @@ int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno*
 	nodoDer->setClaves(clavesDerechas);
 	nodoDer->setHijos(hijosDerechos);
 
+	//Persisto
 	nodoPadre->persistir(this->archivo);
 	nodoDer->persistir(this->archivo);
 	nodoIzq->persistir(this->archivo);
 
-	if (nodoPadre->hayUnderflow()) return -1;//No deberia suceder
+	if (nodoPadre->hayUnderflow()) return -1;
         return 0;
 }
 
-int ArbolBMas::mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
+int ArbolBMas::mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoUnderflow){
 
-	//El nodo derecho tiene underflow
-	//Devuelve -1 si el padre queda en underflow
-	list<Clave> lista_derecha_claves = nodoDer->getClaves();
-	list<unsigned int> lista_derecha_hijos = nodoDer->getHijos();
-	//Voy a tener que bajar la clave que 'une' a los dos nodos en el padre, al hijo izq
-	//Como es la clave de mas a la derecha (en este caso) agarro la ultima clave
-	Clave claveABajar = nodoPadre->getClave(nodoPadre->getCantidadDeClaves() - 1);
+
+	list<Clave> clavesDerechas = nodoUnderflow->getClaves();
+	list<unsigned int> hijosDerechos = nodoUnderflow->getHijos();
+	//Bajo la clave puente entre el padre y el hijo izquierdo
+	//Como es la clave de mas a la derecha agarro la ultima
+	Clave claveAEliminar = nodoPadre->getClave(nodoPadre->getCantidadDeClaves() - 1);
 	//Agrego al hijo izq la clave y la borro del padre
-	nodoIzq->agregarClave(claveABajar);
-	nodoPadre->borrarClave(claveABajar);
-	nodoPadre->borrarReferencia(nodoDer->getNumeroDeBloque());
-	//Como sabemos que las claves se ingresan ordenadas, podemos agregar los hijos al final simplemente
-	nodoIzq->agregarClaves(lista_derecha_claves);
-	nodoIzq->agregarHijos(lista_derecha_hijos);
+	nodoIzq->agregarClave(claveAEliminar);
+	nodoPadre->borrarClave(claveAEliminar);
+	nodoPadre->borrarReferencia(nodoUnderflow->getNumeroDeBloque());
+	//Agrego clave y ref a los hijos
+	nodoIzq->agregarClaves(clavesDerechas);
+	nodoIzq->agregarHijos(hijosDerechos);
 	//Borro el nodo derecho
-	this->archivo->borrar(nodoDer->getNumeroDeBloque());
-	delete nodoDer;
-	//Persisto los otros
+	this->archivo->borrar(nodoUnderflow->getNumeroDeBloque());
+	delete nodoUnderflow;
+	//Persisto
 	nodoPadre->persistir(this->archivo);
 	nodoIzq->persistir(this->archivo);
+
+	//Si hay underflow devuelvo 3
 	if (nodoPadre->hayUnderflow()) return 3;
 
 	return 0;
@@ -704,15 +706,16 @@ int ArbolBMas::mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* no
 
 int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
 
-	//Se llama cuando nodo derecho tiene underflow
+	//Nodo derecho en underflow
 	list<Clave> clavesIzquierdas = nodoIzq->getClaves();
 	list<Clave> clavesDerechas = nodoDer->getClaves();
 	list<unsigned int> hijosIzquierdos = nodoIzq->getHijos();
 	list<unsigned int> hijosDerechos = nodoDer->getHijos();
-	//Creo los tamanios totales y de la izq
+
 	int tamanioTotal = 0;
 	int tamanioActualDer = 0;
 	list<Clave>::iterator it;
+	//Calculo tamanio total y el de la derecha
 	for (it = clavesDerechas.begin(); it != clavesDerechas.end(); it++){
 		tamanioTotal += (*it).getTamanioClave();
 		tamanioActualDer += (*it).getTamanioClave();
@@ -726,7 +729,7 @@ int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoIntern
 	//Bajar la clave que corresponda del padre
 	int indiceClaveABajar = nodoPadre->buscarClave(clavesIzquierdas.back());
 	Clave claveABajar;
-	if (indiceClaveABajar == -1)//Si es mayor a todo...
+	if (indiceClaveABajar == -1)
 		claveABajar = nodoPadre->getUltimaClave();
 	else
 		claveABajar = nodoPadre->getClave(indiceClaveABajar);
@@ -739,8 +742,8 @@ int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoIntern
 	tamanioActualDer += claveABajar.getTamanioClave();
 	nodoPadre->borrarClave(claveABajar);
 
+	//Paso de derecha a izquierda la clave y la referencia
 	while(tamanioActualDer <= tamanioTotal/2){
-		//pasar de izq a der el par clave-ref
 		Clave clave = clavesIzquierdas.back();
 		unsigned int ref = hijosIzquierdos.back();
 		tamanioActualDer += sizeof(unsigned int);
@@ -751,21 +754,22 @@ int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoIntern
 		hijosIzquierdos.pop_back();
     }
 
-	//cuando termino subo al padre la clave de la derecha de la lista izquierda y la popeo
+	//Subo al padre la clave de la derecha de la lista izquierda y la elimino
 	Clave claveASubir = clavesIzquierdas.back();
 	nodoPadre->agregarClave(claveASubir);
 	clavesIzquierdas.pop_back();
 
-	//No es necesario agregarlos porque el metodo se manejo siempre por referencia. No
-	//son listas nuevas
+
 	nodoIzq->setClaves(clavesIzquierdas);
 	nodoIzq->setHijos(hijosIzquierdos);
 	nodoDer->setClaves(clavesDerechas);
 	nodoDer->setHijos(hijosDerechos);
 
+	//Persisto
 	nodoPadre->persistir(this->archivo);
 	nodoDer->persistir(this->archivo);
 	nodoIzq->persistir(this->archivo);
+
 	if (nodoPadre->hayUnderflow()) return -1;
         return 0;
 }

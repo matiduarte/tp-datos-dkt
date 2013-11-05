@@ -34,26 +34,25 @@ private:
 
 	void partirRaiz();
 	void partirRaizHoja();
-	void partirNodoRaizInterno();
+	void partirRaizInterna();
 
 
 	int partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
 	int partirNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 
 	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
-	int balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoNuevo);
+	int balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoUnerflow);
 	int equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
 	int mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnder, NodoHoja* nodoBalanceo);
 
 
-	int balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nuevoNodoActual);
+	int balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow);
 	int mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 
 	string buscarClaveRecursivamente(Clave clave, Nodo* nodoActual);
-	string buscarEnLaRaizHoja(Clave clave);
 
 public:
 
