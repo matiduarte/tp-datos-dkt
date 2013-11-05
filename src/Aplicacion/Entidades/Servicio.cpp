@@ -6,7 +6,6 @@ Servicio::Servicio(){
 	int identificador = lector->stringToInt(lector->getValor("idUltimoServicio"));
 	identificador++;
 	lector->setValor("idUltimoServicio", lector->intToString(identificador));
-	delete lector;	//para guardar en el archivo el nuevo valor
 
 	this->id = identificador;
 }

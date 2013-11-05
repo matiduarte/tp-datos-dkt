@@ -8,12 +8,15 @@
 #include "Programa.h"
 
 Programa::Programa(){
+
+	lector = LectorConfig::getLector(rutaConfig);
 	indice = new Indice("");
 	system("clear");
 }
 
 Programa::~Programa(){
 	delete indice;
+	delete lector;
 }
 
 void Programa::ejecutar(){
@@ -391,22 +394,22 @@ void Programa::detalleResultado(vector<Servicio*> &resultados, int posY){
 
 void Programa::emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY){
 
-	Usuario* proveedorDelServicio = new Usuario();
-	proveedorDelServicio->setDni(servicio->getIdProveedor());
-
-	vector<Consulta*> preguntas = indice->buscarConsultasHechasAUsuario(proveedorDelServicio);
+	vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(servicio);
 
 	for(unsigned int i = 0 ; i < preguntas.size(); i++){
 		if(!preguntas.at(i)->getOculta()){
-			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<": ";		posY++;
-			gotoXY(5, posY);	cout<<"Fecha: "<<preguntas.at(i)->getFechaConsulta()<<". Hora: "<<preguntas.at(i)->getHoraConsulta()<<"."; posY++;
-			gotoXY(5, posY); 	cout<<preguntas.at(i)->getConsulta();	posY++;
-			gotoXY(5, posY);	cout<<"Respuesta: "; 	posY++;
-			gotoXY(5, posY);	cout<<"Fecha: "<<preguntas.at(i)->getFechaRespuesta()<<". Hora: "<<preguntas.at(i)->getHoraRespuesta()<<"."; posY++;
-			posY++;
+			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<": ";	posY++;
+			gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaConsulta());
+			cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraConsulta())<<".";	posY++;
+			gotoXY(5, posY);	cout<<preguntas.at(i)->getConsulta();	posY++;
+			gotoXY(5, posY);	cout<<"Respuesta: ";	posY++;
+			gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta());
+			cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta())<<".";	posY++;
+			gotoXY(5, posY);	cout<<preguntas.at(i)->getRespuesta();	posY++;
 		}else{
 			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<" moderada por el administrador";
 		}
+			posY++;
 	}
 }
 

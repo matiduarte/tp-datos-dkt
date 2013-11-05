@@ -15,6 +15,8 @@
 #include <termios.h>
 #include "../constantes.h"
 #include "../Indice/Indice.h"
+#include "../Utiles/FechaYHora.h"
+
 using namespace std;
 
 typedef enum{
@@ -42,6 +44,7 @@ public:
 
 private:
 	Indice* indice;
+	LectorConfig* lector;
 
 	estadoPrograma menuPrincipal();
 	estadoPrograma registrarNuevoUsuario(string tipoUsuario);
