@@ -14,7 +14,6 @@
 #include <termios.h>
 #include <iostream>
 #include "../constantes.h"
-#include "../Entidades/Usuario.h"
 #include "../Indice/Indice.h"
 using namespace std;
 
@@ -26,8 +25,7 @@ typedef enum{
 	INICIAR_SESION,
 	OPCIONES_USUARIO,
 	CONSULTA_SERVICIO,
-	BUSQUEDA,
-	RESULTADO,
+	RESULTADOS,
 	PUBLICAR,
 	RESPONDER,
 	BAJA_PRODUCTO,
@@ -40,7 +38,7 @@ class Programa {
 public:
 	Programa();
 	virtual ~Programa();
-	void ejecutarPrograma();
+	void ejecutar();
 
 private:
 	Indice* indice;
@@ -50,29 +48,36 @@ private:
 	estadoPrograma modificarDatosUsuario(Usuario* &usuario);
 	estadoPrograma iniciarSesion(Usuario* &usuario);
 	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
-	estadoPrograma consultarServicio();
-	estadoPrograma buscarServicio();
-	estadoPrograma emitirResultadoBusqueda();
+	estadoPrograma consultarServicio(vector<Servicio*> &resultados);
+	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados);
 	estadoPrograma publicarServicio();
 	estadoPrograma responderPregunta();
 	estadoPrograma bajaProducto();
-	estadoPrograma administrar();
 	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioProveedor(Usuario* &usuario);
 	estadoPrograma opcionesAdministrador();
 	estadoPrograma recuperacion();
 
+	vector<Servicio*> buscarServicio(int opcion);
+
 	bool eliminarUsuario(Usuario* usuario);
 	string imprimirTipoDeUsuario(string tipo);
-	void emitirDatosUsuario(Usuario* usuario);
+	void emitirDatosUsuario(Usuario* &usuario);
 	string modificar(string queCosa, string valorActual, int posicionDato);
+
+	void emitirResultado(Servicio* resultado,int &posY, bool enDetalle);
+	void detalleResultado(vector<Servicio*> &resultados, int posY);
+	void emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY);
+	void hacerPregunta(Servicio* &resultado, int posY);
+	void pedirCotizacion(Servicio* &resultado, int posY);
+
 	void emitirInformacion();
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
 	void activarEcho();
 
 	void gotoXY(int x, int y);
-	int leerOpcion(int cantidadDeOpciones);
+	int leerOpcion(int cantidadDeOpciones, int posY);
 };
 
 #endif /* PROGRAMA_H_ */

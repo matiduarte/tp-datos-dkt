@@ -51,15 +51,10 @@ public:
 	
 
 	//necesito hacer:
-	//un metodo para buscar productos segun: usuario / palabras clave / categoria
 	//un metodo que me devuelva una lista de todos los usuarios en el sistema
 	//
-	//que los dos metodos de eliminar devuelvan un bool
-
-	//creo que nada mas... con esto ya tengo para rato :P
 
 	//Metodos de usuarios
-
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
 	bool elimininarUsuario(Usuario* usuario);

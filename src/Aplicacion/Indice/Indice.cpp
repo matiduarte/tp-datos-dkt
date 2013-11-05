@@ -92,7 +92,7 @@ Usuario* Indice::buscarUsuario(string dni, string contrasena, bool &error){
 		//Contrasena incorrecta. Devuelvo usuario vacio
 		error = true;
 		return new Usuario();
-	} catch (ExceptionElementoNoEncontrado e){
+	} catch (ExceptionElementoNoEncontrado &e){
 		error = true;
 		return new Usuario();
 	}

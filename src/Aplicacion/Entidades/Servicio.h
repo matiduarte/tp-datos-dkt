@@ -32,8 +32,8 @@ public:
 	int getId();
 	int getIdProveedor();
 	string getNombre();
-	string getDescripcion();
 	string getTipo();
+	string getDescripcion();
 	int getPosicionCategorias();
 	vector<Categoria*> getCategorias();
 	
