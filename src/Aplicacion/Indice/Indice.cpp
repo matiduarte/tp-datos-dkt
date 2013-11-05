@@ -4,6 +4,8 @@ Indice::Indice(){
 }
 
 Indice::Indice(string ruta){
+	this->diccionario = new Diccionario();
+	
 	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
 	string rutaTabla = "tabla.dat";pLector->getValor("pathArchivoTabla");
 	string rutaNodos = "nodos.dat";//pLector->getValor("pathArchivoNodos");
@@ -274,12 +276,11 @@ void Indice::modificarConsulta(Consulta* consulta){
 }
 
 vector<string> Indice::parsearConsulta(string consulta){
-	Diccionario* dic = new Diccionario();
 	vector<string> terminos = StringUtil::split(consulta,' ');
 	vector<string> terminosRelevantes;
 	
 	for(unsigned int i=0; i<terminos.size();i++){
-		if(!dic->esStopWord(terminos.at(i))){
+		if(!this->diccionario->esStopWord(terminos.at(i))){
 			terminosRelevantes.push_back(terminos.at(i));
 		}
 	}

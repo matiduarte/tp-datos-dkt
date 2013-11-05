@@ -18,6 +18,9 @@ using namespace std;
 class Indice {
 
 private:
+	//Diccionario
+	Diccionario* diccionario;
+	
 	//Indices principales
 	Hash* indiceUsuario;
 	Hash* indiceServicio;
