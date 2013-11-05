@@ -73,6 +73,7 @@ public:
 	void modificarConsulta(Consulta* consulta);
 	vector<string> parsearConsulta(string consulta);
 	vector<Consulta*> buscarConsultasHechasAUsuario(Usuario* usuario);
+	vector<Consulta*> buscarConsultasPorServicio(Servicio* servicio);
 };
 
 #endif /*INDICE_H_*/

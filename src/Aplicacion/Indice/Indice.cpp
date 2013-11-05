@@ -295,6 +295,19 @@ vector<Consulta*> Indice::buscarConsultasHechasAUsuario(Usuario* usuario){
 
 }
 
+vector<Consulta*> Indice::buscarConsultasPorServicio(Servicio* servicio){
+	list<string>* idsConsulta = this->indiceConsultaPorIdServicio->elementosConIgualClave(StringUtil::int2string(servicio->getId()));
+		
+	vector<Consulta*> resultadoConsultas;
+	for (std::list<string>::iterator itCons = idsConsulta->begin(); itCons != idsConsulta->end(); itCons++){
+		Consulta* cons = new Consulta();
+		string consultaSerializada = this->indiceConsulta->buscarElemento(*itCons);
+		cons->desSerializar(consultaSerializada);
+		resultadoConsultas.push_back(cons);
+	}
+	return resultadoConsultas;
+}
+
 void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 	vector<string> terminosRelevantes = this->parsearConsulta(cadena);
 	int posicionLista;
