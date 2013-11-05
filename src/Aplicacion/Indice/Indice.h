@@ -38,6 +38,8 @@ private:
 	//ArbolBMas* indiceConsultaPorIdServicioIdUsuario;
 	ArbolBMas* indiceConsultaPorIdServicio;
 	ArbolBMas* indiceConsultaPorIdUsuario;
+	
+	//Este indice probablemente este de mas o hay que cambiarlo
 	ArbolBMas* indiceConsultaPorIdServicioFechaHora;
 	
 	//Indice invertido y arbol de palabras para busqueda por terminos clave
@@ -63,7 +65,7 @@ public:
 	
 	//Metodos servicios
 	bool agregarServicio(Servicio* servicio);
-	void agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
+	bool agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	bool eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);

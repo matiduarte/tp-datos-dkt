@@ -130,7 +130,22 @@ bool Indice::agregarServicio(Servicio* servicio){
 	return true;
 }
 
-void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
+bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
+	//Chequeo si existe la categoria
+	try {
+		this->indiceServicio->buscarElemento(StringUtil::int2string(categoria->getId()));
+	} catch (ExceptionElementoNoEncontrado e){
+		return false;
+	}
+	
+	//Chequeo si ya no se agrego la categoria al servicio
+	list<string>* idServiciosDeCategoria = this->indiceServicioPorCategoria->elementosConIgualClave(*(new Clave(categoria->getNombre())));
+	for (std::list<string>::iterator it = idServiciosDeCategoria->begin(); it != idServiciosDeCategoria->end(); it++){
+		if(*it == StringUtil::int2string(servicio->getId())){
+			return false;
+		}
+	}
+	
 	servicio->setCategoria(categoria);
 	this->indiceServicioPorCategoria->agregarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(servicio->getId()));
 	//Tengo que agregar las categorias a la lista invertida. Se usa lista invertida porque pueden ser infinitas categorias
@@ -138,6 +153,7 @@ void Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	int nuevaPosicion = this->listaCategoriasPorServicio->modificar(posLista, servicio->serializarCategorias());
 	servicio->setPosicionCategorias(nuevaPosicion);
 	this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
+	return true;
 }
 
 bool Indice::eliminarServicio(Servicio* servicio){
@@ -272,7 +288,21 @@ bool Indice::agregarConsulta(Consulta* consulta){
 }
 
 void Indice::modificarConsulta(Consulta* consulta){
+	string antiguaConsultaSerializada = this->indiceCategorias->buscarElemento(StringUtil::int2string(consulta->getId()));
+	Consulta* antiguaConsulta = new Consulta();
+	antiguaConsulta->desSerializar(antiguaConsultaSerializada);
 	
+	//Actualizo el indice de fecha y hora
+	string claveString = StringUtil::int2string(antiguaConsulta->getIdServicio()) + separadorCamposClave + antiguaConsulta->getFechaConsulta() + separadorCamposClave + antiguaConsulta->getHoraConsulta();
+	Clave* claveArbol = new Clave(claveString);
+	this->indiceConsultaPorIdServicioFechaHora->borrarValor(*claveArbol, StringUtil::int2string(antiguaConsulta->getId()));
+	
+	claveString = StringUtil::int2string(consulta->getIdServicio()) + separadorCamposClave + consulta->getFechaConsulta() + separadorCamposClave + consulta->getHoraConsulta();
+	claveArbol = new Clave(claveString);
+	this->indiceConsultaPorIdServicioFechaHora->agregarValor(*claveArbol, StringUtil::int2string(consulta->getId()));
+	
+	//Modifico la consulta
+	this->indiceConsulta->modificarElemento(StringUtil::int2string(consulta->getId()),consulta->serializar());
 }
 
 vector<string> Indice::parsearConsulta(string consulta){
@@ -382,4 +412,5 @@ Indice::~Indice(){
 	delete(indiceOcurrenciasTerminos);
 	delete(indiceTerminosId);
 	delete(indiceTerminos);
+	delete(diccionario);
 }
