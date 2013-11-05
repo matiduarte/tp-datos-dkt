@@ -159,6 +159,18 @@ bool Indice::eliminarServicio(Servicio* servicio){
 	return true;
 }
 
+void Indice::hidratarCategoriasDeServicio(Servicio* servicio){
+	vector<Categoria*> categorias = servicio->getCategorias();
+	vector<Categoria*> categoriasResultado;
+	for(unsigned int i=0; i<categorias.size();i++){
+		Categoria* catActual = categorias.at(i);
+		string catSerializada = this->indiceCategorias->buscarElemento(StringUtil::int2string(catActual->getId()));
+		catActual->desSerializar(catSerializada);
+		categoriasResultado.push_back(catActual);
+	}
+	servicio->setCategorias(categoriasResultado);
+}
+
 vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
 	//Obtengo todos los ids de servicios dado un usuario proveedor
 	list<string>* idsServicios = this->indiceServicioPorIdProveedor->elementosConIgualClave(StringUtil::int2string(usuario->getDni()));
@@ -199,10 +211,11 @@ vector<Servicio*> Indice::buscarServiciosPorPalabrasClave(string query){
 				if(StringUtil::str2int(idsServicio.at(i)) > 0){
 					Servicio* ser = new Servicio();
 					string servicioSerializado = this->indiceServicio->buscarElemento(idsServicio.at(j));
-					ser->deserializarCategorias(servicioSerializado);
+					ser->desSerializar(servicioSerializado);
 					int nuevaPos;
 					string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
 					ser->deserializarCategorias(catsSerializadas);
+					this->hidratarCategoriasDeServicio(ser);
 					ser->setPosicionCategorias(nuevaPos);
 					this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 					resultadoServicio.push_back(ser);

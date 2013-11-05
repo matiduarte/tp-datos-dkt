@@ -15,7 +15,6 @@ string RegistroLista::serializar()const {
 	retorno = this->idElemento ;
 	retorno+= separadorElem;
 	retorno+= this->valor;
-	retorno+='\0';
 	return retorno;
 }
 

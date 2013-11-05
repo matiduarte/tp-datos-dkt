@@ -109,6 +109,10 @@ void Servicio::setCategoria(Categoria* categoria){
 	this->categorias.push_back(categoria);
 }
 
+void Servicio::setCategorias(vector<Categoria*> categorias){
+	this->categorias = categorias;
+}
+
 Servicio::~Servicio(){
 	
 }

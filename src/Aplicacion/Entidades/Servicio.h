@@ -45,6 +45,7 @@ public:
 	void setTipo(string tipo);
 	void setPosicionCategorias(int posicion);
 	void setCategoria(Categoria* categoria);
+	void setCategorias(vector<Categoria*> categorias);
 };
 
 #endif /*USUARIO_H_*/

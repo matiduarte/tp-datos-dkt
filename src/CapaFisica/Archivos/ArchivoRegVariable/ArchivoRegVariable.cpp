@@ -114,7 +114,7 @@ char* ArchivoRegVariable::sacar(unsigned int posicionBytes){
 	char* dato = new char[largoCadena];
 
 	archivo.read(dato, largoCadena);
-
+	dato[largoCadena] = '\0';
 	borrar(posicionBytes);
 
 	return dato;

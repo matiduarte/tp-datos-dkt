@@ -43,6 +43,7 @@ private:
 	//Creo que necestio un arbol y un archivo para ir guardando los terminos que aparecen
 	void agregarCadenaATerminosRelevantes(string cadena, string idServicio);
 	string obtenerNuevoId(string tipoId);
+	void hidratarCategoriasDeServicio(Servicio* servicio);
 	
 public:
 	Indice();
