@@ -74,6 +74,7 @@ private:
 	void hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY);
 	void pedirCotizacion(Servicio* &resultado, int posY);
 
+	bool tieneEspacios(string dato);
 	void emitirInformacion();
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
@@ -81,6 +82,7 @@ private:
 
 	void gotoXY(int x, int y);
 	int leerOpcion(int cantidadDeOpciones, int posY);
+	void leer(string& nombre);
 };
 
 #endif /* PROGRAMA_H_ */

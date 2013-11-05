@@ -73,7 +73,7 @@ estadoPrograma Programa::menuPrincipal(){
 estadoPrograma Programa::recuperacion(){
 	string nombre="";
 	gotoXY(0,0);	cout<<"RECUPERAR CONTRASEÑA:";
-	gotoXY(0,2);	cout<<"Usuario: ";	cin>>nombre;
+	gotoXY(0,2);	cout<<"Usuario: ";	leer(nombre);
 	gotoXY(0,9);	cout<<"Se ha enviado un mail con su contraseña a su casilla de correo.";
 
 	return MENU_PRINCIPAL;
@@ -90,27 +90,25 @@ estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 
 	gotoXY(0, 0);		cout<<"REGISTRO: nuevo "<<imprimirTipoDeUsuario(tipo)<<".";
 	nuevoUsuario->setTipo(tipo);
-	gotoXY(0, posY);	cout<<"Nombre:     ";	cin>>nombre;	nuevoUsuario->setNombre(nombre);		posY++;
-	gotoXY(0, posY);	cout<<"Apellido:   ";	cin>>apellido;	nuevoUsuario->setApellido(apellido);	posY++;
-
+	gotoXY(0, posY);	cout<<"Nombre:     "; 	leer(nombre); 	nuevoUsuario->setNombre(nombre);		posY++;
+	gotoXY(0, posY);	cout<<"Apellido:   ";	leer(apellido);	nuevoUsuario->setApellido(apellido);	posY++;
 	do{
 		gotoXY(0, posY); 	cout<<"                      ";
-		gotoXY(0, posY);	cout<<"DNI:        ";		cin>>DNI;
-	}while(atoi(DNI.c_str()) == 0);
+		gotoXY(0, posY);	cout<<"DNI:        "; leer(DNI);
+	}while((atoi(DNI.c_str()) <= 0) || (tieneEspacios(DNI)));
 
 	nuevoUsuario->setDni(atoi(DNI.c_str()));posY++;
 
-	gotoXY(0, posY); 	cout<<"Provincia:  ";cin>>provincia;	nuevoUsuario->setProvincia(provincia);	posY++;
+	gotoXY(0, posY); 	cout<<"Provincia:  ";	leer(provincia);	nuevoUsuario->setProvincia(provincia);	posY++;
 
 	bool otroMail = true;
 	//pido hasta 3 mails
 	for(int i=1; (i<4)&&(otroMail); i++){
-
-	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	cin>>mail; 		nuevoUsuario->setEmail(mail);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmail(mail);	posY++;
 		if(i<3){
 			do{
 				gotoXY(0, posY+1); cout<<"Desea agregar otra direccion de e-Mail? (s/n) ";
-				cin>>respuestaMail;
+				leer(respuestaMail);
 			}while((respuestaMail != "s")&&(respuestaMail != "n"));
 
 			gotoXY(0, posY+1); cout<<"                                                   "; //para borrar la pregunta
@@ -118,7 +116,7 @@ estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 			}
 	}
 
-	gotoXY(0, posY);	cout<<"Contraseña: ";	cin>>contrasena;	nuevoUsuario->setContrasena(contrasena);
+	gotoXY(0, posY);	cout<<"Contraseña: ";	leer(contrasena);	nuevoUsuario->setContrasena(contrasena);
 
 	//intento agregar el usuario al indice
 	usuarioAgregado = indice->agregarUsuario(nuevoUsuario);
@@ -136,14 +134,14 @@ string Programa::modificar(string queCosa, string valorActual, int posicionDato)
 	string respuesta, datoNuevo;
 	do{
 		gotoXY(0, 12);
-		cout<<"Desea modificar "<<queCosa<<"(s/n)"; cin>>respuesta;
+		cout<<"Desea modificar "<<queCosa<<"(s/n)"; leer(respuesta);
 	}while((respuesta != "s")&&(respuesta != "n"));
 
 	if(respuesta == "n") datoNuevo = valorActual;
 	if(respuesta == "s"){
 		gotoXY(12, posicionDato); cout<<"                                    "; //borro lo que haya
 		gotoXY(12, posicionDato);
-		cin>>datoNuevo;
+		leer(datoNuevo);
 	}
 	return datoNuevo;
 }
@@ -173,11 +171,11 @@ estadoPrograma Programa::iniciarSesion(Usuario* &usuario){
 
 	do{
 		gotoXY(0, 2);	cout<<"DNI:                 ";
-		gotoXY(5, 2);  cin>>dni;
+		gotoXY(5, 2);  leer(dni);
 	}while(atoi(dni.c_str()) == 0);
 
 	gotoXY(0, 3); cout<<"Contrasena: ";
-	desactivarEcho();	cin>>contrasena;	activarEcho();
+	desactivarEcho();	leer(contrasena);	activarEcho();
 
 	bool error=true;
 	usuario = indice->buscarUsuario(dni, contrasena, error);
@@ -309,8 +307,8 @@ vector<Servicio*> Programa::buscarServicio(int opcion){
 	if(opcion == 2) por = "categoria: ";
 	if(opcion == 3) por = "palabra clave: ";
 
-	gotoXY(0, 9); cout<<"Busqueda por "<<por; cin>>aBuscar;
-
+	gotoXY(0, 9); cout<<"Busqueda por "<<por; leer(aBuscar);
+	cout<<aBuscar;
 	if(opcion == 1){
 		Usuario* usuario = new Usuario();
 		usuario->setDni(atoi(aBuscar.c_str()));
@@ -358,7 +356,7 @@ void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario
 	unsigned int resultado;
 	do{
 		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.:          ";
-		gotoXY(0, posY); cin>>numResultado;
+		gotoXY(0, posY); leer(numResultado);
 		resultado = atoi(numResultado.c_str());
 	}while((resultado < 1) || (resultado > resultados.size()));
 	resultado--;
@@ -402,7 +400,9 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 
 	bool preguntado=false;
 	string pregunta;
-	gotoXY(0, posY);	cout<<"Escriba su pregunta en "<<max_caracteres_pregunta<<" caracteres: "; cin>>pregunta;
+	gotoXY(0, posY);
+	cout<<"Escriba su pregunta en "<<max_caracteres_pregunta<<" caracteres: ";
+	leer(pregunta);
 
 	gotoXY(0, posY+4);
 	if(pregunta.size()<= max_caracteres_pregunta){
@@ -424,6 +424,7 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 
 void Programa::pedirCotizacion(Servicio* &resultado, int posY){
 
+	gotoXY(0, posY); cout<<"Funcionalidad no implementada.";
 }
 
 estadoPrograma Programa::publicarServicio(){
@@ -455,7 +456,7 @@ int Programa::leerOpcion(int cantOpciones, int posY){
 		gotoXY(0, posY +2);
 		cout<<"Ingrese opcion:                                          ";
 		gotoXY(16, posY + 2);
-		cin>>opcion;
+		leer(opcion);
 
 		N = atoi(opcion.c_str());
 
@@ -518,7 +519,7 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 	do {
 		gotoXY(0, 10);
 		cout<< "Esta seguro que desea eliminar al usuario? (s/n) (Las publicaciones, preguntas y respuestas no serán borradas)";
-		cin >> respuesta;
+		leer(respuesta);
 	} while ((respuesta != "s") && (respuesta != "n"));
 
 	if (respuesta == "s"){
@@ -534,6 +535,18 @@ bool Programa::eliminarUsuario(Usuario* usuario){
 	return usuarioEliminado;
 }
 
+void Programa::leer(string& nombre) {
+	getline(cin, nombre);
+}
+
+bool Programa::tieneEspacios(string cadena){
+
+	for(unsigned int i=0; i<cadena.size(); i++){
+		if(cadena[i] == ' ') return true;
+	}
+	return false;
+}
+
 void Programa::emitirInformacion(){
 
 	gotoXY(0, -5); 	cout<<"Organizacion de Datos - Catedra Servetto - 2do C. 2013";
@@ -547,7 +560,6 @@ void Programa::gotoXY(int x, int y){
 void Programa::activarEcho(){
 
 	termios tty;
-
 	tcgetattr(0, &tty);
 	tty.c_lflag |= ECHO;
 	tcsetattr(0, TCSANOW, &tty);
@@ -556,7 +568,6 @@ void Programa::activarEcho(){
 void Programa::desactivarEcho(){
 
 	termios tty;
-
 	tcgetattr(0, &tty);
 	tty.c_lflag &= ~ECHO;
 	tcsetattr(0, TCSANOW, &tty);
