@@ -26,6 +26,7 @@ typedef enum{
 	REGISTRO_CAT,
 	BAJA_ADMIN,
 	BAJA_CAT,
+	MOD_CAT,
 	CAMBIAR_DATOS,
 	INICIAR_SESION,
 	OPCIONES_USUARIO,
@@ -50,25 +51,23 @@ private:
 	Indice* indice;
 	LectorConfig* lector;
 
-	/////FALTA MODIFICAR MAI
-
 	estadoPrograma menuPrincipal();
-	estadoPrograma registrarNuevoUsuario(string tipoUsuario);
+	estadoPrograma altaUsuario(string tipoUsuario);
 	estadoPrograma modificarDatosUsuario(Usuario* &usuario);
 	estadoPrograma iniciarSesion(Usuario* &usuario);
 	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
 	estadoPrograma consultarServicio(vector<Servicio*> &resultados);
+	estadoPrograma publicarServicio(Usuario* &usuario);
 	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados, Usuario* &usuario);
-	estadoPrograma publicarServicio();
 	estadoPrograma responderPregunta();
-	estadoPrograma bajaProducto();
-	estadoPrograma bajaAdmin(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioProveedor(Usuario* &usuario);
 	estadoPrograma opcionesAdministrador(Usuario* &usuario);
 	estadoPrograma generarNuevasCategorias();
 	estadoPrograma recuperacion();
 	estadoPrograma bajaCategoria();
+	estadoPrograma bajaProducto();
+	estadoPrograma bajaAdmin(Usuario* &usuario);
 	estadoPrograma listadoUsuarios();
 
 	vector<Servicio*> buscarServicio(int opcion);
@@ -87,9 +86,10 @@ private:
 
 	void cargaManualCategoria();
 	void cargaMasivaCategoria();
-	vector<Categoria*> leerCategoriasDeArchivo(ifstream &archivo); //falta comprobar errores
-	bool tieneEspacios(string dato);
+	vector<Categoria*> leerCategoriasDeArchivo(ifstream &archivo);
 	void emitirInformacion();
+	bool tieneEspacios(string dato);
+
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
 	void activarEcho();
@@ -97,6 +97,22 @@ private:
 	void gotoXY(int x, int y);
 	int leerOpcion(int cantidadDeOpciones, int posY);
 	void leer(string& nombre);
+
+	/* NECESITO:
+	 *
+	 * listado de usuarios y de categorias, las necesito si o si !
+	 * que todas las excepciones deriven de Excepcion
+	 * poder modificar los emails
+	 * agregarCategoria deberia chequear sobre los Nombres, no los IDs
+	 * faltan metodos:
+	 * bool eliminarCategoria(string nombreCategoria);
+	 * void modificarCategoria(Categoria categoria);
+	 * Categoria* buscarCategoria(string nombreCategoria);
+	 *
+	 * USUARIO: 	falta Publicar
+	 * PROVEEDOR:	falta responder y baja producto
+	 * ADMIN:		falta modificarCategoria, moderarConsultas, listadoUsuarios
+	 */
 };
 
 #endif /* PROGRAMA_H_ */

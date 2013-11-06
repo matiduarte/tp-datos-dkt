@@ -32,8 +32,8 @@ void Programa::ejecutar(){
 
 		case MENU_PRINCIPAL:	estado = menuPrincipal();								break;
 		case RECUPERAR_PASS:	estado = recuperacion();								break;
-		case REGISTRO_U:		estado = registrarNuevoUsuario("U");					break;
-		case REGISTRO_A:		estado = registrarNuevoUsuario("A");					break;
+		case REGISTRO_U:		estado = altaUsuario("U");					break;
+		case REGISTRO_A:		estado = altaUsuario("A");					break;
 		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
 		case BAJA_ADMIN:		estado = bajaAdmin(usuario);							break;
 		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);				break;
@@ -41,7 +41,7 @@ void Programa::ejecutar(){
 		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);					break;
 		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);					break;
 		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, usuario);	break;
-		case PUBLICAR:			estado = publicarServicio();							break;
+		case PUBLICAR:			estado = publicarServicio(usuario);						break;
 		case RESPONDER:			estado = responderPregunta();							break;
 		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
@@ -82,7 +82,7 @@ estadoPrograma Programa::recuperacion(){
 	return MENU_PRINCIPAL;
 }
 
-estadoPrograma Programa::registrarNuevoUsuario(string tipo){
+estadoPrograma Programa::altaUsuario(string tipo){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	Usuario* nuevoUsuario = new Usuario();
@@ -245,23 +245,25 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 7;
+	int cantidadOpciones = 8;
 
 	gotoXY(0, 2);	cout<<"1 - Agregar nuevo administrador.";
 	gotoXY(0, 3);	cout<<"2 - Eliminar administrador.";
 	gotoXY(0, 4);	cout<<"3 - Generar nueva categoria.";
-	gotoXY(0, 5);	cout<<"4 - Eliminar categoria.";
-	gotoXY(0, 6);	cout<<"5 - Moderar mensajes.";
-	gotoXY(0, 7);	cout<<"6 - Listado de usuarios.";
-	gotoXY(0, 8);	cout<<"7 - Cerrar sesion.";
+	gotoXY(0, 5);	cout<<"4 - Modificar categoria.";
+	gotoXY(0, 6);	cout<<"5 - Eliminar categoria.";
+	gotoXY(0, 7);	cout<<"6 - Moderar mensajes.";
+	gotoXY(0, 8);	cout<<"7 - Listado de usuarios.";
+	gotoXY(0, 9);	cout<<"8 - Cerrar sesion.";
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = REGISTRO_A;
 	if(opcion == 2) estado = BAJA_ADMIN;
 	if(opcion == 3) estado = REGISTRO_CAT;
-	if(opcion == 4) estado = BAJA_CAT;
-	if(opcion == 5) estado = VER_MENSAJES;
-	if(opcion == 6) estado = VER_USUARIOS;
+	if(opcion == 4) estado = MOD_CAT;
+	if(opcion == 5) estado = BAJA_CAT;
+	if(opcion == 6) estado = VER_MENSAJES;
+	if(opcion == 7) estado = VER_USUARIOS;
 
 	return estado;
 }
@@ -440,11 +442,41 @@ estadoPrograma Programa::listadoUsuarios(){
 	return OPCIONES_USUARIO;
 }
 
-estadoPrograma Programa::publicarServicio(){
+estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
-	estadoPrograma estado = MENU_PRINCIPAL;
-	cout<<"estoy en publicar";
-	return estado;
+	string titulo, descr, tipo, cat, respuesta;
+	Servicio* servicio = new Servicio();
+	servicio->setId(atoi(indice->obtenerNuevoId(idServicio).c_str()));
+	servicio->setIdProveedor(usuario->getDni());
+
+	gotoXY(0, 0);	cout<<"PUBLICAR:";
+	gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo);
+	gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);
+
+	do{
+		gotoXY(0, 5);	cout<<"Tipo: (GR = Gratuito, PF = Precio Fijo, SU = Subasta) "; 	leer(tipo);
+	}while((tipo != "GR")&&(tipo != "PF")&&(tipo != "SU"));
+	int posY=6;
+	bool otraCat = true;
+	if(otraCat){
+		gotoXY(0, posY);	cout<<"Categoria: ";	leer(cat);	posY++;
+		do{
+			//falta ver si existe esa categoria
+			//si existe, agregar
+
+			gotoXY(0, posY+1);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+		}while((respuesta != "n")&&(respuesta != "s"));
+		if(respuesta == "n") otraCat = false;
+		gotoXY(0, posY+1);	cout<<"                                           ";
+	}
+	bool agregado = indice->agregarServicio(servicio);
+	if(agregado){
+		gotoXY(0, posY+2);	cout<<"Publicacion exitosa!";
+		usuario->setTipo("P");
+	}else{
+		cout<<"No se pudo publicar su servicio.";
+	}
+	return OPCIONES_USUARIO;
 }
 
 estadoPrograma Programa::responderPregunta(){
