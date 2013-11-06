@@ -30,20 +30,23 @@ void Programa::ejecutar(){
 
 		switch(estado){
 
-		case MENU_PRINCIPAL:	estado = menuPrincipal();						break;
-		case RECUPERAR_PASS:	estado = recuperacion();						break;
-		case REGISTRO_U:		estado = registrarNuevoUsuario("U");			break;
-		case REGISTRO_A:		estado = registrarNuevoUsuario("A");			break;
-		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);		break;
-		case INICIAR_SESION:	estado = iniciarSesion(usuario);				break;
-		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);			break;
-		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);			break;
+		case MENU_PRINCIPAL:	estado = menuPrincipal();								break;
+		case RECUPERAR_PASS:	estado = recuperacion();								break;
+		case REGISTRO_U:		estado = registrarNuevoUsuario("U");					break;
+		case REGISTRO_A:		estado = registrarNuevoUsuario("A");					break;
+		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
+		case BAJA_ADMIN:		estado = bajaAdmin(usuario);							break;
+		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);				break;
+		case INICIAR_SESION:	estado = iniciarSesion(usuario);						break;
+		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);					break;
+		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);					break;
 		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, usuario);	break;
-		case PUBLICAR:			estado = publicarServicio();					break;
-		case RESPONDER:			estado = responderPregunta();					break;
-		case BAJA_PRODUCTO:		estado = bajaProducto();						break;
-		case ADMINISTRACION:	estado = opcionesAdministrador();				break;
-		default:																break;
+		case PUBLICAR:			estado = publicarServicio();							break;
+		case RESPONDER:			estado = responderPregunta();							break;
+		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
+		case VER_USUARIOS:		estado = listadoUsuarios();								break;
+		case BAJA_CAT:			estado = bajaCategoria();								break;
+		default:																		break;
 		}
 
 		system("clear");
@@ -125,7 +128,7 @@ estadoPrograma Programa::registrarNuevoUsuario(string tipo){
 	if(usuarioAgregado)	cout<<"Usuario registrado exitosamente!";
 	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
-	if(tipo == "A") estado = ADMINISTRACION;
+	if(tipo == "A") estado = OPCIONES_USUARIO;
 	return estado;
 }
 
@@ -206,7 +209,7 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 	if (opcion == 4) estado = PUBLICAR;
 
 	if (opcion == 2){
-		bool eliminado = eliminarUsuario(usuario);
+		bool eliminado = eliminarUsuario(usuario, 10);
 		if(eliminado) estado = MENU_PRINCIPAL;
 		else estado = OPCIONES_USUARIO;
 	}
@@ -233,13 +236,13 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	if(opcion == 6) estado = BAJA_PRODUCTO;
 
 	if (opcion == 2){
-		bool eliminado = eliminarUsuario(usuario);
+		bool eliminado = eliminarUsuario(usuario, 13);
 		if(!eliminado) estado = OPCIONES_USUARIO;
 	}
 	return estado;
 }
 
-estadoPrograma Programa::opcionesAdministrador(){ //FALta
+estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
 	int cantidadOpciones = 7;
@@ -254,8 +257,12 @@ estadoPrograma Programa::opcionesAdministrador(){ //FALta
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = REGISTRO_A;
-	if(opcion == 2) estado = REGISTRO_A;
-	if(opcion == 3) estado = TERMINAR;
+	if(opcion == 2) estado = BAJA_ADMIN;
+	if(opcion == 3) estado = REGISTRO_CAT;
+	if(opcion == 4) estado = BAJA_CAT;
+	if(opcion == 5) estado = VER_MENSAJES;
+	if(opcion == 6) estado = VER_USUARIOS;
+
 	return estado;
 }
 
@@ -263,11 +270,11 @@ estadoPrograma Programa::menuOpcionesUsuario(Usuario* &usuario){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
 	string tipoUsuario = usuario->getTipo();
-	gotoXY(0, 0);	cout<<"OPCIONES:                             "<<imprimirTipoDeUsuario(tipoUsuario)<<": "<<usuario->getNombre();
+	gotoXY(0, 0);	cout<<"OPCIONES:                             "<<imprimirTipoDeUsuario(tipoUsuario)<<": "<<usuario->getNombre()<<" "<<usuario->getApellido();
 
 	if(tipoUsuario == "U") estado = opcionesUsuarioNormal(usuario);
 	if(tipoUsuario == "P") estado = opcionesUsuarioProveedor(usuario);
-	if(tipoUsuario == "A") estado = opcionesAdministrador();
+	if(tipoUsuario == "A") estado = opcionesAdministrador(usuario);
 
 	return estado;
 }
@@ -308,7 +315,7 @@ vector<Servicio*> Programa::buscarServicio(int opcion){
 	if(opcion == 3) por = "palabra clave: ";
 
 	gotoXY(0, 9); cout<<"Busqueda por "<<por; leer(aBuscar);
-	cout<<aBuscar;
+
 	if(opcion == 1){
 		Usuario* usuario = new Usuario();
 		usuario->setDni(atoi(aBuscar.c_str()));
@@ -356,7 +363,7 @@ void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario
 	unsigned int resultado;
 	do{
 		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.:          ";
-		gotoXY(0, posY); leer(numResultado);
+		gotoXY(36, posY); leer(numResultado);
 		resultado = atoi(numResultado.c_str());
 	}while((resultado < 1) || (resultado > resultados.size()));
 	resultado--;
@@ -427,6 +434,12 @@ void Programa::pedirCotizacion(Servicio* &resultado, int posY){
 	gotoXY(0, posY); cout<<"Funcionalidad no implementada.";
 }
 
+estadoPrograma Programa::listadoUsuarios(){
+
+	cout<<"Funcionalidad no implementada.";
+	return OPCIONES_USUARIO;
+}
+
 estadoPrograma Programa::publicarServicio(){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
@@ -446,6 +459,166 @@ estadoPrograma Programa::bajaProducto(){
 	estadoPrograma estado = MENU_PRINCIPAL;
 	cout<<"estoy en baja";
 	return estado;
+}
+
+estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){ // FALTA LISTADO DE USUARIOS
+
+	gotoXY(0, 0);	cout<<"ELIMINAR ADMINISTRADOR:";
+	string id;
+	int posY=4;
+	//falta listado de todos los admins, exceptuando el actual
+	do{
+		gotoXY(0, 2);	cout<<"Ingrese el ID del administrador a eliminar:                 ";
+		gotoXY(44, 2);	leer(id);
+	}while(atoi(id.c_str()) <= 0);
+
+	if(atoi(id.c_str()) != adminActual->getDni()){
+
+		Usuario* usuario = new Usuario();
+		usuario->setDni(atoi(id.c_str()));
+		usuario->setTipo("A");
+		eliminarUsuario(usuario, posY);
+	}else{
+		gotoXY(0, posY);
+		cout<<"No se puede eliminar el administrador pedido.";
+	}
+
+	return OPCIONES_USUARIO;
+}
+
+estadoPrograma Programa::generarNuevasCategorias(){
+
+	gotoXY(0, 0); cout<<"CARGA DE CATEGORIAS: ";
+
+	gotoXY(0, 2);	cout<<"1 - Carga manual de categorias.";
+	gotoXY(0, 3); 	cout<<"2 - Carga masiva de categorias.";
+	gotoXY(0, 4);	cout<<"3 - Volver al menu de opciones.";
+
+	int opcion = leerOpcion(3, 4);
+
+	if(opcion == 1) cargaManualCategoria();
+	if(opcion == 2) cargaMasivaCategoria();
+
+	return OPCIONES_USUARIO;
+}
+
+void Programa::cargaManualCategoria(){
+
+	gotoXY(0, 8);
+	string nombre, descripcion;
+	do{
+		cout<<"Nombre de la categoria: "; leer(nombre);
+		if(nombre.size() > max_nombre_categoria){
+			gotoXY(0, 12); cout<<"Nombre demasiado largo.";
+		}
+	}while(nombre.size() > max_nombre_categoria);
+
+	do{
+		gotoXY(0, 9);
+		cout<<"Descripcion: "; leer(descripcion);
+		if(descripcion.size() > max_descr_categoria){
+			gotoXY(0, 12); cout<<"Descripcion demasiado larga.";
+		}
+	}while(descripcion.size() > max_descr_categoria);
+
+	Categoria* nuevaCategoria = new Categoria();
+	nuevaCategoria->setId(atoi(indice->obtenerNuevoId(idCategoria).c_str()));
+	nuevaCategoria->setNombre(nombre);
+	nuevaCategoria->setDescripcion(descripcion);
+
+	bool agregada = indice->agregarCategoria(nuevaCategoria);
+	gotoXY(0, 14);
+	if(agregada){
+		cout<<"Categoria '"<<nombre<<"' agregada con exito!";
+	}else{
+		cout<<"Ya existe la categoria '"<<nombre<<"'.";
+	}
+}
+
+void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LOS NOMBRES
+
+	gotoXY(0, 8);
+	string rutaArchivoCategorias;
+	ifstream archivo;
+	bool agregada;
+
+	cout<<"Ingrese la ruta del archivo de categorias: "; leer(rutaArchivoCategorias);
+
+	archivo.open(rutaArchivoCategorias.c_str());
+	if(!archivo){
+		gotoXY(0, 14); 	cout<<"No se pudo encontrar el archivo de categorias indicado.";
+	}else{
+		vector<Categoria*> categorias = leerCategoriasDeArchivo(archivo);
+
+		for(unsigned int i = 0; i < categorias.size(); i++){
+
+			agregada = indice->agregarCategoria(categorias.at(i));
+			gotoXY(0, 12 + i);
+			if(agregada){
+				cout<<"Categoria '"<<categorias.at(i)->getNombre()<<"' agregada con exito!";
+			}else{
+				cout<<"Ya existe la categoria '"<<categorias.at(i)->getNombre()<<"'.";
+			}
+		}
+
+		archivo.close();
+	}
+}
+
+vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){ //FALTAN CHEQUEOS
+
+	vector<Categoria*> categorias;
+	char* linea= new char[max_nombre_categoria + max_descr_categoria +3];
+	string nombre = "", descripcion = "";
+
+	archivo.getline(linea, max_nombre_categoria + max_descr_categoria +3);
+
+	while(!archivo.eof()){
+		unsigned int i;
+		nombre ="";
+		for(i = 0; linea[i] != separadorCategoria; i++){ //faltan chequeos
+			nombre += linea[i];
+		}
+
+		descripcion="";
+		for(unsigned int j = i+1; j<strlen(linea); j++){
+			descripcion += linea[j];
+		}
+
+		Categoria* categoria =new Categoria();
+		categoria->setId(atoi(indice->obtenerNuevoId(idCategoria).c_str()));
+		categoria->setNombre(nombre);
+		categoria->setDescripcion(descripcion);
+		categorias.push_back(categoria);
+
+		archivo.getline(linea, max_nombre_categoria + max_descr_categoria +3);
+	};
+
+	return categorias;
+}
+
+estadoPrograma Programa::bajaCategoria(){	////FALTAN METODOS
+
+	gotoXY(0, 0);	cout<<"ELIMINAR CATEGORIA:";
+	string id;
+	bool eliminada=false;
+	//falta listado de todos las categorias
+	do{
+		gotoXY(0, 2);	cout<<"Ingrese el ID de la categoria a eliminar:                 ";
+		gotoXY(42, 2);	leer(id);
+	}while(atoi(id.c_str()) <= 0);
+
+
+		Categoria* categoria= new Categoria();
+		categoria->setId(atoi(id.c_str()));
+		//eliminada = indice->eliminarCategoria(categoria);
+		gotoXY(0, 4);
+		if(eliminada)
+			cout<<"Se ha eliminado la categoria indicada.";
+		else
+			cout<<"No se pudo eliminar la categoria indicada.";
+
+	return OPCIONES_USUARIO;
 }
 
 int Programa::leerOpcion(int cantOpciones, int posY){
@@ -512,23 +685,26 @@ string Programa::imprimirTipoDeUsuario(string tipo){
 	return respuesta;
 }
 
-bool Programa::eliminarUsuario(Usuario* usuario){
+bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 
 	bool usuarioEliminado= false;
 	string respuesta;
 	do {
-		gotoXY(0, 10);
-		cout<< "Esta seguro que desea eliminar al usuario? (s/n) (Las publicaciones, preguntas y respuestas no serán borradas)";
+		gotoXY(0, posY);
+		cout<< "Esta seguro que desea eliminar al ";
+		cout<<imprimirTipoDeUsuario(usuario->getTipo())<<"? (s/n) ";
+		if(usuario->getTipo() != "A")
+			cout<<"(Las publicaciones, preguntas y respuestas no serán borradas)";
 		leer(respuesta);
 	} while ((respuesta != "s") && (respuesta != "n"));
 
 	if (respuesta == "s"){
 		usuarioEliminado = indice->elimininarUsuario(usuario);
-		gotoXY(0, 10);
+		gotoXY(0, posY);
 		if(usuarioEliminado){
-			cout << "Usuario eliminado correctamente!                                                                                   ";
+			cout << imprimirTipoDeUsuario(usuario->getTipo())<<" eliminado correctamente!                                                                                   ";
 		}else{
-			cout <<"No se pudo eliminar al usuario.                                                                                     ";
+			cout <<"No se pudo eliminar al "<<imprimirTipoDeUsuario(usuario->getTipo())<<"                                                                                   ";
 		}
 	}
 

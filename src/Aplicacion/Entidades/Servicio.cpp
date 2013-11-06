@@ -2,12 +2,6 @@
 
 Servicio::Servicio(){
 	
-	LectorConfig* lector = LectorConfig::getLector(rutaConfig);
-	int identificador = lector->stringToInt(lector->getValor("idUltimoServicio"));
-	identificador++;
-	lector->setValor("idUltimoServicio", lector->intToString(identificador));
-
-	this->id = identificador;
 }
 
 string Servicio::serializar(){

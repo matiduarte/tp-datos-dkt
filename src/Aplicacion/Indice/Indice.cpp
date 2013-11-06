@@ -130,6 +130,16 @@ bool Indice::agregarServicio(Servicio* servicio){
 	return true;
 }
 
+bool Indice::agregarCategoria(Categoria* categoria){
+	try {
+		this->indiceCategorias->insertarElemento(StringUtil::int2string(categoria->getId()),categoria->serializar());
+	} catch (ExceptionElementoKeyYaIngresado& e){
+		return false;
+	}
+
+return true;
+}
+
 bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	//Chequeo si existe la categoria
 	try {

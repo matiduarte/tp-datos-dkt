@@ -24,5 +24,9 @@ const char separadorCamposEntidades = '#';
 const int offsetX = 6;
 const int offsetY = 5;
 const unsigned int max_caracteres_pregunta = 140;
+const unsigned int max_nombre_categoria = 100;
+const unsigned int max_descr_categoria = 300;
+const char separadorCategoria = ',';
+const string idCategoria = "idUltimaCategoria";
 
 #endif /* CONSTANTES_H_ */

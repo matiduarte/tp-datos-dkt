@@ -2,12 +2,6 @@
 
 Categoria::Categoria(){
 	
-	LectorConfig* lector = LectorConfig::getLector(rutaConfig);
-	int identificador = lector->stringToInt(lector->getValor("idUltimaCategoria"));
-	identificador++;
-	lector->setValor("idUltimaCategoria", lector->intToString(identificador));
-
-	this->id = identificador;
 }
 
 string Categoria::serializar(){

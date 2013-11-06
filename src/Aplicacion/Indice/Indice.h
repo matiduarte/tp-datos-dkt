@@ -48,7 +48,6 @@ private:
 	Hash* indiceTerminos;
 	//Creo que necestio un arbol y un archivo para ir guardando los terminos que aparecen
 	void agregarCadenaATerminosRelevantes(string cadena, string idServicio);
-	string obtenerNuevoId(string tipoId);
 	void hidratarCategoriasDeServicio(Servicio* servicio);
 	vector<string> parsearConsulta(string consulta);
 	
@@ -57,6 +56,8 @@ public:
 	Indice(string ruta);
 	~Indice();
 	
+	string obtenerNuevoId(string tipoId);
+
 	//Metodos de usuarios
 	bool agregarUsuario(Usuario* usuario);
 	void modificarUsuario(Usuario* usuario);
@@ -65,11 +66,15 @@ public:
 	
 	//Metodos servicios
 	bool agregarServicio(Servicio* servicio);
+
+	//deberia chequear si existe el nombre, no el ID (el id nunca va a repetirse)
+	bool agregarCategoria(Categoria* categoria);
 	bool agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	bool eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);
 	vector<Servicio*> buscarServiciosCategoria(Categoria* categoria);
+
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);
