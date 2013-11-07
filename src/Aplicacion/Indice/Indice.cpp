@@ -178,13 +178,13 @@ bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 }
 
 bool Indice::eliminarCategoria(string nombreCategoria){
-	Categoria* categoria;
-	this->indiceCategorias->elminarElemento(StringUtil::(categoria->getId()));
+	Categoria* categoria = new Categoria;
+	this->indiceCategorias->elminarElemento(StringUtil::int2string(categoria->getId()));
 	this->indiceCategoriaPorNombre->borrarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(categoria->getId()));
 	this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralCategorias)),StringUtil::int2string(categoria->getId()));
 	
 	//Ahora tengo que borrar todas las referencias de servicios a esta categoria
-	list<string>* idsServicio = this->indiceServicioPorCategoria->buscarClave(*(new Clave(categoria->getNombre())));
+	list<string>* idsServicio = this->indiceServicioPorCategoria->elementosConIgualClave(*(new Clave(categoria->getNombre())));
 	for (std::list<string>::iterator it = idsServicio->begin(); it != idsServicio->end(); it++){
 		string idServicioActual = *it;
 		string servicioSerializado = this->indiceServicio->buscarElemento(idServicioActual);
@@ -197,12 +197,12 @@ bool Indice::eliminarCategoria(string nombreCategoria){
 		servicio->setPosicionCategorias(nuevaPosicion);
 		this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
 	}
-	
+	return true;
 }
 void Indice::modificarCategoria(Categoria* categoria){
 	string antiguaCatSerializada = this->indiceCategorias->buscarElemento(StringUtil::int2string(categoria->getId()));
 	Categoria* antiguaCat = new Categoria();
-	antiguaCat->desSerializar(antiguaCat);
+	antiguaCat->desSerializar(antiguaCatSerializada);
 	
 	this->indiceCategorias->modificarElemento(StringUtil::int2string(categoria->getId()),categoria->serializar());
 	if(antiguaCat->getNombre() != categoria->getNombre()){
