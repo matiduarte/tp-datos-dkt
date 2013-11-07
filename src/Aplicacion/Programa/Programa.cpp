@@ -57,7 +57,7 @@ void Programa::ejecutar(){
 estadoPrograma Programa::menuPrincipal(){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
-	int cantidadOpciones = 4;
+	int cantidadOpciones = 5;
 
 	gotoXY(0, 0);	cout<<"MENU PRINCIPAL:";
 	gotoXY(0, 2);	cout<<"1 - Iniciar sesion.";
@@ -70,6 +70,7 @@ estadoPrograma Programa::menuPrincipal(){
 	if(opcion == 2) estado = REGISTRO_U;
 	if(opcion == 3) estado = RECUPERAR_PASS;
 	if(opcion == 4) estado = TERMINAR;
+	if(opcion == 5) estado = REGISTRO_A; ////////////////quitar estooooooo
 
 	return estado;
 }
@@ -108,7 +109,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool otroMail = true;
 	//pido hasta 3 mails
 	for(int i=1; (i<4)&&(otroMail); i++){
-	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmailEnPosicion(mail,i-1);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 	nuevoUsuario->setEmailEnPosicion(mail,i-1);	posY++;
 		if(i<3){
 			do{
 				gotoXY(0, posY+1); cout<<"Desea agregar otra direccion de e-Mail? (s/n) ";
@@ -491,7 +492,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 	gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);	servicio->setDescripcion(descr);
 
 	do{
-		gotoXY(0, 5);	cout<<"Tipo: (GR = Gratuito, PF = Precio Fijo, SU = Subasta) "; 	leer(tipo);
+		gotoXY(0, 5);	cout<<"Tipo: (GR/PF/SU) "; 	leer(tipo);
 	}while((tipo != "GR")&&(tipo != "PF")&&(tipo != "SU"));
 
 	servicio->setTipo(tipo);
@@ -521,7 +522,8 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 		if(respuesta == "n") otraCat = false;
 	}
 
-	bool agregado = indice->agregarServicio(servicio);
+	bool agregado = true;
+	indice->agregarServicio(servicio);
 	gotoXY(0, posY+4);
 
 	if(agregado){
@@ -667,10 +669,9 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 		for(unsigned int i = 0; i < categorias.size(); i++){
 
 			agregada = indice->agregarCategoria(categorias.at(i));
-			gotoXY(0, 12 + i);
+			gotoXY(0, 14 + i);
 			if(agregada){
 				cout<<"Categoria '"<<categorias.at(i)->getNombre()<<"' agregada con exito!";
-				indice->incrementarId(idCategoria);
 			}else{
 				cout<<"Ya existe la categoria '"<<categorias.at(i)->getNombre()<<"'.";
 			}
@@ -714,6 +715,7 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 		}else{
 		Categoria* categoria =new Categoria();
 		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()) + 1);
+		indice->incrementarId(idCategoria);
 		categoria->setNombre(nombre);
 		categoria->setDescripcion(descripcion);
 		categorias.push_back(categoria);
