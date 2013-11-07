@@ -462,6 +462,15 @@ estadoPrograma Programa::listadoUsuarios(){
 
 void Programa::emitirCategoriasDisponibles(){
 
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
+	int posY = 1;
+	int posX = 40;
+	gotoXY(posX, 0);		cout<<"Categorias disponibles:";
+
+	for(unsigned int i=0; i< categorias.size(); i++){
+
+		gotoXY(posX + 5, posY);	cout<<categorias.at(i)->getNombre();	posY++;
+	}
 }
 
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
@@ -488,23 +497,29 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	//pido categorias
 	bool otraCat = true;
-	if(otraCat){
-		gotoXY(0, posY);	cout<<"Categoria: ";	leer(cat);	posY++;
+	while(otraCat){
+		gotoXY(0, posY);	cout<<"Categoria: ";	leer(cat);
 
-		bool existeCat = true;
+		bool error= false;
 		do{
 			//si la categoria pedida existe, se la seteo al servicio
-			Categoria* categoria = indice->buscarCategoria(cat, existeCat);
-			if(existeCat) servicio->setCategoria(categoria);
+			Categoria* categoria = indice->buscarCategoria(cat, error);
+			if(!error) {
+				posY++;
+				servicio->setCategoria(categoria);
+			}
+			else{
+				gotoXY(0, posY+2); cout<<"No existe la categoria deseada.";
+			}
 			//agregar otra categoria?
-			gotoXY(0, posY+1);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+			gotoXY(0, posY+3);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
 		}while((respuesta != "n")&&(respuesta != "s"));
 		if(respuesta == "n") otraCat = false;
-		gotoXY(0, posY+1);	cout<<"                                           ";
+		gotoXY(0, posY+2);	cout<<"                                           ";
 	}
 
 	bool agregado = indice->agregarServicio(servicio);
-	gotoXY(0, posY+3);
+	gotoXY(0, posY+4);
 
 	if(agregado){
 		cout<<"Publicacion exitosa!";
