@@ -882,7 +882,7 @@ void Programa::desactivarEcho(){
 
 estadoPrograma Programa::listarCategorias(){
 
-	estadoPrograma estado = MENU_PRINCIPAL;
+	estadoPrograma estado = OPCIONES_USUARIO;
 
 	int posY = 0;
 	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
