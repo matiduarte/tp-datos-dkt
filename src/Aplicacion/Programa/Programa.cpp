@@ -464,7 +464,7 @@ void Programa::emitirCategoriasDisponibles(){
 
 	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
 	int posY = 1;
-	int posX = 40;
+	int posX = 50;
 	gotoXY(posX, 0);		cout<<"Categorias disponibles:";
 
 	for(unsigned int i=0; i< categorias.size(); i++){
@@ -478,7 +478,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 	string titulo, descr, tipo, cat, respuesta;
 	Servicio* servicio = new Servicio();
 
-	servicio->setId(atoi(indice->obtenerIdActual(idServicio).c_str()));
+	servicio->setId(atoi(indice->obtenerIdActual(idServicio).c_str()) + 1);
 	servicio->setIdProveedor(usuario->getDni());
 
 	emitirCategoriasDisponibles();
@@ -512,10 +512,10 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 				gotoXY(0, posY+2); cout<<"No existe la categoria deseada.";
 			}
 			//agregar otra categoria?
-			gotoXY(0, posY+3);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+			gotoXY(0, posY+2);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+			gotoXY(0, posY+2);	cout<<"                                      ";
 		}while((respuesta != "n")&&(respuesta != "s"));
 		if(respuesta == "n") otraCat = false;
-		gotoXY(0, posY+2);	cout<<"                                           ";
 	}
 
 	bool agregado = indice->agregarServicio(servicio);
@@ -632,7 +632,7 @@ void Programa::cargaManualCategoria(){
 	}while(descripcion.size() > max_descr_categoria);
 
 	Categoria* nuevaCategoria = new Categoria();
-	nuevaCategoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()));
+	nuevaCategoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()) + 1);
 	nuevaCategoria->setNombre(nombre);
 	nuevaCategoria->setDescripcion(descripcion);
 
@@ -710,7 +710,7 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 			//si entra es porque es una categoria invalida, por lo tanto no la agrego.
 		}else{
 		Categoria* categoria =new Categoria();
-		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()));
+		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()) + 1);
 		categoria->setNombre(nombre);
 		categoria->setDescripcion(descripcion);
 		categorias.push_back(categoria);
