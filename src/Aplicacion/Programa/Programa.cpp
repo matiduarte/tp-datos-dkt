@@ -483,23 +483,26 @@ estadoPrograma Programa::listadoUsuarios(){
 
 void Programa::emitirCategoriasDisponibles(){
 
-	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
-	int posY = 1;
-	int posX = 50;
-	gotoXY(posX, 0);		cout<<"Categorias disponibles:";
+	bool error=true; //supongo q no hay ninguna caegoria
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
+	if(!error){
+		int posY = 1;
+		int posX = 50;
+		gotoXY(posX, 0);		cout<<"Categorias disponibles:";
 
-	for(unsigned int i=0; i< categorias.size(); i++){
+		for(unsigned int i=0; i< categorias.size(); i++){
 
-		gotoXY(posX + 5, posY);	cout<<categorias.at(i)->getNombre();	posY++;
+			gotoXY(posX + 5, posY);	cout<<categorias.at(i)->getNombre();	posY++;
+		}
 	}
 }
 
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	//si pude agregar alguna categoria sigo, sino se cancela la publicacion
-
-	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
-	if(categorias.size() > 0){
+	bool error=true;
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
+	if(!error){
 
 		string titulo, descr, tipo, cat, respuesta;
 		Servicio* servicio = new Servicio();
@@ -919,18 +922,23 @@ estadoPrograma Programa::listarCategorias(){
 	estadoPrograma estado = OPCIONES_USUARIO;
 
 	int posY = 0;
-	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
+	bool error=true;
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
 	Categoria *categoriaAux;
 
-	for(unsigned int i=0; i<categorias.size(); i++){
+	if(!error){
+		for(unsigned int i=0; i<categorias.size(); i++){
 
-		categoriaAux = categorias.at(i);
+			categoriaAux = categorias.at(i);
 
-		gotoXY(0, posY); cout<<"Categoria nro " <<i+1<<": ";	posY++;
-		gotoXY(5, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
-		gotoXY(5, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY+=2;
+			gotoXY(0, posY); cout<<"Categoria nro " <<i+1<<": ";	posY++;
+			gotoXY(5, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
+			gotoXY(5, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY+=2;
 
 
+		}
+	}else{
+		gotoXY(0, posY); 	cout<<"No hay ninguna categoria registrada en el sistema.";
 	}
 	char c;
 	gotoXY(0, posY+1); cout<<"Presione una tecla para volver al menu principal... ";

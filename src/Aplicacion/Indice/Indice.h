@@ -89,7 +89,7 @@ public:
 	
 	//Generales
 	vector<Usuario*> obtenerTodosLosUsuarios();
-	vector<Categoria*> obtenerTodasLasCategorias();
+	vector<Categoria*> obtenerTodasLasCategorias(bool& error);
 };
 
 #endif /*INDICE_H_*/

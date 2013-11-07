@@ -494,7 +494,7 @@ vector<Usuario*> Indice::obtenerTodosLosUsuarios(){
 }
 
 
-vector<Categoria*> Indice::obtenerTodasLasCategorias(){
+vector<Categoria*> Indice::obtenerTodasLasCategorias(bool &error){
 	list<string>* idsCategorias = this->indiceGeneralEntidades->elementosConIgualClave(*(new Clave(claveIndiceGeneralCategorias)));
 		
 	vector<Categoria*> resultadoCategorias;
@@ -503,6 +503,7 @@ vector<Categoria*> Indice::obtenerTodasLasCategorias(){
 		string categoriaSerializada = this->indiceCategorias->buscarElemento(*it);
 		cat->desSerializar(categoriaSerializada);
 		resultadoCategorias.push_back(cat);
+		error=false;
 	}
 	
 	return resultadoCategorias;
