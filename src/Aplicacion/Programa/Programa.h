@@ -84,7 +84,7 @@ private:
 	string modificar(string queCosa, string valorActual, int posicionDato);
 
 	void emitirResultado(Servicio* &resultado, int &posY, bool enDetalle);
-	void emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY);
+	void emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY);
 	void hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY);
 	void pedirCotizacion(Servicio* &resultado, int posY);
 
@@ -102,6 +102,7 @@ private:
 	void gotoXY(int x, int y);
 	int leerOpcion(int cantidadDeOpciones, int posY);
 	void leer(string& nombre);
+	void emitir(string texto, int posX, int &posY);
 
 	/* NECESITO:
 	 * modificar al indica para que el obtenerID devuelva un int?

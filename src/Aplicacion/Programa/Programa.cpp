@@ -60,12 +60,12 @@ estadoPrograma Programa::menuPrincipal(){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
 	int cantidadOpciones = 5;
-
-	gotoXY(0, 0);	cout<<"MENU PRINCIPAL:";
-	gotoXY(0, 2);	cout<<"1 - Iniciar sesion.";
-	gotoXY(0, 3);	cout<<"2 - Registrarse.";
-	gotoXY(0, 4);	cout<<"3 - Recuperar contraseña.";
-	gotoXY(0, 5);	cout<<"4 - Salir del programa.";
+	int posY = 0;
+	emitir("MENU PRINCIPAL:", 			0, posY); 	posY = 2;
+	emitir("1 - Iniciar sesion.", 		0, posY);	posY++;
+	emitir("2 - Registrarse.", 			0, posY);	posY++;
+	emitir("3 - Recuperar contraseña.", 0, posY);	posY++;
+	emitir("4 - Salir del programa.", 	0, posY);	posY++;
 
 	int opcion = leerOpcion(cantidadOpciones, 5);
 	if(opcion == 1) estado = INICIAR_SESION;
@@ -79,9 +79,10 @@ estadoPrograma Programa::menuPrincipal(){
 
 estadoPrograma Programa::recuperacion(){
 	string nombre="";
-	gotoXY(0,0);	cout<<"RECUPERAR CONTRASEÑA:";
-	gotoXY(0,2);	cout<<"Usuario: ";	leer(nombre);
-	gotoXY(0,9);	cout<<"Se ha enviado un mail con su contraseña a su casilla de correo.";
+	int posY = 0;
+	emitir("RECUPERAR CONTRASEÑA:", 0, posY);					posY = 2;
+	emitir("Usuario: ", 			0, posY);	leer(nombre);	posY = 9;
+	emitir("Se ha enviado un mail con su contraseña a su casilla de correo.", 0, posY);
 
 	return MENU_PRINCIPAL;
 }
@@ -93,20 +94,21 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool usuarioAgregado = false;
 	string nombre, apellido, DNI, provincia, mail, contrasena;
 	string respuestaMail;
-	int posY=2;
+	int posY=0;
 
-	gotoXY(0, 0);		cout<<"REGISTRO: nuevo "<<imprimirTipoDeUsuario(tipo)<<".";
+	emitir("REGISTRO: nuevo " + imprimirTipoDeUsuario(tipo) + "." , 0, posY); posY = 2;
 	nuevoUsuario->setTipo(tipo);
-	gotoXY(0, posY);	cout<<"Nombre:     "; 	leer(nombre); 	nuevoUsuario->setNombre(nombre);		posY++;
-	gotoXY(0, posY);	cout<<"Apellido:   ";	leer(apellido);	nuevoUsuario->setApellido(apellido);	posY++;
+
+	emitir("Nombre:     ", 0, posY); 	leer(nombre); 	nuevoUsuario->setNombre(nombre);		posY++;
+	emitir("Apellido:   ", 0, posY);	leer(apellido);	nuevoUsuario->setApellido(apellido);	posY++;
 	do{
-		gotoXY(0, posY); 	cout<<"                      ";
-		gotoXY(0, posY);	cout<<"DNI:        "; leer(DNI);
+		emitir("                      ", 0, posY);
+		emitir("DNI:        ",			 0, posY); leer(DNI);
 	}while((atoi(DNI.c_str()) <= 0) || (tieneEspacios(DNI)));
 
-	nuevoUsuario->setDni(atoi(DNI.c_str()));posY++;
+	nuevoUsuario->setDni(StringUtil::str2int(DNI.c_str()));		posY++;
 
-	gotoXY(0, posY); 	cout<<"Provincia:  ";	leer(provincia);	nuevoUsuario->setProvincia(provincia);	posY++;
+	emitir("Provincia:  ", 0, posY);	leer(provincia); nuevoUsuario->setProvincia(provincia);	posY++;
 
 	bool otroMail = true;
 	//pido hasta 3 mails
@@ -141,7 +143,8 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
 	//si se registra un administrador, lo registró otra admin por lo que se va al menu de administracion
-	if(tipo == "A") estado = OPCIONES_USUARIO;
+	if(tipo == "A")	estado = OPCIONES_USUARIO;
+
 	return estado;
 }
 
@@ -344,7 +347,7 @@ vector<Servicio*> Programa::buscarServicio(int opcion){
 
 	if(opcion == 1){
 		Usuario* usuario = new Usuario();
-		usuario->setDni(atoi(aBuscar.c_str()));
+		usuario->setDni(StringUtil::str2int(aBuscar.c_str()));
 		resultado = indice->buscarServiciosPorUsuario(usuario);
 	}
 
@@ -368,21 +371,22 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 	int posY = 2;
 
 	for(unsigned int i = 0; i < resultados.size(); i++){
-		gotoXY(0, posY); cout<<"Resultado N."<<i+1<<":";	posY++;
+		emitir("Resultado N." + StringUtil::int2string(i+1) + ":", 0, posY);	posY++;
 		emitirResultado(resultados.at(i), posY, false);
 	}
 
 	posY++;
-	gotoXY(0,posY); cout<<"1 - Ver resultado en detalle.";	posY++;
-	gotoXY(0,posY); cout<<"2 - Volver al menu de opciones.";
+	emitir("1 - Ver resultado en detalle.", 	0, posY);	posY++;
+	emitir("2 - Volver al menu de opciones.", 	0, posY);
 
 	int opcion = leerOpcion(2, posY);
 	unsigned int num;
 	string numResultado;
 	if(opcion == 1){
 		do{
-			gotoXY(0, posY + 4); cout<<"Ver detalladamente el resultado N.:          ";
-			gotoXY(36, posY +4); leer(numResultado);
+			posY+=4;
+			emitir("Ver detalladamente el resultado N.:          ", 0, posY);
+			gotoXY(36, posY); leer(numResultado);
 			num = atoi(numResultado.c_str());
 		}while(!((num >= 1) && (num <= resultados.size())));
 
@@ -399,13 +403,12 @@ estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuari
 	gotoXY(0, 0);	cout<<"DETALLES RESULTADO: ";
 	int posY = 2;
 	emitirResultado(resultado, posY, true);
-	posY++;
 	emitirPreguntasRespuestasServicio(resultado, posY);
 	posY++;
 
-	gotoXY(0, posY); cout<<"1 - Hacer una pregunta.";	posY++;
-	gotoXY(0, posY); cout<<"2 - Pedir cotizacion."; posY++;
-	gotoXY(0, posY); cout<<"3 - Volver al listado de resultados.";
+	emitir("1 - Hacer una pregunta.", 				0, posY);	posY++;
+	emitir("2 - Pedir cotizacion.", 				0, posY); 	posY++;
+	emitir("3 - Volver al listado de resultados.",	0, posY);
 	int opcion = leerOpcion(3, posY);
 
 	if(opcion == 1) hacerPregunta(resultado, usuario, posY + 4);
@@ -414,24 +417,26 @@ estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuari
 	return RESULTADOS;
 }
 
-void Programa::emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY){
+void Programa::emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY){
 
 	vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(servicio);
 
 	for(unsigned int i = 0 ; i < preguntas.size(); i++){
 		if(!preguntas.at(i)->getOculta()){
-			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<": ";	posY++;
-			gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaConsulta());
-			cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraConsulta())<<".";	posY++;
-			gotoXY(5, posY);	cout<<preguntas.at(i)->getConsulta();	posY++;
+			emitir("Pregunta " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
+			emitir(FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaConsulta()) +
+			", " + FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraConsulta()) + ".", 5, posY); posY++;
+
+			emitir(preguntas.at(i)->getConsulta(), 0, posY);	posY++;
+
 			if(preguntas.at(i)->getRespuesta() != "--"){
-				gotoXY(5, posY);	cout<<"Respuesta: ";	posY++;
-				gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta());
-				cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta())<<".";	posY++;
-				gotoXY(5, posY);	cout<<preguntas.at(i)->getRespuesta();	posY++;
+				emitir("Respuesta: ", 5, posY);		posY++;
+				emitir(FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta()) +
+				", " + FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta()) + ".", 5, posY);	posY++;
+				emitir(preguntas.at(i)->getRespuesta(), 5, posY);	posY++;
 			}
 		}else{
-			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<" moderada por el administrador";
+			emitir("Pregunta " + StringUtil::int2string(i+1) + " moderada por el administrador", 0, posY);
 		}
 			posY++;
 	}
@@ -442,16 +447,14 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 	bool preguntado=false;
 	string pregunta;
 	gotoXY(0, posY);
-	cout<<"Escriba su pregunta en "<<max_caracteres_pregunta<<" caracteres: ";
+	emitir("Escriba su pregunta: ", 0, posY);	leer(pregunta);
 
-	leer(pregunta);
-
-	gotoXY(0, posY+4);
+	posY += 4;
 	if(pregunta.size()<= max_caracteres_pregunta){
 
 		// creo una nueva consulta
 		Consulta* consulta = new Consulta();
-		int IDNuevo = atoi(lector->getValor(idConsulta).c_str()) + 1;
+		int IDNuevo = StringUtil::str2int(lector->getValor(idConsulta).c_str()) + 1;
 		consulta->setId(IDNuevo);
 		consulta->setConsulta(pregunta);
 		consulta->setRespuesta("--");
@@ -462,16 +465,16 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 		consulta->setOculta(false);
 		preguntado = indice->agregarConsulta(consulta);
 
-		if(!preguntado) cout<<"La pregunta no se pudo agregar";
+		if(!preguntado) emitir("La pregunta no se pudo agregar", 0, posY);
 		else{
-			cout<<"Pregunta agregada satisfactoriamente!";
+			emitir("Pregunta agregada satisfactoriamente!", 0, posY);
 			//si se agrega bien, sumo en 1 efectivamente el contador de consultas
 			string nuevoID = StringUtil::int2string(IDNuevo);
 			lector->setValor(idConsulta, nuevoID);
 		}
 
 		}else{
-			cout<<"Su pregunta es demasiado larga.";
+			emitir("Su pregunta es demasiado larga.", 0, posY);
 	}
 }
 
@@ -497,7 +500,7 @@ void Programa::emitirCategoriasDisponibles(){
 
 		for(unsigned int i=0; i< categorias.size(); i++){
 
-			gotoXY(posX + 5, posY);	cout<<categorias.at(i)->getNombre();	posY++;
+			emitir(categorias.at(i)->getNombre(), posX + 5, posY);	posY++;
 		}
 	}
 }
@@ -514,7 +517,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 		string titulo, descr, tipo, cat, respuesta;
 		Servicio* servicio = new Servicio();
-		int IDNuevo = atoi(lector->getValor(idServicio).c_str()) + 1;
+		int IDNuevo = StringUtil::str2int(lector->getValor(idServicio).c_str()) + 1;
 		servicio->setId(IDNuevo);
 		servicio->setIdProveedor(usuario->getDni());
 
@@ -607,16 +610,16 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 		usuarioAux = usuarios.at(i);
 
 		if(usuarioAux->getTipo() == "A" && (usuarioAux != adminActual) ){
-		gotoXY(0, posY); cout<<"Administrador nro " <<usuarios.size()<<": ";	posY++;
-		gotoXY(0, posY); cout<<"Nombre: "<< usuarioAux->getNombre(); posY++;
-		gotoXY(0, posY); cout<<"ID: "<< usuarioAux->getDni() ; posY++;
+		emitir("Nombre: " + usuarioAux->getNombre(), 0, posY);					 posY++;
+		emitir("ID: " + StringUtil::int2string(usuarioAux->getDni()), 0, posY) ; posY++;
 		contAdministradores++;
 		}
 	}
 
+	posY++;
 	do{
-		gotoXY(0, posY);	cout<<"Ingrese el ID del administrador a eliminar:                 ";
-		gotoXY(44, posY);	leer(id); posY++;
+		emitir("Ingrese el ID del administrador a eliminar:                 ", 0, posY);
+		gotoXY(44, posY);	leer(id);
 	}while(atoi(id.c_str()) <= 0);
 
 	//busco que exista el ID ingresado:
@@ -635,10 +638,8 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 		usuario->setTipo("A");
 		eliminarUsuario(usuario, posY);
 	}else{
-		system("clear");
-		gotoXY(0, 10);
-		cout<<"No se puede eliminar el administrador pedido.";
-
+		posY++;
+		emitir("No se puede eliminar el administrador pedido.", 0, posY);
 	}
 
 	return OPCIONES_USUARIO;
@@ -657,6 +658,8 @@ estadoPrograma Programa::generarNuevasCategorias(){
 	if(opcion == 1) cargaManualCategoria();
 	if(opcion == 2) cargaMasivaCategoria();
 
+	char c;
+	cin.get(c);
 	return OPCIONES_USUARIO;
 }
 
@@ -680,20 +683,21 @@ void Programa::cargaManualCategoria(){
 	}while(descripcion.size() > max_descr_categoria);
 
 	Categoria* nuevaCategoria = new Categoria();
-	int IDNuevo = atoi(lector->getValor(idCategoria).c_str()) + 1;
+	int IDNuevo = StringUtil::str2int(lector->getValor(idCategoria).c_str()) + 1;
 	nuevaCategoria->setId(IDNuevo);
 	nuevaCategoria->setNombre(nombre);
 	nuevaCategoria->setDescripcion(descripcion);
 
 	bool agregada = indice->agregarCategoria(nuevaCategoria);
-	gotoXY(0, 14);
+
+	int posY = 14;
 	if(agregada){
-		cout<<"Categoria '"<<nombre<<"' agregada con exito!";
+		emitir("Categoria '" + nombre + "' agregada con exito!", 0, posY);
 		//se incrementa efectivamente el contador de categorias
 		string nuevoID = StringUtil::int2string(IDNuevo);
 		lector->setValor(idCategoria, nuevoID);
 	}else{
-		cout<<"Ya existe la categoria '"<<nombre<<"'.";
+		emitir("Ya existe la categoria '" + nombre + "'.", 0, posY);
 	}
 }
 
@@ -715,11 +719,11 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 		for(unsigned int i = 0; i < categorias.size(); i++){
 
 			agregada = indice->agregarCategoria(categorias.at(i));
-			gotoXY(0, 14 + i);
+			int posY = 14 + i;
 			if(agregada){
-				cout<<"Categoria '"<<categorias.at(i)->getNombre()<<"' agregada con exito!";
+				emitir("Categoria '" + categorias.at(i)->getNombre() + "' agregada con exito!", 0, posY);
 			}else{
-				cout<<"Ya existe la categoria '"<<categorias.at(i)->getNombre()<<"'.";
+				emitir("Ya existe la categoria '" + categorias.at(i)->getNombre() + "'.", 0, posY);
 			}
 		}
 
@@ -760,7 +764,7 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 			//si entra es porque es una categoria invalida, por lo tanto no la agrego.
 		}else{
 		Categoria* categoria =new Categoria();
-		int IDNuevo = atoi(lector->getValor(idCategoria).c_str()) + 1;
+		int IDNuevo = StringUtil::str2int(lector->getValor(idCategoria).c_str()) + 1;
 		categoria->setId(IDNuevo);
 		string nuevoID = StringUtil::int2string(IDNuevo);
 		lector->setValor(idCategoria, nuevoID);
@@ -804,9 +808,9 @@ int Programa::leerOpcion(int cantOpciones, int posY){
 	string opcion;
 	int N;
 	do{
-		gotoXY(0, posY +2);
-		cout<<"Ingrese opcion:                                          ";
-		gotoXY(16, posY + 2);
+		int Y = posY + 2;
+		emitir("Ingrese opcion:                                          ", 0, Y);
+		gotoXY(16, Y);
 		leer(opcion);
 
 		N = atoi(opcion.c_str());
@@ -819,18 +823,18 @@ int Programa::leerOpcion(int cantOpciones, int posY){
 void Programa::emitirResultado(Servicio* &resultado, int &posY, bool enDetalle){
 
 	if(enDetalle){
-		gotoXY(5, posY); cout<<"ID: "<<resultado->getId();					posY++;
-		gotoXY(5, posY); cout<<"Proveedor: "<<resultado->getIdProveedor(); 	posY++;
+		emitir("ID: " + StringUtil::int2string(resultado->getId()), 5, posY);					posY++;
+		emitir("Proveedor: " + StringUtil::int2string(resultado->getIdProveedor()), 5, posY);	posY++;
 	};
 
-	gotoXY(5, posY); cout<<"Nombre: "<<resultado->getNombre();				posY++;
-	gotoXY(5, posY); cout<<"Tipo: "<<resultado->getTipo();					posY++;
+	emitir("Nombre: " + resultado->getNombre(), 5, posY);				posY++;
+	emitir("Tipo: " + resultado->getTipo(), 5, posY);					posY++;
 
 	if(enDetalle){
-		gotoXY(5, posY); cout<<"Descripcion: "<<resultado->getDescripcion();posY++;
-		gotoXY(5, posY); cout<<"Categorias: ";
+		emitir("Descripcion: " + resultado->getDescripcion(), 5, posY);	posY++;
+		emitir("Categorias: ", 5, posY);
 		for(unsigned int j=0; j<resultado->getCategorias().size(); j++){
-			gotoXY(13, posY); cout<<resultado->getCategorias().at(j)<<".";	posY++;
+			emitir(resultado->getCategorias().at(j)->getNombre() + ".", 13, posY);	posY++;
 		}
 	}
 	posY++;
@@ -889,8 +893,18 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 	return usuarioEliminado;
 }
 
-void Programa::leer(string& nombre) {
-	getline(cin, nombre);
+void Programa::leer(string& dato) {
+	getline(cin, dato);
+}
+
+void Programa::emitir(string texto, int posX, int &posY){
+
+	if(posY > MAX_Y){
+		cout<<endl;	//si llego abajo de la pantalla, empiezo a hacer scroll
+		posY++;
+	}
+
+	gotoXY(posX, posY); cout<<texto;
 }
 
 bool Programa::tieneEspacios(string cadena){
@@ -942,17 +956,17 @@ estadoPrograma Programa::listarCategorias(){
 
 			categoriaAux = categorias.at(i);
 
-			gotoXY(0, posY); cout<<"Categoria nro " <<i+1<<": ";	posY++;
-			gotoXY(5, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
-			gotoXY(5, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY+=2;
+			emitir("Categoria nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
+			emitir("Nombre: " + categoriaAux->getNombre(), 5, posY); 				posY++;
+			emitir("Descripcion: " + categoriaAux->getDescripcion(), 5, posY) ;		posY+=2;
 
 
 		}
 	}else{
-		gotoXY(0, posY); 	cout<<"No hay ninguna categoria registrada en el sistema.";
+		emitir("No hay ninguna categoria registrada en el sistema.", 0, posY); posY++;
 	}
 	char c;
-	gotoXY(0, posY+1); cout<<"Presione una tecla para volver al menu principal... ";
+	emitir("Presione una tecla para volver al menu principal... ", 0, posY);
 	cin.get(c);
 	return estado;
 }

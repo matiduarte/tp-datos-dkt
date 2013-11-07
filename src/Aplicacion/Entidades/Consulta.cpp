@@ -7,7 +7,7 @@ Consulta::Consulta(){
 }
 
 string Consulta::serializar(){
-	string retorno;
+	string retorno="";
     retorno = StringUtil::int2string(this->id);
     retorno += separadorCamposEntidades;
     retorno += StringUtil::int2string(this->idServicio);
