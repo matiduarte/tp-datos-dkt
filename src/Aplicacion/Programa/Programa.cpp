@@ -640,6 +640,7 @@ void Programa::cargaManualCategoria(){
 	gotoXY(0, 14);
 	if(agregada){
 		cout<<"Categoria '"<<nombre<<"' agregada con exito!";
+		indice->incrementarId(idCategoria);
 	}else{
 		cout<<"Ya existe la categoria '"<<nombre<<"'.";
 	}
@@ -666,6 +667,7 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 			gotoXY(0, 12 + i);
 			if(agregada){
 				cout<<"Categoria '"<<categorias.at(i)->getNombre()<<"' agregada con exito!";
+				indice->incrementarId(idCategoria);
 			}else{
 				cout<<"Ya existe la categoria '"<<categorias.at(i)->getNombre()<<"'.";
 			}
