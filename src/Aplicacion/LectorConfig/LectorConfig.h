@@ -33,8 +33,6 @@ public:
 	string getValor(string nombreVariable);
 	void setValor(string nobreVariable, string valorVariable);
 	//para convertir de string a int
-	int stringToInt(const string& valor);
-	string intToString (int valor);
 	virtual ~LectorConfig();
 
 private:

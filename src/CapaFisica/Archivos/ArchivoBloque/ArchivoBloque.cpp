@@ -11,7 +11,7 @@ ArchivoBloque::ArchivoBloque(string nombre) {
 
 	try{
 		LectorConfig* lector = LectorConfig::getLector(rutaConfig);
-    	this->tamanioBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
+    	this->tamanioBloque = StringUtil::str2int(lector->getValor("tamanioBloque"));
 	}
 	catch(Excepcion& e){
 

@@ -444,7 +444,7 @@ void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 		string lista = "";
 		if(idTermino == "NO EXISTE"){
 			//Tengo que agregar la palabra porque no esta en el indice
-			idTermino = this->obtenerIdActual("idTerminoActual");
+			idTermino = this->obtenerNuevoId("idTerminoActual");
 			this->indiceTerminosId->agregarValor(*(new Clave(terminoActual)),idTermino);
 			this->indiceTerminos->insertarElemento(idTermino,"");
 			lista += idServicio + separadorCamposEntidades;
@@ -469,23 +469,14 @@ void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 	}
 }
 
-string Indice::obtenerIdActual(string tipoId){
-
-	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
-	string actualValor = pLector->getValor(tipoId);
-	int nuevoId = StringUtil::str2int(actualValor);
-	string nuevoIdString = StringUtil::int2string(nuevoId);
-
-	return nuevoIdString;
-}
-
-void Indice::incrementarId(string tipoId){
+string Indice::obtenerNuevoId(string tipoId){
 
 	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
 	string actualValor = pLector->getValor(tipoId);
 	int nuevoId = StringUtil::str2int(actualValor) +1;
 	string nuevoIdString = StringUtil::int2string(nuevoId);
 	pLector->setValor(tipoId, nuevoIdString);
+	return nuevoIdString;
 }
 
 vector<Usuario*> Indice::obtenerTodosLosUsuarios(){

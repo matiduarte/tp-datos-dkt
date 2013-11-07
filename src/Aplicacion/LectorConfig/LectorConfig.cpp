@@ -88,21 +88,6 @@ void LectorConfig::leerArchivoConfig(ifstream &archivo){
 	};
 }
 
-int LectorConfig::stringToInt(const string& valor){
-	int retorno;
-	istringstream stream(valor);
-	return stream>>retorno? retorno:-1;
-}
-
-string LectorConfig::intToString(int value){
-	std::string s;
-	std::stringstream out;
-	out << value;
-	s = out.str();
-
-	return s;
-}
-
 Dato LectorConfig::parsearLinea(char linea[]){
 
 	string nombreVariable= "";

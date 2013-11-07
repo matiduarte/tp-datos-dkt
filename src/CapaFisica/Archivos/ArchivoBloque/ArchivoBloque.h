@@ -14,6 +14,7 @@
 #include "../Archivo.h"
 #include "../../../Aplicacion/LectorConfig/LectorConfig.h"
 #include "../../../Aplicacion/constantes.h"
+#include "../../../Aplicacion/Utiles/StringUtil.h"
 #include "../../Excepciones/ExcepcionBloqueInexistente.h"
 #include "../../Excepciones/ExcepcionBloqueIncorrecto.h"
 #include "../../Excepciones/ExcepcionOverflowTamBloque.h"

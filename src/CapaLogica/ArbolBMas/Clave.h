@@ -12,6 +12,7 @@
 #include "string.h"
 #include "../../Aplicacion/constantes.h"
 #include "../../Aplicacion/LectorConfig/LectorConfig.h"
+#include "../../Aplicacion/Utiles/StringUtil.h"
 
 using namespace std;
 

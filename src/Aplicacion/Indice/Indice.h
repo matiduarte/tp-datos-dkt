@@ -51,14 +51,13 @@ private:
 	void agregarCadenaATerminosRelevantes(string cadena, string idServicio);
 	void hidratarCategoriasDeServicio(Servicio* servicio);
 	vector<string> parsearConsulta(string consulta);
+	string obtenerNuevoId(string tipoId);
 	
 public:
 	Indice();
 	Indice(string ruta);
 	~Indice();
 	
-	string obtenerIdActual(string tipoId);
-	void incrementarId(string tipoId);
 
 	//Metodos de usuarios
 	bool agregarUsuario(Usuario* usuario);
@@ -68,8 +67,6 @@ public:
 	
 	//Metodos servicios
 	bool agregarServicio(Servicio* servicio);
-
-	//deberia chequear si existe el nombre, no el ID (el id nunca va a repetirse)
 	
 	bool agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	bool eliminarServicio(Servicio* servicio);

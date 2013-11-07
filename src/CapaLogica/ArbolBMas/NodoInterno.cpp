@@ -14,8 +14,8 @@ NodoInterno::NodoInterno() {
 	// TODO Auto-generated constructor stub
 	try{
 		LectorConfig* lector = LectorConfig::getLector("//Aplicacion/config");
-    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
-    	this->tamanioMaximoClave = lector->stringToInt(lector->getValor("tamanioClave"));
+    	this->tamanioMaximoBloque = StringUtil::str2int(lector->getValor("tamanioBloque"));
+    	this->tamanioMaximoClave = StringUtil::str2int(lector->getValor("tamanioClave"));
 	}
 	catch(Excepcion& e){
 
@@ -28,8 +28,8 @@ NodoInterno::NodoInterno(ArchivoBloque* archivo){
 
 	try{
 		LectorConfig* lector = LectorConfig::getLector("//Aplicacion/config");
-    	this->tamanioMaximoBloque = lector->stringToInt(lector->getValor("tamanioBloque"));
-    	this->tamanioMaximoClave = lector->stringToInt(lector->getValor("tamanioClave"));
+    	this->tamanioMaximoBloque = StringUtil::str2int(lector->getValor("tamanioBloque"));
+    	this->tamanioMaximoClave = StringUtil::str2int(lector->getValor("tamanioClave"));
 	}
 	catch(Excepcion& e){
 

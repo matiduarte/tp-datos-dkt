@@ -435,7 +435,8 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 
 		// creo una nueva consulta
 		Consulta* consulta = new Consulta();
-		consulta->setId(atoi(indice->obtenerIdActual(idConsulta).c_str()));
+		int IDNuevo = atoi(lector->getValor(idConsulta).c_str()) + 1;
+		consulta->setId(IDNuevo);
 		consulta->setConsulta(pregunta);
 		consulta->setIdServicio(resultado->getId());
 		consulta->setIdUsuario(usuario->getDni());
@@ -445,7 +446,9 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 		if(!preguntado) cout<<"La pregunta no se pudo agregar";
 		else{
 			cout<<"Pregunta agregada satisfactoriamente!";
-			indice->incrementarId(idConsulta);
+			//si se agrega bien, sumo en 1 efectivamente el contador de consultas
+			string nuevoID = StringUtil::int2string(IDNuevo);
+			lector->setValor(idConsulta, nuevoID);
 		}
 
 		}else{
@@ -481,8 +484,8 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	string titulo, descr, tipo, cat, respuesta;
 	Servicio* servicio = new Servicio();
-
-	servicio->setId(atoi(indice->obtenerIdActual(idServicio).c_str()) + 1);
+	int IDNuevo = atoi(lector->getValor(idServicio).c_str()) + 1;
+	servicio->setId(IDNuevo);
 	servicio->setIdProveedor(usuario->getDni());
 
 	emitirCategoriasDisponibles();
@@ -516,7 +519,8 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 				gotoXY(0, posY+2); cout<<"No existe la categoria deseada.";
 			}
 			//agregar otra categoria?
-			gotoXY(0, posY+2);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+			gotoXY(0, posY+3);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+			gotoXY(0, posY+3);	cout<<"                                      ";
 			gotoXY(0, posY+2);	cout<<"                                      ";
 		}while((respuesta != "n")&&(respuesta != "s"));
 		if(respuesta == "n") otraCat = false;
@@ -524,13 +528,15 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	bool agregado = true;
 	indice->agregarServicio(servicio);
-	gotoXY(0, posY+4);
+	gotoXY(0, posY+5);
 
 	if(agregado){
 		cout<<"Publicacion exitosa!";
 		usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
-		indice->incrementarId(idServicio);
 		indice->modificarUsuario(usuario);
+		//y se aumenta efectivamente el contador de servicios
+		string nuevoID = StringUtil::int2string(IDNuevo);
+		lector->setValor(idConsulta, nuevoID);
 	}else{
 		cout<<"No se pudo publicar su servicio.";
 	}
@@ -637,7 +643,8 @@ void Programa::cargaManualCategoria(){
 	}while(descripcion.size() > max_descr_categoria);
 
 	Categoria* nuevaCategoria = new Categoria();
-	nuevaCategoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()) + 1);
+	int IDNuevo = atoi(lector->getValor(idCategoria).c_str()) + 1;
+	nuevaCategoria->setId(IDNuevo);
 	nuevaCategoria->setNombre(nombre);
 	nuevaCategoria->setDescripcion(descripcion);
 
@@ -645,7 +652,9 @@ void Programa::cargaManualCategoria(){
 	gotoXY(0, 14);
 	if(agregada){
 		cout<<"Categoria '"<<nombre<<"' agregada con exito!";
-		indice->incrementarId(idCategoria);
+		//se incrementa efectivamente el contador de categorias
+		string nuevoID = StringUtil::int2string(IDNuevo);
+		lector->setValor(idCategoria, nuevoID);
 	}else{
 		cout<<"Ya existe la categoria '"<<nombre<<"'.";
 	}
@@ -714,8 +723,10 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 			//si entra es porque es una categoria invalida, por lo tanto no la agrego.
 		}else{
 		Categoria* categoria =new Categoria();
-		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()) + 1);
-		indice->incrementarId(idCategoria);
+		int IDNuevo = atoi(lector->getValor(idCategoria).c_str()) + 1;
+		categoria->setId(IDNuevo);
+		string nuevoID = StringUtil::int2string(IDNuevo);
+		lector->setValor(idCategoria, nuevoID);
 		categoria->setNombre(nombre);
 		categoria->setDescripcion(descripcion);
 		categorias.push_back(categoria);
@@ -796,11 +807,9 @@ void Programa::emitirDatosUsuario(Usuario* &usuario){
 	gotoXY(0, posY);	cout<<"Apellido:   "<<usuario->getApellido();	posY++;
 	gotoXY(0, posY);	cout<<"DNI:        "<<usuario->getDni();		posY++;
 	gotoXY(0, posY); 	cout<<"Provincia:  "<<usuario->getProvincia();	posY++;
-
-	for(unsigned int i=0; i< usuario->getEmails().size(); i++){
-	gotoXY(0, posY);	cout<<"e-Mail "<<i+1<<":   "<<usuario->getEmails().at(i);	posY++;
-	}
-
+	gotoXY(0, posY);	cout<<"e-Mail 1:   "<<usuario->getEmails().at(0);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail 2:   "<<usuario->getEmails().at(1);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail 3:   "<<usuario->getEmails().at(2);	posY++;
 	gotoXY(0, posY);	cout<<"Contraseña: "<<usuario->getContrasena(); posY++;
 
 }
