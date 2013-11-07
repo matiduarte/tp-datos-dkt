@@ -38,16 +38,16 @@ string Consulta::serializar(){
 void Consulta::desSerializar(string aDeserealizar){
 	vector<string> atributos = StringUtil::split(aDeserealizar,separadorCamposEntidades);
 	this->id = StringUtil::str2int(atributos.at(0));
-	this->idServicio = StringUtil::str2int(atributos.at(0));
-	this->idUsuario = StringUtil::str2int(atributos.at(0));
-	this->consulta = atributos.at(1);
-	this->fechaConsulta = atributos.at(2);
-	this->horaConsulta = atributos.at(3);
-	this->respuesta = atributos.at(4);
-	this->fechaRespuesta = atributos.at(5);
-	this->horaRespuesta = atributos.at(6);
+	this->idServicio = StringUtil::str2int(atributos.at(1));
+	this->idUsuario = StringUtil::str2int(atributos.at(2));
+	this->consulta = atributos.at(3);
+	this->fechaConsulta = atributos.at(4);
+	this->horaConsulta = atributos.at(5);
+	this->respuesta = atributos.at(6);
+	this->fechaRespuesta = atributos.at(7);
+	this->horaRespuesta = atributos.at(8);
 	this->oculta = false;
-	string oculta = atributos.at(7);
+	string oculta = atributos.at(9);
 	if(oculta == "1"){
 		this->oculta = true;
 	}

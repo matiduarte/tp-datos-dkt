@@ -427,7 +427,7 @@ void Programa::emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY)
 			emitir(FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaConsulta()) +
 			", " + FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraConsulta()) + ".", 5, posY); posY++;
 
-			emitir(preguntas.at(i)->getConsulta(), 0, posY);	posY++;
+			emitir(preguntas.at(i)->getConsulta(), 5, posY);	posY++;
 
 			if(preguntas.at(i)->getRespuesta() != "--"){
 				emitir("Respuesta: ", 5, posY);		posY++;
