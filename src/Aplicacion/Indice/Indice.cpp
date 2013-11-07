@@ -389,8 +389,10 @@ vector<string> Indice::parsearConsulta(string consulta){
 	vector<string> terminosRelevantes;
 	
 	for(unsigned int i=0; i<terminos.size();i++){
-		if(!this->diccionario->esStopWord(terminos.at(i))){
-			terminosRelevantes.push_back(terminos.at(i));
+		string terminoActual = terminos.at(i);
+		std::transform(terminoActual.begin(), terminoActual.end(), terminoActual.begin(), ::tolower);
+		if(!this->diccionario->esStopWord(terminoActual)){
+			terminosRelevantes.push_back(terminoActual);
 		}
 	}
 	
