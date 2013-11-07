@@ -121,6 +121,14 @@ estadoPrograma Programa::altaUsuario(string tipo){
 			}
 	}
 
+	//si quedan mails sin setear, les asigno un ----
+	if(nuevoUsuario->getEmails().size()<3){
+		do{
+			string mailVacio = "--";
+			nuevoUsuario->setEmailEnPosicion(mailVacio, nuevoUsuario->getEmails().size());
+		}while(nuevoUsuario->getEmails().size() < 3);
+	}
+
 	gotoXY(0, posY);	cout<<"Contraseña: ";	leer(contrasena);	nuevoUsuario->setContrasena(contrasena);
 
 	//intento agregar el usuario al indice
@@ -154,7 +162,7 @@ string Programa::modificar(string queCosa, string valorActual, int posicionDato)
 
 estadoPrograma Programa::modificarDatosUsuario(Usuario* &usuario){
 
-	gotoXY(0, 0); cout<<"REGISTRO:";
+	gotoXY(0, 0); cout<<"MODIFICAR:";
 	emitirDatosUsuario(usuario);
 	//modificar nombre?
 	usuario->setNombre(modificar("el nombre? ", usuario->getNombre(), 2));
@@ -164,7 +172,7 @@ estadoPrograma Programa::modificarDatosUsuario(Usuario* &usuario){
 	//modificar provincia?
 	usuario->setProvincia(modificar("la provincia? ", usuario->getProvincia(), 5));
 	//modificar emails?
-	for(unsigned int i = 0; i < usuario->getEmails().size(); i++){
+	for(unsigned int i = 0; i < MAX_EMAILS; i++){
 		string aModificar= "el e-mail num " + StringUtil::int2string(i+1) + "? ";
 		string nuevoEmail = modificar(aModificar, usuario->getEmails().at(i), 6 + i);
 		usuario->setEmailEnPosicion(nuevoEmail, i);
@@ -482,64 +490,72 @@ void Programa::emitirCategoriasDisponibles(){
 
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
-	string titulo, descr, tipo, cat, respuesta;
-	Servicio* servicio = new Servicio();
-	int IDNuevo = atoi(lector->getValor(idServicio).c_str()) + 1;
-	servicio->setId(IDNuevo);
-	servicio->setIdProveedor(usuario->getDni());
+	//si pude agregar alguna categoria sigo, sino se cancela la publicacion
 
-	emitirCategoriasDisponibles();
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
+	if(categorias.size() > 0){
 
-	gotoXY(0, 0);	cout<<"PUBLICAR:";
-	gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo); 	servicio->setNombre(titulo);
-	gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);	servicio->setDescripcion(descr);
+		string titulo, descr, tipo, cat, respuesta;
+		Servicio* servicio = new Servicio();
+		int IDNuevo = atoi(lector->getValor(idServicio).c_str()) + 1;
+		servicio->setId(IDNuevo);
+		servicio->setIdProveedor(usuario->getDni());
 
-	do{
-		gotoXY(0, 5);	cout<<"Tipo: (GR/PF/SU) "; 	leer(tipo);
-	}while((tipo != "GR")&&(tipo != "PF")&&(tipo != "SU"));
+		emitirCategoriasDisponibles();
 
-	servicio->setTipo(tipo);
+		gotoXY(0, 0);	cout<<"PUBLICAR:";
+		gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo); 	servicio->setNombre(titulo);
+		gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);	servicio->setDescripcion(descr);
 
-	int posY=6;
-
-	//pido categorias
-	bool otraCat = true;
-	while(otraCat){
-		gotoXY(0, posY);	cout<<"Categoria:                    ";
-		gotoXY(11, posY);	leer(cat);
-
-		bool error= false;
 		do{
-			//si la categoria pedida existe, se la seteo al servicio
-			Categoria* categoria = indice->buscarCategoria(cat, error);
-			if(!error) {
-				posY++;
-				servicio->setCategoria(categoria);
-			}
-			else{
-				gotoXY(0, posY+2); cout<<"No existe la categoria deseada.";
-			}
-			//agregar otra categoria?
-			gotoXY(0, posY+3);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
-			gotoXY(0, posY+3);	cout<<"                                      ";
-			gotoXY(0, posY+2);	cout<<"                                      ";
-		}while((respuesta != "n")&&(respuesta != "s"));
-		if(respuesta == "n") otraCat = false;
-	}
+			gotoXY(0, 5);	cout<<"Tipo: (GR/PF/SU) "; 	leer(tipo);
+		}while((tipo != "GR")&&(tipo != "PF")&&(tipo != "SU"));
 
-	bool agregado = true;
-	indice->agregarServicio(servicio);
-	gotoXY(0, posY+5);
+		servicio->setTipo(tipo);
 
-	if(agregado){
-		cout<<"Publicacion exitosa!";
-		usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
-		indice->modificarUsuario(usuario);
-		//y se aumenta efectivamente el contador de servicios
-		string nuevoID = StringUtil::int2string(IDNuevo);
-		lector->setValor(idConsulta, nuevoID);
+		int posY=6;
+
+		//pido categorias
+		bool otraCat = true;
+		while(otraCat){
+			gotoXY(0, posY);	cout<<"Categoria:                    ";
+			gotoXY(11, posY);	leer(cat);
+
+			bool error= false;
+			do{
+				//si la categoria pedida existe, se la seteo al servicio
+				Categoria* categoria = indice->buscarCategoria(cat, error);
+				if(!error) {
+					posY++;
+					servicio->setCategoria(categoria);
+				}
+				else{
+					gotoXY(0, posY+2); cout<<"No existe la categoria deseada.";
+				}
+				//agregar otra categoria?
+				gotoXY(0, posY+3);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
+				gotoXY(0, posY+3);	cout<<"                                      ";
+				gotoXY(0, posY+2);	cout<<"                                      ";
+			}while((respuesta != "n")&&(respuesta != "s"));
+			if(respuesta == "n") otraCat = false;
+		}
+
+		gotoXY(0, posY+5);
+		bool agregado = true;
+		indice->agregarServicio(servicio);
+
+		if(agregado){
+			cout<<"Publicacion exitosa!";
+			usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
+			indice->modificarUsuario(usuario);
+			//y se aumenta efectivamente el contador de servicios
+			string nuevoID = StringUtil::int2string(IDNuevo);
+			lector->setValor(idConsulta, nuevoID);
+		}else{
+			cout<<"No se pudo publicar su servicio.";
+		}
 	}else{
-		cout<<"No se pudo publicar su servicio.";
+		cout<<"No hay ninguna categoria registrada en el sistema.";
 	}
 	return OPCIONES_USUARIO;
 }
