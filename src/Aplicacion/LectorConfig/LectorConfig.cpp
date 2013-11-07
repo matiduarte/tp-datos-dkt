@@ -75,16 +75,13 @@ void LectorConfig::leerArchivoConfig(ifstream &archivo){
 	Dato dato;
 	char linea[tamanioLinea];
 
-	archivo.getline(linea, tamanioLinea, '\n');
-
 	while(!archivo.eof()){
 
+	archivo.getline(linea, tamanioLinea);
 		if(linea[0] != '#'){
 			dato = parsearLinea(linea);
 			if(dato.nombreVariable != "#ERROR#") vectorDatos.push_back(dato);
 		}
-		archivo.getline(linea, tamanioLinea, '\n');
-
 	};
 }
 

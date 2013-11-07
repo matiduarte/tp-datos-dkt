@@ -408,8 +408,8 @@ estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuari
 	gotoXY(0, posY); cout<<"3 - Volver al listado de resultados.";
 	int opcion = leerOpcion(3, posY);
 
-//	if(opcion == 1) hacerPregunta(resultados.at(resultado), usuario, posY + 4);
-//	if(opcion == 2) pedirCotizacion(resultados.at(resultado), posY + 4);
+	if(opcion == 1) hacerPregunta(resultado, usuario, posY + 4);
+	if(opcion == 2) pedirCotizacion(resultado, posY + 4);
 
 	return RESULTADOS;
 }
@@ -424,10 +424,12 @@ void Programa::emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY){
 			gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaConsulta());
 			cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraConsulta())<<".";	posY++;
 			gotoXY(5, posY);	cout<<preguntas.at(i)->getConsulta();	posY++;
-			gotoXY(5, posY);	cout<<"Respuesta: ";	posY++;
-			gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta());
-			cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta())<<".";	posY++;
-			gotoXY(5, posY);	cout<<preguntas.at(i)->getRespuesta();	posY++;
+			if(preguntas.at(i)->getRespuesta() != "--"){
+				gotoXY(5, posY);	cout<<"Respuesta: ";	posY++;
+				gotoXY(5, posY);	cout<<FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta());
+				cout<<", "<<FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta())<<".";	posY++;
+				gotoXY(5, posY);	cout<<preguntas.at(i)->getRespuesta();	posY++;
+			}
 		}else{
 			gotoXY(0, posY);	cout<<"Pregunta "<<i+1<<" moderada por el administrador";
 		}
@@ -452,6 +454,9 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 		int IDNuevo = atoi(lector->getValor(idConsulta).c_str()) + 1;
 		consulta->setId(IDNuevo);
 		consulta->setConsulta(pregunta);
+		consulta->setRespuesta("--");
+		consulta->setFechaRespuesta("--");
+		consulta->setHoraRespuesta("--");
 		consulta->setIdServicio(resultado->getId());
 		consulta->setIdUsuario(usuario->getDni());
 		consulta->setOculta(false);
@@ -504,6 +509,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 	bool error = true;
 	bool tieneCategorias = true;
 	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
+
 	if(!error){
 
 		string titulo, descr, tipo, cat, respuesta;
@@ -562,7 +568,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 			usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
 			indice->modificarUsuario(usuario);
 			//y se aumenta efectivamente el contador de servicios
-			string nuevoID = StringUtil::int2string(IDNuevo);
+			string nuevoID = StringUtil::int2string(servicio->getId());
 			lector->setValor(idConsulta, nuevoID);
 		}else{
 			cout<<"No se pudo publicar su servicio.";
@@ -822,7 +828,7 @@ void Programa::emitirResultado(Servicio* &resultado, int &posY, bool enDetalle){
 
 	if(enDetalle){
 		gotoXY(5, posY); cout<<"Descripcion: "<<resultado->getDescripcion();posY++;
-		gotoXY(5, posY); cout<<"Categoria/s: ";
+		gotoXY(5, posY); cout<<"Categorias: ";
 		for(unsigned int j=0; j<resultado->getCategorias().size(); j++){
 			gotoXY(13, posY); cout<<resultado->getCategorias().at(j)<<".";	posY++;
 		}
