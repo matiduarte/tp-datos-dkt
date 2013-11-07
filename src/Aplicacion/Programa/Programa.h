@@ -16,6 +16,7 @@
 #include "../constantes.h"
 #include "../Indice/Indice.h"
 #include "../Utiles/FechaYHora.h"
+#include <unistd.h>
 
 using namespace std;
 

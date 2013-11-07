@@ -531,26 +531,51 @@ estadoPrograma Programa::bajaProducto(){
 	return estado;
 }
 
-estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){ // FALTA LISTADO DE USUARIOS
+estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 
 	gotoXY(0, 0);	cout<<"ELIMINAR ADMINISTRADOR:";
 	string id;
-	int posY=4;
-	//falta listado de todos los admins, exceptuando el actual
+	int posY=4,contAdministradores=1;
+	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
+	Usuario *usuarioAux;
+
+	for(unsigned int i=0; i<usuarios.size(); i++){
+
+		usuarioAux = usuarios.at(i);
+
+		if(usuarioAux->getTipo() == "A" && (usuarioAux != adminActual) ){
+		gotoXY(0, posY); cout<<"Administrador nro " <<usuarios.size()<<": ";	posY++;
+		gotoXY(0, posY); cout<<"Nombre: "<< usuarioAux->getNombre(); posY++;
+		gotoXY(0, posY); cout<<"ID: "<< usuarioAux->getDni() ; posY++;
+		contAdministradores++;
+		}
+	}
+
 	do{
-		gotoXY(0, 2);	cout<<"Ingrese el ID del administrador a eliminar:                 ";
-		gotoXY(44, 2);	leer(id);
+		gotoXY(0, posY);	cout<<"Ingrese el ID del administrador a eliminar:                 ";
+		gotoXY(44, posY);	leer(id); posY++;
 	}while(atoi(id.c_str()) <= 0);
 
-	if(atoi(id.c_str()) != adminActual->getDni()){
+	//busco que exista el ID ingresado:
+	bool encontrado = false, IDvalido=false;
+	unsigned int indice=0;
+	while( (indice<usuarios.size()) && (!encontrado) ){
+		if( atoi(id.c_str()) == usuarios.at(indice)->getDni()) encontrado = true;
+		indice++;
+	}
 
+	if( encontrado && (atoi(id.c_str())!=adminActual->getDni()) ) IDvalido = true;
+
+	if(IDvalido){
 		Usuario* usuario = new Usuario();
 		usuario->setDni(atoi(id.c_str()));
 		usuario->setTipo("A");
 		eliminarUsuario(usuario, posY);
 	}else{
-		gotoXY(0, posY);
+		system("clear");
+		gotoXY(0, 10);
 		cout<<"No se puede eliminar el administrador pedido.";
+
 	}
 
 	return OPCIONES_USUARIO;
@@ -634,8 +659,14 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 		archivo.close();
 	}
 }
-
-vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){ //FALTAN CHEQUEOS
+/*
+ * antes de agregar la categoria se cheque que tenga el "separador de categoria",
+ * y que el nombre no supere el tamaño maximo permitido.
+ * La descripcion se copia hasta el tamaño maximo permitido.
+ * Por lo tanto, si una categoria no tiene el "separador de categoria" o el nombre supera
+ * el maximo permitido, se la considera invalida y no se agrega.
+ */
+vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 
 	vector<Categoria*> categorias;
 	char* linea= new char[max_nombre_categoria + max_descr_categoria +3];
@@ -644,22 +675,29 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){ //FALTA
 	archivo.getline(linea, max_nombre_categoria + max_descr_categoria +3);
 
 	while(!archivo.eof()){
-		unsigned int i;
+		unsigned int i=0, j=0;
 		nombre ="";
-		for(i = 0; linea[i] != separadorCategoria; i++){ //faltan chequeos
+		while( (linea[i] != separadorCategoria)  && (i <= max_nombre_categoria) ){
 			nombre += linea[i];
+			i++;
 		}
 
 		descripcion="";
-		for(unsigned int j = i+1; j<strlen(linea); j++){
+		j = i+1;
+		while(j <= max_descr_categoria ){
 			descripcion += linea[j];
+			j++;
 		}
 
+		if((i = max_nombre_categoria) && linea[i] != separadorCategoria){
+			//si entra es porque es una categoria invalida, por lo tanto no la agrego.
+		}else{
 		Categoria* categoria =new Categoria();
 		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()));
 		categoria->setNombre(nombre);
 		categoria->setDescripcion(descripcion);
 		categorias.push_back(categoria);
+		}
 
 		archivo.getline(linea, max_nombre_categoria + max_descr_categoria +3);
 	};
@@ -773,8 +811,10 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 		gotoXY(0, posY);
 		if(usuarioEliminado){
 			cout << imprimirTipoDeUsuario(usuario->getTipo())<<" eliminado correctamente!                                                                                   ";
+
 		}else{
-			cout <<"No se pudo eliminar al "<<imprimirTipoDeUsuario(usuario->getTipo())<<"                                                                                   ";
+			cout <<"No se pudo eliminar al "<<imprimirTipoDeUsuario(usuario->getTipo())<<"                                                                               ";
+
 		}
 	}
 
