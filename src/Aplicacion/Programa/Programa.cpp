@@ -609,14 +609,25 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 
 		usuarioAux = usuarios.at(i);
 
-		if(usuarioAux->getTipo() == "A" && (usuarioAux != adminActual) ){
+		if( (usuarioAux->getTipo() == "A") && (usuarioAux->getDni() != adminActual->getDni()) ){
+		emitir("Administrador nro " +StringUtil::int2string(contAdministradores)+ ": ",0,posY);	 		 posY++;
 		emitir("Nombre: " + usuarioAux->getNombre(), 0, posY);					 posY++;
 		emitir("ID: " + StringUtil::int2string(usuarioAux->getDni()), 0, posY) ; posY++;
+
 		contAdministradores++;
 		}
 	}
 
+
+	if(contAdministradores == 1){
+		system("clear");
+		gotoXY(0, 14);
+		emitir("Sos el unico administrador hasta el momento.", 0, posY);		  posY++;
+		return OPCIONES_USUARIO;
+	}
+
 	posY++;
+
 	do{
 		emitir("Ingrese el ID del administrador a eliminar:                 ", 0, posY);
 		gotoXY(44, posY);	leer(id);
@@ -630,7 +641,8 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 		indice++;
 	}
 
-	if( encontrado && (atoi(id.c_str())!=adminActual->getDni()) ) IDvalido = true;
+	//verifico que el ID ingresado no sea uno mismo.
+	if( encontrado && ( atoi(id.c_str()) != adminActual->getDni() ) ) IDvalido = true;
 
 	if(IDvalido){
 		Usuario* usuario = new Usuario();
@@ -638,8 +650,14 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 		usuario->setTipo("A");
 		eliminarUsuario(usuario, posY);
 	}else{
+
+		system("clear");
+		gotoXY(0, 14);
+		cout<<"No se puede eliminar el administrador pedido.";
+
 		posY++;
 		emitir("No se puede eliminar el administrador pedido.", 0, posY);
+
 	}
 
 	return OPCIONES_USUARIO;
@@ -661,6 +679,7 @@ estadoPrograma Programa::generarNuevasCategorias(){
 	char c;
 	cin.get(c);
 	return OPCIONES_USUARIO;
+
 }
 
 void Programa::cargaManualCategoria(){
