@@ -27,7 +27,7 @@ public:
 	void desSerializar(string aDeserealizar);
 	string serializarCategorias();
 	void deserializarCategorias(string aDeserializar);
-	
+	void eliminarCategoria(Categoria* categoria);
 	//Getters
 	int getId();
 	int getIdProveedor();

@@ -53,6 +53,15 @@ void Servicio::deserializarCategorias(string aDeserializar){
 	}
 }
 
+void Servicio::eliminarCategoria(Categoria* categoria){
+	for(unsigned int=0; i<this->categorias.size();i++){
+		if(this->categorias.at(i)->getId() == categoria->getId()){
+			//Es la categoria que tengo que eliminar
+			this->categorias.erase(this->categorias.begin()+i);
+		}
+	}
+}
+
 int Servicio::getId(){
 	return this->id;
 }

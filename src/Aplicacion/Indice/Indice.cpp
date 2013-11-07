@@ -76,6 +76,7 @@ bool Indice::elimininarUsuario(Usuario* usuario){
 		this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+		this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	}catch(Excepcion& e){
 		return false;
 	}return true;
@@ -177,14 +178,51 @@ bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 }
 
 bool Indice::eliminarCategoria(string nombreCategoria){
+	Categoria* categoria;
+	this->indiceCategorias->elminarElemento(StringUtil::(categoria->getId()));
+	this->indiceCategoriaPorNombre->borrarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(categoria->getId()));
+	this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralCategorias)),StringUtil::int2string(categoria->getId()));
+	
+	//Ahora tengo que borrar todas las referencias de servicios a esta categoria
+	list<string>* idsServicio = this->indiceServicioPorCategoria->buscarClave(*(new Clave(categoria->getNombre())));
+	for (std::list<string>::iterator it = idsServicio->begin(); it != idsServicio->end(); it++){
+		string idServicioActual = *it;
+		string servicioSerializado = this->indiceServicio->buscarElemento(idServicioActual);
+		Servicio* servicio = new Servicio();
+		servicio->desSerializar(servicioSerializado);
+		
+		int posLista = servicio->getPosicionCategorias();
+		servicio->eliminarCategoria(categoria);
+		int nuevaPosicion = this->listaCategoriasPorServicio->modificar(posLista, servicio->serializarCategorias());
+		servicio->setPosicionCategorias(nuevaPosicion);
+		this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
+	}
 	
 }
 void Indice::modificarCategoria(Categoria* categoria){
-	//
+	string antiguaCatSerializada = this->indiceCategorias->buscarElemento(StringUtil::int2string(categoria->getId()));
+	Categoria* antiguaCat = new Categoria();
+	antiguaCat->desSerializar(antiguaCat);
+	
+	this->indiceCategorias->modificarElemento(StringUtil::int2string(categoria->getId()),categoria->serializar());
+	if(antiguaCat->getNombre() != categoria->getNombre()){
+		//Si la categoria cambio su nombre tengo que actualizar el indice por nombre
+		this->indiceCategoriaPorNombre->borrarValor(*(new Clave(antiguaCat->getNombre())),StringUtil::int2string(antiguaCat->getId()));
+		this->indiceCategoriaPorNombre->agregarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(categoria->getId()));
+	}
 }
 
 Categoria* Indice::buscarCategoria(string nombreCategoria){
+	string idCat = this->indiceCategoriaPorNombre->buscarClave(*(new Clave(nombreCategoria)));
+	if(idCat == "NO EXISTE"){
+		//Si no existe la categoria que se esta bucando devuelvo una vacia
+		return new Categoria();
+	}
 	
+	string catSerializada = this->indiceCategorias->buscarElemento(idCat);
+	Categoria* cat = new Categoria();
+	cat->desSerializar(catSerializada);
+	return cat;
 }
 
 
