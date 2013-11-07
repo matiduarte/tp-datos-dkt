@@ -799,6 +799,8 @@ list<string> * ArbolBMas::elementosConIgualClave(Clave clave){
 				listaAdevolver->splice(listaAdevolver->end(),*listaAux);
 			nodoAux = Nodo::cargar(this->archivo,((NodoHoja*)nodoAux)->getSiguiente());
 			}
+			listaAux = ((NodoHoja*)nodoAux)->buscarYlistar(clave);
+			listaAdevolver->splice(listaAdevolver->end(),*listaAux);
 			return listaAdevolver;
 		}
 
