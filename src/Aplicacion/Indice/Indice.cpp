@@ -223,6 +223,7 @@ void Indice::modificarCategoria(Categoria* categoria){
 
 Categoria* Indice::buscarCategoria(string nombreCategoria, bool &error){
 	string idCat = this->indiceCategoriaPorNombre->buscarClave(*(new Clave(nombreCategoria)));
+	error = false;
 	if(idCat == "NO EXISTE"){
 		error = true;
 		return new Categoria();

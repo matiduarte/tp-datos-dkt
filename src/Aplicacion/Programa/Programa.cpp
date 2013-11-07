@@ -500,7 +500,9 @@ void Programa::emitirCategoriasDisponibles(){
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	//si pude agregar alguna categoria sigo, sino se cancela la publicacion
-	bool error=true;
+	bool agregado = false;
+	bool error = true;
+	bool tieneCategorias = true;
 	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
 	if(!error){
 
@@ -530,7 +532,6 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 			gotoXY(0, posY);	cout<<"Categoria:                    ";
 			gotoXY(11, posY);	leer(cat);
 
-			bool error= false;
 			do{
 				//si la categoria pedida existe, se la seteo al servicio
 				Categoria* categoria = indice->buscarCategoria(cat, error);
@@ -546,12 +547,15 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 				gotoXY(0, posY+3);	cout<<"                                      ";
 				gotoXY(0, posY+2);	cout<<"                                      ";
 			}while((respuesta != "n")&&(respuesta != "s"));
-			if(respuesta == "n") otraCat = false;
+			if(respuesta == "n"){
+				if(servicio->getCategorias().size() == 0) tieneCategorias = false;
+				otraCat = false;
+			}
 		}
 
-		gotoXY(0, posY+5);
-		bool agregado = true;
-		indice->agregarServicio(servicio);
+		gotoXY(0, posY+6);
+
+		if(tieneCategorias) agregado = indice->agregarServicio(servicio);
 
 		if(agregado){
 			cout<<"Publicacion exitosa!";
