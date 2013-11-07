@@ -19,6 +19,7 @@ string Consulta::serializar(){
     retorno += this->fechaConsulta;
     retorno += separadorCamposEntidades;
     retorno += this->horaConsulta;
+    retorno += separadorCamposEntidades;
     retorno += this->respuesta;
     retorno += separadorCamposEntidades;
     retorno += this->fechaRespuesta;

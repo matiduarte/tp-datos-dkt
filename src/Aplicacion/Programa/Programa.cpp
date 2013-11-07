@@ -592,7 +592,7 @@ estadoPrograma Programa::responderPregunta(){
 
 estadoPrograma Programa::bajaProducto(){
 
-	estadoPrograma estado = MENU_PRINCIPAL;
+	estadoPrograma estado = OPCIONES_USUARIO;
 	cout<<"estoy en baja";
 	return estado;
 }
