@@ -32,9 +32,8 @@ void Programa::ejecutar(){
 
 		case MENU_PRINCIPAL:	estado = menuPrincipal();								break;
 		case RECUPERAR_PASS:	estado = recuperacion();								break;
-		case REGISTRO_U:		estado = altaUsuario("U");					break;
-		case REGISTRO_A:		estado = altaUsuario("A");					break;
-		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
+		case REGISTRO_U:		estado = altaUsuario("U");								break;
+		case REGISTRO_A:		estado = altaUsuario("A");								break;
 		case BAJA_ADMIN:		estado = bajaAdmin(usuario);							break;
 		case CAMBIAR_DATOS:		estado = modificarDatosUsuario(usuario);				break;
 		case INICIAR_SESION:	estado = iniciarSesion(usuario);						break;
@@ -45,6 +44,7 @@ void Programa::ejecutar(){
 		case RESPONDER:			estado = responderPregunta();							break;
 		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
+		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
 		case BAJA_CAT:			estado = bajaCategoria();								break;
 		default:																		break;
 		}
@@ -107,7 +107,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool otroMail = true;
 	//pido hasta 3 mails
 	for(int i=1; (i<4)&&(otroMail); i++){
-	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmailEnPosicion(mail,0);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmailEnPosicion(mail,i-1);	posY++;
 		if(i<3){
 			do{
 				gotoXY(0, posY+1); cout<<"Desea agregar otra direccion de e-Mail? (s/n) ";
@@ -128,6 +128,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	if(usuarioAgregado)	cout<<"Usuario registrado exitosamente!";
 	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
+	//si se registra un administrador, lo registró otra admin por lo que se va al menu de administracion
 	if(tipo == "A") estado = OPCIONES_USUARIO;
 	return estado;
 }
@@ -153,10 +154,20 @@ estadoPrograma Programa::modificarDatosUsuario(Usuario* &usuario){
 
 	gotoXY(0, 0); cout<<"REGISTRO:";
 	emitirDatosUsuario(usuario);
-
+	//modificar nombre?
 	usuario->setNombre(modificar("el nombre? ", usuario->getNombre(), 2));
+	//modificar apellido?
 	usuario->setApellido(modificar("el apellido? ", usuario->getApellido(), 3));
+	//el DNI no se modifica
+	//modificar provincia?
 	usuario->setProvincia(modificar("la provincia? ", usuario->getProvincia(), 5));
+	//modificar emails?
+	for(unsigned int i = 0; i < usuario->getEmails().size(); i++){
+		string aModificar= "el e-mail num " + StringUtil::int2string(i+1) + "? ";
+		string nuevoEmail = modificar(aModificar, usuario->getEmails().at(i), 6 + i);
+		usuario->setEmailEnPosicion(nuevoEmail, i);
+	}
+	//modificar contraseña?
 	usuario->setContrasena(modificar("la contraseña? ", usuario->getContrasena(), 6 + usuario->getEmails().size()));
 
 	indice->modificarUsuario(usuario);
@@ -224,9 +235,9 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	gotoXY(0, 3);	cout<<"2 - Darse de baja del sistema.";
 	gotoXY(0, 4);	cout<<"3 - Consultar productos/servicios.";
 	gotoXY(0, 5);	cout<<"4 - Publicar producto/servicio.";
-	gotoXY(0, 5);	cout<<"5 - Responder preguntas/cotizaciones.";
-	gotoXY(0, 6);	cout<<"6 - Dar de baja un producto.";
-	gotoXY(0, 7);	cout<<"7 - Cerrar sesion.";
+	gotoXY(0, 6);	cout<<"5 - Responder preguntas/cotizaciones.";
+	gotoXY(0, 7);	cout<<"6 - Dar de baja un producto.";
+	gotoXY(0, 8);	cout<<"7 - Cerrar sesion.";
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = CAMBIAR_DATOS;
@@ -283,7 +294,7 @@ estadoPrograma Programa::menuOpcionesUsuario(Usuario* &usuario){
 
 estadoPrograma Programa::consultarServicio(vector<Servicio*> &resultados){
 
-	estadoPrograma estado = CONSULTA_SERVICIO;
+	estadoPrograma estado = OPCIONES_USUARIO;
 	int cantidadOpciones = 4;
 
 	gotoXY(0, 0);	cout<<"CONSULTAR... ";
@@ -293,10 +304,9 @@ estadoPrograma Programa::consultarServicio(vector<Servicio*> &resultados){
 	gotoXY(0, 5); 	cout<<"4 - Volver al menu de opciones.";
 	int opcion = leerOpcion(cantidadOpciones, 5);
 
-	if(opcion == 4) estado = OPCIONES_USUARIO;
 	if(opcion !=4){
 		resultados = buscarServicio(opcion);
-		if(resultados.size()>0) estado = RESULTADOS;
+		if(resultados.size() > 0) estado = RESULTADOS;
 		else{
 			gotoXY(0, 11);
 			cout<<"No se encontro ninguna coincidencia con la busqueda dada.";
@@ -343,7 +353,7 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 	gotoXY(0, 0);	cout<<"RESULTADOS DE LA BUSQUEDA: ";
 	int posY = 2;
 
-	for(unsigned int i = 0; i< resultados.size(); i++){
+	for(unsigned int i = 0; i < resultados.size(); i++){
 		gotoXY(0, posY); cout<<"Resultado N."<<i+1<<":";	posY++;
 		emitirResultado(resultados.at(i), posY, false);
 	}
@@ -361,13 +371,15 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 
 void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario, int posY){
 
+	system("clear");
+	gotoXY(0 , 0);
 	string numResultado;
 	unsigned int resultado;
 	do{
 		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.:          ";
 		gotoXY(36, posY); leer(numResultado);
 		resultado = atoi(numResultado.c_str());
-	}while((resultado < 1) || (resultado > resultados.size()));
+	}while(!((resultado >= 1) && (resultado <= resultados.size())));
 	resultado--;
 	posY = posY +2;
 	emitirResultado(resultados.at(resultado), posY, true);
@@ -411,23 +423,29 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 	string pregunta;
 	gotoXY(0, posY);
 	cout<<"Escriba su pregunta en "<<max_caracteres_pregunta<<" caracteres: ";
+
 	leer(pregunta);
 
 	gotoXY(0, posY+4);
 	if(pregunta.size()<= max_caracteres_pregunta){
 
-	Consulta* consulta = new Consulta();
-	consulta->setConsulta(pregunta);
-	consulta->setIdServicio(resultado->getId());
-	consulta->setIdUsuario(usuario->getDni());
-	consulta->setOculta(false);
-	preguntado = indice->agregarConsulta(consulta);
+		// creo una nueva consulta
+		Consulta* consulta = new Consulta();
+		consulta->setId(atoi(indice->obtenerIdActual(idConsulta).c_str()));
+		consulta->setConsulta(pregunta);
+		consulta->setIdServicio(resultado->getId());
+		consulta->setIdUsuario(usuario->getDni());
+		consulta->setOculta(false);
+		preguntado = indice->agregarConsulta(consulta);
 
-	if(!preguntado) cout<<"La pregunta no se pudo agregar";
-	else cout<<"Pregunta agregada satisfactoriamente!";
+		if(!preguntado) cout<<"La pregunta no se pudo agregar";
+		else{
+			cout<<"Pregunta agregada satisfactoriamente!";
+			indice->incrementarId(idConsulta);
+		}
 
-	}else{
-		cout<<"Su pregunta es demasiado larga.";
+		}else{
+			cout<<"Su pregunta es demasiado larga.";
 	}
 }
 
@@ -442,37 +460,57 @@ estadoPrograma Programa::listadoUsuarios(){
 	return OPCIONES_USUARIO;
 }
 
+void Programa::emitirCategoriasDisponibles(){
+
+}
+
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 
 	string titulo, descr, tipo, cat, respuesta;
 	Servicio* servicio = new Servicio();
-	servicio->setId(atoi(indice->obtenerNuevoId(idServicio).c_str()));
+
+	servicio->setId(atoi(indice->obtenerIdActual(idServicio).c_str()));
 	servicio->setIdProveedor(usuario->getDni());
 
+	emitirCategoriasDisponibles();
+
 	gotoXY(0, 0);	cout<<"PUBLICAR:";
-	gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo);
-	gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);
+	gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo); 	servicio->setNombre(titulo);
+	gotoXY(0, 3);	cout<<"Descripcion: ";	leer(descr);	servicio->setDescripcion(descr);
 
 	do{
 		gotoXY(0, 5);	cout<<"Tipo: (GR = Gratuito, PF = Precio Fijo, SU = Subasta) "; 	leer(tipo);
 	}while((tipo != "GR")&&(tipo != "PF")&&(tipo != "SU"));
+
+	servicio->setTipo(tipo);
+
 	int posY=6;
+
+	//pido categorias
 	bool otraCat = true;
 	if(otraCat){
 		gotoXY(0, posY);	cout<<"Categoria: ";	leer(cat);	posY++;
-		do{
-			//falta ver si existe esa categoria
-			//si existe, agregar
 
+		bool existeCat = true;
+		do{
+			//si la categoria pedida existe, se la seteo al servicio
+			Categoria* categoria = indice->buscarCategoria(cat, existeCat);
+			if(existeCat) servicio->setCategoria(categoria);
+			//agregar otra categoria?
 			gotoXY(0, posY+1);	cout<<"Agregar otra categoria? (s/n) "; leer(respuesta);
 		}while((respuesta != "n")&&(respuesta != "s"));
 		if(respuesta == "n") otraCat = false;
 		gotoXY(0, posY+1);	cout<<"                                           ";
 	}
+
 	bool agregado = indice->agregarServicio(servicio);
+	gotoXY(0, posY+3);
+
 	if(agregado){
-		gotoXY(0, posY+2);	cout<<"Publicacion exitosa!";
-		usuario->setTipo("P");
+		cout<<"Publicacion exitosa!";
+		usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
+		indice->incrementarId(idServicio);
+		indice->modificarUsuario(usuario);
 	}else{
 		cout<<"No se pudo publicar su servicio.";
 	}
@@ -554,7 +592,7 @@ void Programa::cargaManualCategoria(){
 	}while(descripcion.size() > max_descr_categoria);
 
 	Categoria* nuevaCategoria = new Categoria();
-	nuevaCategoria->setId(atoi(indice->obtenerNuevoId(idCategoria).c_str()));
+	nuevaCategoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()));
 	nuevaCategoria->setNombre(nombre);
 	nuevaCategoria->setDescripcion(descripcion);
 
@@ -618,7 +656,7 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){ //FALTA
 		}
 
 		Categoria* categoria =new Categoria();
-		categoria->setId(atoi(indice->obtenerNuevoId(idCategoria).c_str()));
+		categoria->setId(atoi(indice->obtenerIdActual(idCategoria).c_str()));
 		categoria->setNombre(nombre);
 		categoria->setDescripcion(descripcion);
 		categorias.push_back(categoria);
@@ -677,8 +715,8 @@ void Programa::emitirResultado(Servicio* resultado, int &posY, bool enDetalle){
 		gotoXY(5, posY); cout<<"Proveedor: "<<resultado->getIdProveedor(); 	posY++;
 	};
 
-	gotoXY(5, posY); cout<<"Tipo: "<<resultado->getTipo();					posY++;
 	gotoXY(5, posY); cout<<"Nombre: "<<resultado->getNombre();				posY++;
+	gotoXY(5, posY); cout<<"Tipo: "<<resultado->getTipo();					posY++;
 
 	if(enDetalle){
 		gotoXY(5, posY); cout<<"Descripcion: "<<resultado->getDescripcion();posY++;

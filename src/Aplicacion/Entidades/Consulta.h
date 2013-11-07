@@ -43,6 +43,7 @@ public:
 	bool getOculta();
 	
 	//Setters
+	void setId(int id);
 	void setIdServicio(int idServicio);
 	void setIdUsuario(int idUsuario);
 	void setConsulta(string consulta);

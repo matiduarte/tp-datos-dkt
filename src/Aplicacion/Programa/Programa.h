@@ -90,6 +90,7 @@ private:
 	void emitirInformacion();
 	bool tieneEspacios(string dato);
 
+	void emitirCategoriasDisponibles();
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
 	void activarEcho();
@@ -99,10 +100,10 @@ private:
 	void leer(string& nombre);
 
 	/* NECESITO:
-	 *
+	 * modificar al indica para que el obtenerID devuelva un int?
+	 * poder modificar los emails
 	 * listado de usuarios y de categorias, las necesito si o si !
 	 * que todas las excepciones deriven de Excepcion
-	 * poder modificar los emails
 	 * agregarCategoria deberia chequear sobre los Nombres, no los IDs
 	 * faltan metodos:
 	 * bool eliminarCategoria(string nombreCategoria);
@@ -110,7 +111,7 @@ private:
 	 * Categoria* buscarCategoria(string nombreCategoria);
 	 *
 	 * USUARIO: 	falta Publicar
-	 * PROVEEDOR:	falta responder y baja producto
+	 * PROVEEDOR:	falta la opcion publicar falta responder y baja producto
 	 * ADMIN:		falta modificarCategoria, moderarConsultas, listadoUsuarios
 	 */
 };

@@ -57,7 +57,8 @@ public:
 	Indice(string ruta);
 	~Indice();
 	
-	string obtenerNuevoId(string tipoId);
+	string obtenerIdActual(string tipoId);
+	void incrementarId(string tipoId);
 
 	//Metodos de usuarios
 	bool agregarUsuario(Usuario* usuario);
@@ -81,7 +82,7 @@ public:
 	bool agregarCategoria(Categoria* categoria);
 	bool eliminarCategoria(string nombreCategoria);
 	void modificarCategoria(Categoria* categoria);
-	Categoria* buscarCategoria(string nombreCategoria);
+	Categoria* buscarCategoria(string nombreCategoria, bool &error);
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);

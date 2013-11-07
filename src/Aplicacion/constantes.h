@@ -29,6 +29,7 @@ const unsigned int max_descr_categoria = 300;
 const char separadorCategoria = ',';
 const string idCategoria = "idUltimaCategoria";
 const string idServicio  = "idUltimoServicio";
+const string idConsulta = "idUltimaConsulta";
 const string claveIndiceGeneralUsuarios = "Usuarios";
 const string claveIndiceGeneralCategorias = "Categorias";
 

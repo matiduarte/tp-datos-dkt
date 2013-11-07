@@ -221,10 +221,10 @@ void Indice::modificarCategoria(Categoria* categoria){
 	}
 }
 
-Categoria* Indice::buscarCategoria(string nombreCategoria){
+Categoria* Indice::buscarCategoria(string nombreCategoria, bool &error){
 	string idCat = this->indiceCategoriaPorNombre->buscarClave(*(new Clave(nombreCategoria)));
 	if(idCat == "NO EXISTE"){
-		//Si no existe la categoria que se esta bucando devuelvo una vacia
+		error = true;
 		return new Categoria();
 	}
 	
@@ -284,6 +284,7 @@ vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
 		this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 		resultadoServicios.push_back(ser);
 	}
+
 	return resultadoServicios;
 }
 
@@ -443,7 +444,7 @@ void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 		string lista = "";
 		if(idTermino == "NO EXISTE"){
 			//Tengo que agregar la palabra porque no esta en el indice
-			idTermino = this->obtenerNuevoId("idTerminoActual");
+			idTermino = this->obtenerIdActual("idTerminoActual");
 			this->indiceTerminosId->agregarValor(*(new Clave(terminoActual)),idTermino);
 			this->indiceTerminos->insertarElemento(idTermino,"");
 			lista += idServicio + separadorCamposEntidades;
@@ -468,13 +469,23 @@ void Indice::agregarCadenaATerminosRelevantes(string cadena, string idServicio){
 	}
 }
 
-string Indice::obtenerNuevoId(string tipoId){
+string Indice::obtenerIdActual(string tipoId){
+
 	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
 	string actualValor = pLector->getValor(tipoId);
-	int nuevoId = StringUtil::str2int(actualValor) + 1;
+	int nuevoId = StringUtil::str2int(actualValor);
 	string nuevoIdString = StringUtil::int2string(nuevoId);
-	pLector->setValor(tipoId,nuevoIdString);
+
 	return nuevoIdString;
+}
+
+void Indice::incrementarId(string tipoId){
+
+	LectorConfig* pLector = LectorConfig::getLector(rutaConfig);
+	string actualValor = pLector->getValor(tipoId);
+	int nuevoId = StringUtil::str2int(actualValor) +1;
+	string nuevoIdString = StringUtil::int2string(nuevoId);
+	pLector->setValor(tipoId, nuevoIdString);
 }
 
 vector<Usuario*> Indice::obtenerTodosLosUsuarios(){

@@ -1,13 +1,7 @@
 #include "Consulta.h"
 
 Consulta::Consulta(){
-	
-	LectorConfig* lector = LectorConfig::getLector(rutaConfig);
-	int identificador = lector->stringToInt(lector->getValor("idUltimaConsulta"));
-	identificador++;
-	lector->setValor("idUltimaConsulta", lector->intToString(identificador));
 
-	this->id = identificador;
 	this->fechaConsulta = FechaYHora::setFechaAAAAMMDD();
 	this->horaConsulta = FechaYHora::setHoraHHMM();
 }
@@ -94,6 +88,10 @@ string Consulta::getHoraRespuesta(){
 }
 bool Consulta::getOculta(){
 	return this->oculta;
+}
+
+void Consulta::setId(int id){
+	this->id = id;
 }
 
 void Consulta::setIdServicio(int idServicio){
