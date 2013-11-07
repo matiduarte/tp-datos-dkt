@@ -123,13 +123,13 @@ void ArbolBMas::agregarValor(Clave clave, string valor){
 		//Es una hoja, agrego directamente
 		resultado = ((NodoHoja*)raiz)->agregar(clave,valor);
 		if (resultado == 2){
-			this->partirRaiz();
+			this->solucionarOverflowRaiz();
 		}
 	}else{
 		//Si no es una hoja, agrego recursivamente
 		resultado = this->agregarRecursivamente(raiz, clave, valor);
 		if (resultado == 2){
-			this->partirRaiz();
+			this->solucionarOverflowRaiz();
 		}
     }
 	this->raiz->persistir(this->archivo);
@@ -137,17 +137,17 @@ void ArbolBMas::agregarValor(Clave clave, string valor){
 }
 
 
-void ArbolBMas::partirRaiz(){
+void ArbolBMas::solucionarOverflowRaiz(){
 
 	//Decide cual metodo hay que utilizar
 	if (raiz->getNivel() == 0){
-		this->partirRaizHoja();
+		this->overflowRaizHoja();
     } else {
-    	this->partirRaizInterna();
+    	this->overflowRaizInterna();
     }
 }
 
-void ArbolBMas::partirRaizHoja(){
+void ArbolBMas::overflowRaizHoja(){
 
 	/*
 	 *  Parte a la raiz dejando su contenido como hijo izquierdo.
@@ -182,7 +182,7 @@ void ArbolBMas::partirRaizHoja(){
 
 }
 
-void ArbolBMas::partirRaizInterna() {
+void ArbolBMas::overflowRaizInterna() {
 
 	NodoInterno* nodoIzq = ((NodoInterno*)this->raiz);
 	NodoInterno* nodoDer = new NodoInterno(this->archivo);
@@ -289,9 +289,9 @@ int ArbolBMas::agregarRecursivamente (Nodo* nodoActual, Clave clave, string valo
     		//Si estado es 2, hay overflow me fijo si hay que partir un nodo hoja o
     		//un nodo interno
     		if(nodoNuevo->getNivel() == 0){
-    			return partirNodoHoja((NodoInterno*)nodoActual,(NodoHoja*)nodoNuevo);
+    			return this->overflowNodoHoja((NodoInterno*)nodoActual,(NodoHoja*)nodoNuevo);
     		}else{
-    			return partirNodoInterno((NodoInterno*)nodoActual,(NodoInterno*)nodoNuevo);
+    			return this->overflowNodoInterno((NodoInterno*)nodoActual,(NodoInterno*)nodoNuevo);
     		}
     	}
     }
@@ -300,7 +300,7 @@ int ArbolBMas::agregarRecursivamente (Nodo* nodoActual, Clave clave, string valo
 }
 
 
-int ArbolBMas::partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
+int ArbolBMas::overflowNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 
 	/* Parte la hoja, creando una nueva y subiendo la clave puente
 	 * hacia el padre. El hijo esta con sobreflujo.
@@ -340,7 +340,7 @@ int ArbolBMas::partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 }
 
 
-int ArbolBMas::partirNodoInterno(NodoInterno* nodoPadre, NodoInterno* nodoHijo){
+int ArbolBMas::overflowNodoInterno(NodoInterno* nodoPadre, NodoInterno* nodoHijo){
 
 	/*
 	 * Parte el nodo interno, creando uno nuevo y subiendo la clave puente
@@ -409,10 +409,10 @@ int ArbolBMas::borrarRecursivamente(Nodo* nodoActual, Clave clave, string valor)
     	if (estado == 3){
     		if (nodoNuevo->getNivel() == 0){
     			//Es hoja
-    			return this->balancearNodoHoja((NodoInterno*)nodoActual, (NodoHoja*)nodoNuevo);
+    			return this->solucionarUnderflowHoja((NodoInterno*)nodoActual, (NodoHoja*)nodoNuevo);
     		}else{
     			//Es un nodo interno
-    			return this->balancearNodoInterno((NodoInterno*)nodoActual,(NodoInterno*) nodoNuevo);
+    			return this->solucionarUnderflowInterno((NodoInterno*)nodoActual,(NodoInterno*) nodoNuevo);
     		}
     	}
      }
@@ -421,7 +421,7 @@ int ArbolBMas::borrarRecursivamente(Nodo* nodoActual, Clave clave, string valor)
 }
 
 
-int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow){
+int ArbolBMas::solucionarUnderflowHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow){
 
 	// Busco un nodo para equilibrar o hacer merge
 	if (nodoUnderflow->getSiguiente()){
@@ -432,7 +432,7 @@ int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow
 			return this->mergeNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
 		}else{
 			//Si no balanceo
-			return this->equilibrarNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
+			return this->balancearNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
 		}
     }else{
     	//No tiene hermano derecho, busco el izquierdo
@@ -441,12 +441,12 @@ int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow
     	if (((NodoHoja*)nodoParaBalancear)->capacidadMinima()){
     		return this->mergeNodoHoja(nodoPadre,nodoUnderflow,(NodoHoja*)nodoParaBalancear);
     	}else{
-    		return this->equilibrarNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
+    		return this->balancearNodoHoja(nodoPadre,(NodoHoja*)nodoParaBalancear,nodoUnderflow);
     	}
     }
 }
 
-int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow){
+int ArbolBMas::solucionarUnderflowInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow){
 
 	// Busco un nodo para equilibrar o hacer merge
 	Clave clave = nodoUnderflow->getClaveDelMedio();
@@ -461,7 +461,7 @@ int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnd
 			return mergeNodoInternoDerecho(nodoActual, nodoUnderflow, (NodoInterno*)nodoParaBalancearDer);
 		}else{
 			//No esta con capacidad minima, balanceo
-			return equilibrarNodoInternoDerecho(nodoActual, nodoUnderflow, (NodoInterno*)nodoParaBalancearDer);
+			return balancearNodoInternoDerecho(nodoActual, nodoUnderflow, (NodoInterno*)nodoParaBalancearDer);
 		}
 	}else{
 		//No tengo hermano derecho, voy al izquierdo
@@ -474,7 +474,7 @@ int ArbolBMas::balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnd
 			return mergeNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoParaBalancearIzq, nodoUnderflow);
 		}else{
 			//Balanceo
-			return equilibrarNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoParaBalancearIzq, nodoUnderflow);
+			return balancearNodoInternoIzquierdo (nodoActual, (NodoInterno*)nodoParaBalancearIzq, nodoUnderflow);
 		}
 	}
 }
@@ -511,7 +511,7 @@ int ArbolBMas::mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow, No
 	return 0;
 }
 
-int ArbolBMas::equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer){
+int ArbolBMas::balancearNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer){
 
 	//Consigo los elementos de los dos hijos
 	list<RegistroArbol*> * listaIzq = nodoIzq->getElementos();
@@ -601,7 +601,7 @@ int ArbolBMas::mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodo
 	return 0;
 }
 
-int ArbolBMas::equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
+int ArbolBMas::balancearNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
 
 	//Nodo izquierdo en underflow
 	list<Clave> clavesIzquierdas = nodoIzq->getClaves();
@@ -704,7 +704,7 @@ int ArbolBMas::mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* no
 	return 0;
 }
 
-int ArbolBMas::equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
+int ArbolBMas::balancearNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzq, NodoInterno* nodoDer){
 
 	//Nodo derecho en underflow
 	list<Clave> clavesIzquierdas = nodoIzq->getClaves();

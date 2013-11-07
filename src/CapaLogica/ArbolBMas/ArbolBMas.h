@@ -30,29 +30,29 @@ private:
 	//Metodos
 	int agregarRecursivamente (Nodo* nodo, Clave clave, string valor);
 	int borrarRecursivamente(Nodo* nodo, Clave clave, string valor);
+	string buscarClaveRecursivamente(Clave clave, Nodo* nodoActual);
 	void mostrarArbolRecursivamente(Nodo* nodo);
 
-	void partirRaiz();
-	void partirRaizHoja();
-	void partirRaizInterna();
+
+	void solucionarOverflowRaiz();
+	void overflowRaizHoja();
+	void overflowRaizInterna();
+	int overflowNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
+	int overflowNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 
 
-	int partirNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo );
-	int partirNodoInterno(NodoInterno* nodo, NodoInterno* nodoHijo);
 
 	void balancearADerecha(NodoHoja* nodoIzq, NodoHoja* nodoDer, NodoInterno * nodoPadre);
-	int balancearNodoHoja(NodoInterno* nodoActual, NodoHoja* nodoUnerflow);
-	int equilibrarNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
+	int solucionarUnderflowHoja(NodoInterno* nodoActual, NodoHoja* nodoUnerflow);
+	int balancearNodoHoja(NodoInterno* nodoPadre,NodoHoja* nodoIzq, NodoHoja* nodoDer);
 	int mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnder, NodoHoja* nodoBalanceo);
 
 
-	int balancearNodoInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow);
+	int solucionarUnderflowInterno(NodoInterno* nodoActual,NodoInterno* nodoUnderflow);
 	int mergeNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
-	int equilibrarNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
+	int balancearNodoInternoDerecho(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 	int mergeNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
-	int equilibrarNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
-
-	string buscarClaveRecursivamente(Clave clave, Nodo* nodoActual);
+	int balancearNodoInternoIzquierdo(NodoInterno* nodoPadre, NodoInterno* nodoIzquierdo, NodoInterno* nodoDerecho);
 
 public:
 
