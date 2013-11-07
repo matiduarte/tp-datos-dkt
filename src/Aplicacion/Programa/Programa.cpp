@@ -505,7 +505,8 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 	//pido categorias
 	bool otraCat = true;
 	while(otraCat){
-		gotoXY(0, posY);	cout<<"Categoria: ";	leer(cat);
+		gotoXY(0, posY);	cout<<"Categoria:                    ";
+		gotoXY(11, posY);	leer(cat);
 
 		bool error= false;
 		do{
