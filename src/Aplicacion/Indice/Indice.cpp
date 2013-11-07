@@ -178,7 +178,16 @@ bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 }
 
 bool Indice::eliminarCategoria(string nombreCategoria){
-	Categoria* categoria = new Categoria;
+	string idCat = this->indiceCategoriaPorNombre->buscarClave(*(new Clave(nombreCategoria)));
+	if(idCat == "NO EXISTE"){
+		//Si no existe la categoria que se esta bucando devuelvo false
+		return false;
+	}
+	
+	string catSerializada = this->indiceCategorias->buscarElemento(idCat);
+	Categoria* categoria = new Categoria();
+	categoria->desSerializar(catSerializada);
+	
 	this->indiceCategorias->elminarElemento(StringUtil::int2string(categoria->getId()));
 	this->indiceCategoriaPorNombre->borrarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(categoria->getId()));
 	this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralCategorias)),StringUtil::int2string(categoria->getId()));

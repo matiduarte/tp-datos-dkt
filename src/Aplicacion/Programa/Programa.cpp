@@ -107,7 +107,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool otroMail = true;
 	//pido hasta 3 mails
 	for(int i=1; (i<4)&&(otroMail); i++){
-	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmail(mail);	posY++;
+	gotoXY(0, posY);	cout<<"e-Mail   "<<i<<": ";	leer(mail); 		nuevoUsuario->setEmailEnPosicion(mail,0);	posY++;
 		if(i<3){
 			do{
 				gotoXY(0, posY+1); cout<<"Desea agregar otra direccion de e-Mail? (s/n) ";

@@ -33,7 +33,7 @@ void Usuario::desSerializar(string aDeserealizar){
 	this->contrasena = atributos.at(4);
 	this->tipo = atributos.at(5);
 	for(unsigned int i=6; i<atributos.size();i++){
-		this->setEmail(atributos.at(i));
+		this->setEmailEnPosicion(atributos.at(i),i-6);
 	}
 }
 
@@ -88,11 +88,13 @@ void Usuario::setTipo(string tipo){
 	this->tipo = tipo; 
 }
 
-void Usuario::setEmail(string email){
-	if(this->emails.size() == 3){
-		//Ya no puedo guardar mas emails. Tiro excepcion
-	}else{
-		this->emails.push_back(email);
+void Usuario::setEmailEnPosicion(string email,unsigned int indice){
+	if(this->emails.size() < 3){
+		if(indice < this->emails.size()){
+			this->emails.insert(this->emails.begin() + indice, email);
+		}else{
+			this->emails.push_back(email);
+		}
 	}
 }
 

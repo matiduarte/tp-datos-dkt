@@ -40,7 +40,7 @@ public:
 	void setProvincia(string provincia);
 	void setContrasena(string contrasena);
 	void setTipo(string tipo);
-	void setEmail(string email);
+	void setEmailEnPosicion(string email,unsigned int indice);
 	
 	
 };
