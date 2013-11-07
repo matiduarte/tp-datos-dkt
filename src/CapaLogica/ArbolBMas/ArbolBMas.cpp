@@ -111,7 +111,7 @@ string ArbolBMas::buscarClaveRecursivamente(Clave clave, Nodo* nodoActual){
     return valor;
 }
 
-int ArbolBMas::agregarValor(Clave clave, string valor){
+void ArbolBMas::agregarValor(Clave clave, string valor){
 
 	//Agrega una clave con su respectivo valor
 	// 0 --> Nodo no se actualizo
@@ -133,7 +133,7 @@ int ArbolBMas::agregarValor(Clave clave, string valor){
 		}
     }
 	this->raiz->persistir(this->archivo);
-	return resultado;
+	return;
 }
 
 
@@ -228,7 +228,7 @@ void ArbolBMas::balancearADerecha(NodoHoja * nodoIzq, NodoHoja* nodoDer, NodoInt
 
 }
 
-int ArbolBMas::borrarValor(Clave clave, string valor){
+void ArbolBMas::borrarValor(Clave clave, string valor){
 
 	int resultado = 0;
 
@@ -257,7 +257,7 @@ int ArbolBMas::borrarValor(Clave clave, string valor){
 	}
 
 	this->raiz->persistir(this->archivo);
-	return resultado;
+	return;
 }
 
 int ArbolBMas::agregarRecursivamente (Nodo* nodoActual, Clave clave, string valor){

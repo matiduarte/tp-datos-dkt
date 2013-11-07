@@ -61,9 +61,8 @@ public:
 	virtual ~ArbolBMas();
 	void persistir();
 
-    int agregarValor(Clave clave, string valor);
-    int borrarValor(Clave clave, string valor);
-
+    void agregarValor(Clave clave, string valor);
+    void borrarValor(Clave clave, string valor);
     void mostrarArbol();
 
     string buscarClave (Clave clave);
