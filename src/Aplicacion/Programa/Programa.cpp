@@ -41,7 +41,7 @@ void Programa::ejecutar(){
 		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);					break;
 		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);					break;
 case RESULTADOS:	estado = emitirResultadoBusqueda(resultados, resultado, usuario);	break;
-case RESULTADO_ENDETALLE:		estado = detalleResultado(resultado, usuario);
+case RESULTADO_ENDETALLE:		estado = detalleResultado(resultado, usuario);			break;
 		case PUBLICAR:			estado = publicarServicio(usuario);						break;
 		case RESPONDER:			estado = responderPregunta();							break;
 		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
@@ -382,7 +382,7 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 	if(opcion == 1){
 		do{
 			gotoXY(0, posY + 4); cout<<"Ver detalladamente el resultado N.:          ";
-			gotoXY(36, posY); leer(numResultado);
+			gotoXY(36, posY +4); leer(numResultado);
 			num = atoi(numResultado.c_str());
 		}while(!((num >= 1) && (num <= resultados.size())));
 
@@ -564,6 +564,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 			cout<<"No se pudo publicar su servicio.";
 		}
 	}else{
+		gotoXY(0, 10);
 		cout<<"No hay ninguna categoria registrada en el sistema.";
 	}
 	return OPCIONES_USUARIO;
