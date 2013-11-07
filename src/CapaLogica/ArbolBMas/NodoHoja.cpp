@@ -188,10 +188,10 @@ void NodoHoja::setSiguiente (unsigned int nrobloque){
  */
 int NodoHoja::agregarValor(Clave clave, string valor){
 
-        int indicador = 1;
-        if (this->tieneLaClave(clave)){
-                RegistroArbol * registro = this->getRegistro(clave);
-                indicador = registro->agregar(clave,valor);
+	int indicador = 1;
+	        if (this->tieneLaClave(clave) && (this->getRegistro(clave)->getValor() == valor) ){
+
+	        			indicador = 3;
         } else{
                 bool agregado=false;
                 list<RegistroArbol*>::iterator it;
