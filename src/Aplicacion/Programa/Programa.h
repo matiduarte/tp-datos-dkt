@@ -36,6 +36,7 @@ typedef enum{
 	VER_MENSAJES,
 	VER_USUARIOS,
 	RESULTADOS,
+	RESULTADO_ENDETALLE,
 	PUBLICAR,
 	RESPONDER,
 	BAJA_PRODUCTO,
@@ -60,7 +61,7 @@ private:
 	estadoPrograma menuOpcionesUsuario(Usuario* &usuario);
 	estadoPrograma consultarServicio(vector<Servicio*> &resultados);
 	estadoPrograma publicarServicio(Usuario* &usuario);
-	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados, Usuario* &usuario);
+	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados, Servicio* &resultado, Usuario* &usuario);
 	estadoPrograma responderPregunta();
 	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioProveedor(Usuario* &usuario);
@@ -72,6 +73,7 @@ private:
 	estadoPrograma bajaAdmin(Usuario* &usuario);
 	estadoPrograma listadoUsuarios();
 	estadoPrograma listarCategorias();
+	estadoPrograma detalleResultado(Servicio* &resultado, Usuario* &usuario);
 
 	vector<Servicio*> buscarServicio(int opcion);
 
@@ -81,8 +83,7 @@ private:
 	void emitirDatosUsuario(Usuario* &usuario);
 	string modificar(string queCosa, string valorActual, int posicionDato);
 
-	void emitirResultado(Servicio* resultado,int &posY, bool enDetalle);
-	void detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario, int posY);
+	void emitirResultado(Servicio* &resultado, int &posY, bool enDetalle);
 	void emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY);
 	void hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY);
 	void pedirCotizacion(Servicio* &resultado, int posY);

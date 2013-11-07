@@ -24,6 +24,7 @@ void Programa::ejecutar(){
 	estadoPrograma estado = MENU_PRINCIPAL;
 	Usuario* usuario = new Usuario();
 	vector<Servicio*> resultados;
+	Servicio* resultado;
 	emitirInformacion();
 
 	while(estado != TERMINAR){
@@ -39,7 +40,8 @@ void Programa::ejecutar(){
 		case INICIAR_SESION:	estado = iniciarSesion(usuario);						break;
 		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);					break;
 		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);					break;
-		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, usuario);	break;
+case RESULTADOS:	estado = emitirResultadoBusqueda(resultados, resultado, usuario);	break;
+case RESULTADO_ENDETALLE:		estado = detalleResultado(resultado, usuario);
 		case PUBLICAR:			estado = publicarServicio(usuario);						break;
 		case RESPONDER:			estado = responderPregunta();							break;
 		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
@@ -320,7 +322,7 @@ estadoPrograma Programa::consultarServicio(vector<Servicio*> &resultados){
 		resultados = buscarServicio(opcion);
 		if(resultados.size() > 0) estado = RESULTADOS;
 		else{
-			gotoXY(0, 11);
+			gotoXY(0, 12);
 			cout<<"No se encontro ninguna coincidencia con la busqueda dada.";
 		}
 	}
@@ -359,7 +361,7 @@ vector<Servicio*> Programa::buscarServicio(int opcion){
 	return resultado;
 }
 
-estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, Usuario* &usuario){
+estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, Servicio* &resultado, Usuario* &usuario){
 
 	estadoPrograma estado = RESULTADOS;
 	gotoXY(0, 0);	cout<<"RESULTADOS DE LA BUSQUEDA: ";
@@ -375,28 +377,30 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 	gotoXY(0,posY); cout<<"2 - Volver al menu de opciones.";
 
 	int opcion = leerOpcion(2, posY);
-	if(opcion == 1) detalleResultado(resultados, usuario, posY + 4);
+	unsigned int num;
+	string numResultado;
+	if(opcion == 1){
+		do{
+			gotoXY(0, posY + 4); cout<<"Ver detalladamente el resultado N.:          ";
+			gotoXY(36, posY); leer(numResultado);
+			num = atoi(numResultado.c_str());
+		}while(!((num >= 1) && (num <= resultados.size())));
+
+		resultado = resultados.at(num-1);
+		estado = RESULTADO_ENDETALLE;
+	}
 	if(opcion == 2) estado = OPCIONES_USUARIO;
 
 	return estado;
 }
 
-void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario, int posY){
+estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuario){
 
-	system("clear");
-	gotoXY(0 , 0);
-	string numResultado;
-	unsigned int resultado;
-	do{
-		gotoXY(0, posY); cout<<"Ver detalladamente el resultado N.:          ";
-		gotoXY(36, posY); leer(numResultado);
-		resultado = atoi(numResultado.c_str());
-	}while(!((resultado >= 1) && (resultado <= resultados.size())));
-	resultado--;
-	posY = posY +2;
-	emitirResultado(resultados.at(resultado), posY, true);
+	gotoXY(0, 0);	cout<<"DETALLES RESULTADO: ";
+	int posY = 2;
+	emitirResultado(resultado, posY, true);
 	posY++;
-	emitirPreguntasRespuestasServicio(resultados.at(resultado), posY);
+	emitirPreguntasRespuestasServicio(resultado, posY);
 	posY++;
 
 	gotoXY(0, posY); cout<<"1 - Hacer una pregunta.";	posY++;
@@ -404,8 +408,10 @@ void Programa::detalleResultado(vector<Servicio*> &resultados, Usuario* &usuario
 	gotoXY(0, posY); cout<<"3 - Volver al listado de resultados.";
 	int opcion = leerOpcion(3, posY);
 
-	if(opcion == 1) hacerPregunta(resultados.at(resultado), usuario, posY + 4);
-	if(opcion == 2) pedirCotizacion(resultados.at(resultado), posY + 4);
+//	if(opcion == 1) hacerPregunta(resultados.at(resultado), usuario, posY + 4);
+//	if(opcion == 2) pedirCotizacion(resultados.at(resultado), posY + 4);
+
+	return RESULTADOS;
 }
 
 void Programa::emitirPreguntasRespuestasServicio(Servicio* servicio, int &posY){
@@ -796,7 +802,7 @@ int Programa::leerOpcion(int cantOpciones, int posY){
 	return N;
 }
 
-void Programa::emitirResultado(Servicio* resultado, int &posY, bool enDetalle){
+void Programa::emitirResultado(Servicio* &resultado, int &posY, bool enDetalle){
 
 	if(enDetalle){
 		gotoXY(5, posY); cout<<"ID: "<<resultado->getId();					posY++;
@@ -921,8 +927,8 @@ estadoPrograma Programa::listarCategorias(){
 		categoriaAux = categorias.at(i);
 
 		gotoXY(0, posY); cout<<"Categoria nro " <<i+1<<": ";	posY++;
-		gotoXY(0, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
-		gotoXY(0, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY++;
+		gotoXY(5, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
+		gotoXY(5, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY+=2;
 
 
 	}
