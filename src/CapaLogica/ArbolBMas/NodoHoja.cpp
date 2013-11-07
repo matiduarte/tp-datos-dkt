@@ -186,7 +186,7 @@ void NodoHoja::setSiguiente (unsigned int nrobloque){
  * 				2 si el nodo se desbordo.
  * 				3 si ya existe el valor que quiero agregar.
  */
-int NodoHoja::agregar(Clave clave, string valor){
+int NodoHoja::agregarValor(Clave clave, string valor){
 
         int indicador = 1;
         if (this->tieneLaClave(clave)){
@@ -380,7 +380,7 @@ string NodoHoja::buscarClave (Clave clave){
  * 				2 si el nodo se desbordo.
  * 				3 si ya existe el valor que quiero agregar.
  */
-int NodoHoja::agregar(RegistroArbol * reg){
+int NodoHoja::agregarRegistro(RegistroArbol * reg){
 
         int indicador = 1;
         if (this->tieneLaClave(reg->getClave())){
@@ -399,12 +399,12 @@ int NodoHoja::agregar(RegistroArbol * reg){
 }
 
 
-int NodoHoja::agregar(list<RegistroArbol*> * lista){
+int NodoHoja::agregarLista(list<RegistroArbol*> * lista){
         list<RegistroArbol*>::iterator it;
         RegistroArbol* registro;
         for (it = lista->begin(); it != lista->end(); it++){
                 registro = *it;
-                this->agregar(registro);
+                this->agregarRegistro(registro);
         }
         if (hayOverflow()) return 2;
         return 1;

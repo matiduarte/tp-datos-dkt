@@ -121,7 +121,7 @@ void ArbolBMas::agregarValor(Clave clave, string valor){
 	int resultado = 0;
 	if (this->raiz->getNivel() == 0){
 		//Es una hoja, agrego directamente
-		resultado = ((NodoHoja*)raiz)->agregar(clave,valor);
+		resultado = ((NodoHoja*)raiz)->agregarValor(clave,valor);
 		if (resultado == 2){
 			this->solucionarOverflowRaiz();
 		}
@@ -217,7 +217,7 @@ void ArbolBMas::balancearADerecha(NodoHoja * nodoIzq, NodoHoja* nodoDer, NodoInt
 	Clave claveMedio = nodoIzq->getClaveDelMedio();
 	list<RegistroArbol*> *mitadDerechaNodoIzq = nodoIzq->getMitadDerecha();
 
-	nodoDer->agregar(mitadDerechaNodoIzq);
+	nodoDer->agregarLista(mitadDerechaNodoIzq);
 	nodoPadre->agregarClave(claveMedio);
 
 	unsigned int indiceNodoIzq = nodoIzq->getNumeroDeBloque();
@@ -266,7 +266,7 @@ int ArbolBMas::agregarRecursivamente (Nodo* nodoActual, Clave clave, string valo
 	int estado = 0;
 	if (nodoActual->getNivel() == 0){
 		//Si es un nodo hoja
-		int retorno = ((NodoHoja*)nodoActual)->agregar(clave,valor);
+		int retorno = ((NodoHoja*)nodoActual)->agregarValor(clave,valor);
 		if (retorno != 2)
 			((NodoHoja*)nodoActual)->persistir(archivo);
 		return retorno;
@@ -317,7 +317,7 @@ int ArbolBMas::overflowNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoHijo){
 	list<RegistroArbol*> * mitadDerecha = nodoHijo->getMitadDerecha();
 	list<RegistroArbol*>::iterator it;
 	for (it = mitadDerecha->begin(); it != mitadDerecha->end(); it++){
-		nuevoNodo->agregar(*it);
+		nuevoNodo->agregarRegistro(*it);
     }
 	//Seteo las referencias
 	unsigned int siguiente = nodoHijo->getSiguiente();
@@ -484,7 +484,7 @@ int ArbolBMas::mergeNodoHoja(NodoInterno* nodoPadre, NodoHoja* nodoUnderflow, No
 
 	list<RegistroArbol*> *listaElementos = nodoUnderflow->getElementos();
 
-	nodoParaBalancear->agregar(listaElementos);
+	nodoParaBalancear->agregarLista(listaElementos);
 
 	unsigned int siguiente = nodoUnderflow->getSiguiente();
 	nodoParaBalancear->setSiguiente(siguiente);

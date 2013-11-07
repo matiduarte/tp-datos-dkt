@@ -25,9 +25,9 @@ public:
         NodoHoja(ArchivoBloque* arch);
         virtual ~NodoHoja();
         void persistir(ArchivoBloque* &archivo);
-        int agregar(Clave clave, string valor);
-        int agregar(RegistroArbol * reg);
-        int agregar(list<RegistroArbol*> *lista);
+        int agregarValor(Clave clave, string valor);
+        int agregarRegistro(RegistroArbol * reg);
+        int agregarLista(list<RegistroArbol*> *lista);
         int baja (Clave clave, string valor);
         bool tieneLaClave(Clave clave);
         bool hayOverflow();
