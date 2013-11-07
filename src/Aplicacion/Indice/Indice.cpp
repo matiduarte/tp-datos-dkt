@@ -24,6 +24,8 @@ Indice::Indice(string ruta){
 	this->indiceConsultaPorIdServicio = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicio");
 	this->indiceConsultaPorIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdUsuario");
 	this->indiceConsultaPorIdServicioFechaHora = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioFechaHora");
+	this->indiceGeneralEntidades = new ArbolBMas(rutaBaseIndice+"ArbolGeneralEntidades");
+	this->indiceCategoriaPorNombre = new ArbolBMas(rutaBaseIndice+"ArbolCategoriasPorNombre");
 	
 	//Listas
 	this->listaCategoriasPorServicio = new ListaInvertida(rutaBaseIndice+"ListaCategoriasPorServicio");
@@ -42,7 +44,7 @@ bool Indice::agregarUsuario(Usuario* usuario){
 	}
 	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
-	//Creo que no tengo que hacer nada mas cuando se crea un usuario
+	this->indiceGeneralEntidades->agregarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	
 	return true;
 }
@@ -131,19 +133,27 @@ bool Indice::agregarServicio(Servicio* servicio){
 }
 
 bool Indice::agregarCategoria(Categoria* categoria){
+	string catId = this->indiceCategoriaPorNombre->buscarClave(*(new Clave(categoria->getNombre())));
+	if(catId != "NO EXISTE"){
+		//Si ya existe una categoria con el mismo nombre, no puedo agregar la categoria
+		return false;
+	}
 	try {
 		this->indiceCategorias->insertarElemento(StringUtil::int2string(categoria->getId()),categoria->serializar());
 	} catch (ExceptionElementoKeyYaIngresado& e){
 		return false;
 	}
 
-return true;
+	this->indiceCategoriaPorNombre->agregarValor(*(new Clave(categoria->getNombre())),StringUtil::int2string(categoria->getId()));
+	this->indiceGeneralEntidades->agregarValor(*(new Clave(claveIndiceGeneralCategorias)),StringUtil::int2string(categoria->getId()));
+	
+	return true;
 }
 
 bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	//Chequeo si existe la categoria
 	try {
-		this->indiceServicio->buscarElemento(StringUtil::int2string(categoria->getId()));
+		this->indiceCategorias->buscarElemento(StringUtil::int2string(categoria->getId()));
 	} catch (ExceptionElementoNoEncontrado e){
 		return false;
 	}
@@ -165,6 +175,18 @@ bool Indice::agregarCategoriaServicio(Categoria* categoria, Servicio* servicio){
 	this->indiceServicio->modificarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
 	return true;
 }
+
+bool Indice::eliminarCategoria(string nombreCategoria){
+	
+}
+void Indice::modificarCategoria(Categoria* categoria){
+	//
+}
+
+Categoria* Indice::buscarCategoria(string nombreCategoria){
+	
+}
+
 
 bool Indice::eliminarServicio(Servicio* servicio){
 	try{
@@ -406,6 +428,36 @@ string Indice::obtenerNuevoId(string tipoId){
 	return nuevoIdString;
 }
 
+vector<Usuario*> Indice::obtenerTodosLosUsuarios(){
+	list<string>* idsUsuarios = this->indiceGeneralEntidades->elementosConIgualClave(*(new Clave(claveIndiceGeneralUsuarios)));
+	
+	vector<Usuario*> resultadoUsuarios;
+	for (std::list<string>::iterator it = idsUsuarios->begin(); it != idsUsuarios->end(); it++){
+		Usuario* usuario = new Usuario();
+		string usuarioSerializado = this->indiceUsuario->buscarElemento(*it);
+		usuario->desSerializar(usuarioSerializado);
+		resultadoUsuarios.push_back(usuario);
+	}
+	
+	return resultadoUsuarios;
+}
+
+
+vector<Categoria*> Indice::obtenerTodasLasCategorias(){
+	list<string>* idsCategorias = this->indiceGeneralEntidades->elementosConIgualClave(*(new Clave(claveIndiceGeneralCategorias)));
+		
+	vector<Categoria*> resultadoCategorias;
+	for (std::list<string>::iterator it = idsCategorias->begin(); it != idsCategorias->end(); it++){
+		Categoria* cat = new Categoria();
+		string categoriaSerializada = this->indiceCategorias->buscarElemento(*it);
+		cat->desSerializar(categoriaSerializada);
+		resultadoCategorias.push_back(cat);
+	}
+	
+	return resultadoCategorias;
+}
+
+
 Indice::~Indice(){
 	delete(indiceUsuario);
 	delete(indiceServicio);
@@ -419,6 +471,8 @@ Indice::~Indice(){
 	delete(indiceConsultaPorIdServicio);
 	delete(indiceConsultaPorIdUsuario);
 	delete(indiceConsultaPorIdServicioFechaHora);
+	delete(indiceGeneralEntidades);
+	delete(indiceCategoriaPorNombre);
 	delete(indiceOcurrenciasTerminos);
 	delete(indiceTerminosId);
 	delete(indiceTerminos);

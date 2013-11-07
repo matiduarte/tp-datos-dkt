@@ -35,9 +35,10 @@ private:
 	ArbolBMas* indiceUsuarioPorTipo;
 	ArbolBMas* indiceServicioPorCategoria;
 	ArbolBMas* indiceServicioPorIdProveedor;
-	//ArbolBMas* indiceConsultaPorIdServicioIdUsuario;
 	ArbolBMas* indiceConsultaPorIdServicio;
 	ArbolBMas* indiceConsultaPorIdUsuario;
+	ArbolBMas* indiceGeneralEntidades;
+	ArbolBMas* indiceCategoriaPorNombre;
 	
 	//Este indice probablemente este de mas o hay que cambiarlo
 	ArbolBMas* indiceConsultaPorIdServicioFechaHora;
@@ -68,19 +69,29 @@ public:
 	bool agregarServicio(Servicio* servicio);
 
 	//deberia chequear si existe el nombre, no el ID (el id nunca va a repetirse)
-	bool agregarCategoria(Categoria* categoria);
+	
 	bool agregarCategoriaServicio(Categoria* categoria, Servicio* servicio);
 	bool eliminarServicio(Servicio* servicio);
 	vector<Servicio*> buscarServiciosPorUsuario(Usuario* usuario);
 	vector<Servicio*> buscarServiciosPorPalabrasClave(string query);
 	vector<Servicio*> buscarServiciosCategoria(Categoria* categoria);
 
+	
+	//Meotodos categorias
+	bool agregarCategoria(Categoria* categoria);
+	bool eliminarCategoria(string nombreCategoria);
+	void modificarCategoria(Categoria* categoria);
+	Categoria* buscarCategoria(string nombreCategoria);
 
 	//Metodos consulta
 	bool agregarConsulta(Consulta* consulta);
 	void modificarConsulta(Consulta* consulta);
 	vector<Consulta*> buscarConsultasHechasAUsuario(Usuario* usuario);
 	vector<Consulta*> buscarConsultasPorServicio(Servicio* servicio);
+	
+	//Generales
+	vector<Usuario*> obtenerTodosLosUsuarios();
+	vector<Categoria*> obtenerTodasLasCategorias();
 };
 
 #endif /*INDICE_H_*/

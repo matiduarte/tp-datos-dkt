@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class ExceptionElementoNoEncontrado: public runtime_error{
+class ExceptionElementoNoEncontrado: public runtime_error,public Excepcion{
 
 public:
 	ExceptionElementoNoEncontrado(const string &err) : runtime_error (err ) {}

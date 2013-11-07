@@ -5,7 +5,7 @@
 
 using namespace std;
 
-class ExceptionElementoKeyYaIngresado: public runtime_error{
+class ExceptionElementoKeyYaIngresado: public runtime_error,public Excepcion{
 
 public:
 	ExceptionElementoKeyYaIngresado(const string &err) : runtime_error (err ) {}
