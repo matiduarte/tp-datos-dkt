@@ -709,7 +709,7 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 			j++;
 		}
 
-		if((i = max_nombre_categoria) && linea[i] != separadorCategoria){
+		if((i > max_nombre_categoria) && linea[i-1] != separadorCategoria){
 			//si entra es porque es una categoria invalida, por lo tanto no la agrego.
 		}else{
 		Categoria* categoria =new Categoria();
