@@ -45,6 +45,7 @@ void Programa::ejecutar(){
 		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
 		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
+		case LISTAR_CATEGORIAS: estado = listarCategorias();							break;
 		case BAJA_CAT:			estado = bajaCategoria();								break;
 		default:																		break;
 		}
@@ -256,7 +257,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 8;
+	int cantidadOpciones = 9;
 
 	gotoXY(0, 2);	cout<<"1 - Agregar nuevo administrador.";
 	gotoXY(0, 3);	cout<<"2 - Eliminar administrador.";
@@ -265,7 +266,8 @@ estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 	gotoXY(0, 6);	cout<<"5 - Eliminar categoria.";
 	gotoXY(0, 7);	cout<<"6 - Moderar mensajes.";
 	gotoXY(0, 8);	cout<<"7 - Listado de usuarios.";
-	gotoXY(0, 9);	cout<<"8 - Cerrar sesion.";
+	gotoXY(0, 9);	cout<<"8 - Listado de categorias.";
+	gotoXY(0, 10);	cout<<"9 - Cerrar sesion.";
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = REGISTRO_A;
@@ -275,6 +277,7 @@ estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 	if(opcion == 5) estado = BAJA_CAT;
 	if(opcion == 6) estado = VER_MENSAJES;
 	if(opcion == 7) estado = VER_USUARIOS;
+	if(opcion == 8) estado = LISTAR_CATEGORIAS;
 
 	return estado;
 }
@@ -874,4 +877,29 @@ void Programa::desactivarEcho(){
 	tcgetattr(0, &tty);
 	tty.c_lflag &= ~ECHO;
 	tcsetattr(0, TCSANOW, &tty);
+}
+
+
+estadoPrograma Programa::listarCategorias(){
+
+	estadoPrograma estado = MENU_PRINCIPAL;
+
+	int posY = 0;
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias();
+	Categoria *categoriaAux;
+
+	for(unsigned int i=0; i<categorias.size(); i++){
+
+		categoriaAux = categorias.at(i);
+
+		gotoXY(0, posY); cout<<"Categoria nro " <<i+1<<": ";	posY++;
+		gotoXY(0, posY); cout<<"Nombre: "<< categoriaAux->getNombre(); posY++;
+		gotoXY(0, posY); cout<<"Descripcion: "<< categoriaAux->getDescripcion() ; posY++;
+
+
+	}
+	char c;
+	gotoXY(0, posY+1); cout<<"Presione una tecla para volver al menu principal... ";
+	cin.get(c);
+	return estado;
 }

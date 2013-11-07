@@ -28,6 +28,7 @@ typedef enum{
 	BAJA_ADMIN,
 	BAJA_CAT,
 	MOD_CAT,
+	LISTAR_CATEGORIAS,
 	CAMBIAR_DATOS,
 	INICIAR_SESION,
 	OPCIONES_USUARIO,
@@ -70,6 +71,7 @@ private:
 	estadoPrograma bajaProducto();
 	estadoPrograma bajaAdmin(Usuario* &usuario);
 	estadoPrograma listadoUsuarios();
+	estadoPrograma listarCategorias();
 
 	vector<Servicio*> buscarServicio(int opcion);
 
