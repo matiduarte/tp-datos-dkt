@@ -40,11 +40,11 @@ void Programa::ejecutar(){
 		case INICIAR_SESION:	estado = iniciarSesion(usuario);						break;
 		case OPCIONES_USUARIO:	estado = menuOpcionesUsuario(usuario);					break;
 		case CONSULTA_SERVICIO: estado = consultarServicio(resultados);					break;
-case RESULTADOS:	estado = emitirResultadoBusqueda(resultados, resultado, usuario);	break;
-case RESULTADO_ENDETALLE:		estado = detalleResultado(resultado, usuario);			break;
+		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, resultado, usuario);	break;
+		case RESULTADO_DET:		estado = detalleResultado(resultado, usuario);			break;
 		case PUBLICAR:			estado = publicarServicio(usuario);						break;
-		case RESPONDER:			estado = responderPregunta();							break;
-		case BAJA_PRODUCTO:		estado = bajaProducto();								break;
+		case RESPONDER:			estado = responderPregunta(usuario);					break;
+		case BAJA_PRODUCTO:		estado = bajaProducto(usuario);							break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
 		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
 		case LISTAR_CATEGORIAS: estado = listarCategorias();							break;
@@ -391,7 +391,7 @@ estadoPrograma Programa::emitirResultadoBusqueda(vector<Servicio*> &resultados, 
 		}while(!((num >= 1) && (num <= resultados.size())));
 
 		resultado = resultados.at(num-1);
-		estado = RESULTADO_ENDETALLE;
+		estado = RESULTADO_DET;
 	}
 	if(opcion == 2) estado = OPCIONES_USUARIO;
 
@@ -583,17 +583,143 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 	return OPCIONES_USUARIO;
 }
 
-estadoPrograma Programa::responderPregunta(){
+estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 
-	estadoPrograma estado = MENU_PRINCIPAL;
-	cout<<"estoy en responder";
+	estadoPrograma estado = OPCIONES_USUARIO;
+	vector<Servicio*> productos = indice->buscarServiciosPorUsuario(usuario);
+	gotoXY(0, 0);	cout<<"RESPONDER CONSULTAS: ";
+	int posY=2;
+	bool hayAlgo = false;
+
+	for(unsigned int i=0; i< productos.size(); i++){
+	//para todos los productos, obtengo sus preguntas
+		vector<Consulta*> consultas = indice->buscarConsultasPorServicio(productos.at(i));
+
+		//si hay preguntas y no estan respondidas, emitirlas
+		if(consultas.size() > 0){
+
+			emitir("Producto " + StringUtil::int2string(i+1) + ": " + productos.at(i)->getNombre(), 0, posY);	posY++;
+
+			for(unsigned int j=0; j< consultas.size(); j++){
+
+				if(consultas.at(j)->getRespuesta() == "--"){
+					hayAlgo = true;
+					emitir("Pregunta " + StringUtil::int2string(j+1) + ": " + consultas.at(j)->getConsulta(), 0, posY);
+					posY++;
+				}
+			}
+			posY++;
+		}
+	}
+	int opcion = 0;
+
+	if(hayAlgo){
+		emitir("1 - Responder pregunta.", 0, posY);			posY++;
+		emitir("2 - Volver al menu de opciones.", 0, posY);
+		opcion = leerOpcion(2, posY);
+	}else{
+		emitir("No tiene ninguna pregunta sin responder", 0, posY);
+	}
+	posY += 5;
+
+	string numPublicacion, numPregunta;
+	unsigned int numPub, numPreg;
+	if(opcion == 1){
+		do{
+			emitir("Responder pregunta de la publicacion N.: ", 0, posY); leer(numPublicacion);
+			numPub = atoi(numPublicacion.c_str());
+		}while(numPub <= 0);
+		posY++;
+
+		do{
+			emitir("Responder pregunta N.: ", 0, posY); leer(numPregunta);
+			numPub = atoi(numPregunta.c_str());
+		}while(numPreg <= 0);
+		posY+=2;
+
+		if(numPub <= productos.size()){
+			vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(productos.at(numPub -1 ));
+
+			if(numPreg <= preguntas.size()){
+
+				if(preguntas.at(numPreg - 1)->getRespuesta() != "--"){
+					//SI TODOS LOS DATOS SON VALIDOS, LLEGO A UNA PREGUNTA SIN RESPONDER
+					//la emito, y respondo
+					Consulta* pregunta = preguntas.at(numPreg -1);
+					string respuesta;
+					emitir("Producto: " + productos.at(numPub - 1)->getNombre(), 0, posY);		posY++;
+					emitir("Pregunta: " + pregunta->getConsulta(), 0, posY);	posY++;
+					emitir("Respuesta: ", 0, posY);		leer(respuesta);
+
+					pregunta->setRespuesta(respuesta);
+					pregunta->setFechaRespuesta(FechaYHora::setFechaAAAAMMDD());
+					pregunta->setHoraRespuesta(FechaYHora::setHoraHHMM());
+
+					indice->modificarConsulta(pregunta);
+				}
+			}
+		}
+
+	}
+
 	return estado;
 }
 
-estadoPrograma Programa::bajaProducto(){
+estadoPrograma Programa::bajaProducto(Usuario* &usuario){
 
 	estadoPrograma estado = OPCIONES_USUARIO;
-	cout<<"estoy en baja";
+	vector <Servicio*> productos = indice->buscarServiciosPorUsuario(usuario);
+
+		int posY = 2;
+	if(productos.size() > 0){
+
+		gotoXY(0 ,0); cout<<"BAJA DE SERVICIO:";
+		//si llego a esta pantalla es porque todavia tengo cosas publicadas
+		for(unsigned int i=0; i<productos.size(); i++){
+			emitir("Producto N. " + StringUtil::int2string(i+1) + ": ", 0, posY);
+			emitirResultado(productos.at(i), posY, false); posY++;
+		}
+		posY++;
+
+		string numPublicacion;
+		unsigned int numero;
+		do{
+			emitir("Borrar la publicacion N. : ", 0, posY);	leer(numPublicacion);
+			numero = atoi(numPublicacion.c_str());
+		}while(!((numero >= 1)&&(numero <= productos.size())));
+
+		posY++;
+		string confirmacion;
+		do{
+			emitir("Seguro que desea borrar la publicacion N. "+ StringUtil::int2string(numero) + "? (s/n) ", 0, posY);	leer(confirmacion);
+		}while((confirmacion != "s")&&(confirmacion != "n"));
+
+		posY+=2;
+		if(confirmacion == "s"){
+			numero--;
+			bool eliminado = indice->eliminarServicio(productos.at(numero));
+
+			if(eliminado){
+				emitir("Se ha borrado su producto.", 0, posY);
+				if(productos.size() == 1){
+					//si solo tenia un producto y lo borre, paso a ser usuario normal
+					usuario->setTipo("U");
+					indice->modificarUsuario(usuario);
+				}
+			}
+			else emitir("No se pudo borrar su producto.", 0, posY);
+
+
+		}else{
+			emitir("No se ha borrado su producto.", 0, posY);
+		}
+
+	}else{
+		gotoXY(0, 0); cout<<"No hay ningun producto registrado con sus datos.";
+//		char c;
+//		cin.get(c);
+	}
+
 	return estado;
 }
 
@@ -854,7 +980,7 @@ void Programa::emitirResultado(Servicio* &resultado, int &posY, bool enDetalle){
 		emitir("Categorias: ", 5, posY);
 		for(unsigned int j=0; j<resultado->getCategorias().size(); j++){
 
-			emitir(resultado->getCategorias().at(j)->getNombre() + ".", 18, posY);	posY++;
+			emitir(resultado->getCategorias().at(j)->getNombre() + ".", 17, posY);	posY++;
 		}
 	}
 	posY++;
@@ -920,8 +1046,8 @@ void Programa::leer(string& dato) {
 void Programa::emitir(string texto, int posX, int &posY){
 
 	if(posY > MAX_Y){
-		cout<<endl;	//si llego abajo de la pantalla, empiezo a hacer scroll
-		posY++;
+
+		for(int i=0; i < MAX_Y / 2; i++) cout<<endl;	//si llego abajo de la pantalla, hago scroll
 	}
 
 	gotoXY(posX, posY); cout<<texto;

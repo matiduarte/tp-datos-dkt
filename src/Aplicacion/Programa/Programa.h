@@ -36,7 +36,7 @@ typedef enum{
 	VER_MENSAJES,
 	VER_USUARIOS,
 	RESULTADOS,
-	RESULTADO_ENDETALLE,
+	RESULTADO_DET,
 	PUBLICAR,
 	RESPONDER,
 	BAJA_PRODUCTO,
@@ -62,14 +62,14 @@ private:
 	estadoPrograma consultarServicio(vector<Servicio*> &resultados);
 	estadoPrograma publicarServicio(Usuario* &usuario);
 	estadoPrograma emitirResultadoBusqueda(vector<Servicio*> &resultados, Servicio* &resultado, Usuario* &usuario);
-	estadoPrograma responderPregunta();
+	estadoPrograma responderPregunta(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioNormal(Usuario* &usuario);
 	estadoPrograma opcionesUsuarioProveedor(Usuario* &usuario);
 	estadoPrograma opcionesAdministrador(Usuario* &usuario);
 	estadoPrograma generarNuevasCategorias();
 	estadoPrograma recuperacion();
 	estadoPrograma bajaCategoria();
-	estadoPrograma bajaProducto();
+	estadoPrograma bajaProducto(Usuario* &usuario);
 	estadoPrograma bajaAdmin(Usuario* &usuario);
 	estadoPrograma listadoUsuarios();
 	estadoPrograma listarCategorias();
