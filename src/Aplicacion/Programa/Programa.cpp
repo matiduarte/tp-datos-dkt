@@ -853,7 +853,8 @@ void Programa::emitirResultado(Servicio* &resultado, int &posY, bool enDetalle){
 		emitir("Descripcion: " + resultado->getDescripcion(), 5, posY);	posY++;
 		emitir("Categorias: ", 5, posY);
 		for(unsigned int j=0; j<resultado->getCategorias().size(); j++){
-			emitir(resultado->getCategorias().at(j)->getNombre() + ".", 17, posY);	posY++;
+
+			emitir(resultado->getCategorias().at(j)->getNombre() + ".", 18, posY);	posY++;
 		}
 	}
 	posY++;

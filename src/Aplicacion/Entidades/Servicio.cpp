@@ -1,7 +1,7 @@
 #include "Servicio.h"
 
 Servicio::Servicio(){
-	
+
 }
 
 string Servicio::serializar(){
