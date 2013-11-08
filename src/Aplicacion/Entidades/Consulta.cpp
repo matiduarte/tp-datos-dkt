@@ -2,8 +2,6 @@
 
 Consulta::Consulta(){
 
-	this->fechaConsulta = FechaYHora::setFechaAAAAMMDD();
-	this->horaConsulta = FechaYHora::setHoraHHMM();
 }
 
 string Consulta::serializar(){
@@ -105,6 +103,14 @@ void Consulta::setIdUsuario(int idUsuario){
 
 void Consulta::setConsulta(string consulta){
 	this->consulta = consulta;
+}
+
+void Consulta::setFechaConsulta(string fecha){
+	this->fechaConsulta = fecha;
+}
+
+void Consulta::setHoraConsulta(string hora){
+	this->horaConsulta = hora;
 }
 
 void Consulta::setRespuesta(string respuesta){

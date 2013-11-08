@@ -47,6 +47,8 @@ public:
 	void setIdServicio(int idServicio);
 	void setIdUsuario(int idUsuario);
 	void setConsulta(string consulta);
+	void setFechaConsulta(string fecha);
+	void setHoraConsulta(string hora);
 	void setRespuesta(string respuesta);
 	void setFechaRespuesta(string fechaRespuesta);
 	void setHoraRespuesta(string horaRespuesta);

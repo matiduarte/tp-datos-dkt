@@ -414,8 +414,8 @@ estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuari
 	emitir("3 - Volver al listado de resultados.",	0, posY);
 	int opcion = leerOpcion(3, posY);
 
-	if(opcion == 1) hacerPregunta(resultado, usuario, posY + 4);
-	if(opcion == 2) pedirCotizacion(resultado, posY + 4);
+	if(opcion == 1) hacerPregunta(resultado, usuario, posY + 2);
+	if(opcion == 2) pedirCotizacion(resultado, posY + 2);
 
 	return RESULTADOS;
 }
@@ -459,12 +459,14 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 		Consulta* consulta = new Consulta();
 		int IDNuevo = StringUtil::str2int(lector->getValor(idConsulta).c_str()) + 1;
 		consulta->setId(IDNuevo);
-		consulta->setConsulta(pregunta);
-		consulta->setRespuesta("--");
-		consulta->setFechaRespuesta("--");
-		consulta->setHoraRespuesta("--");
 		consulta->setIdServicio(resultado->getId());
 		consulta->setIdUsuario(usuario->getDni());
+		consulta->setConsulta(pregunta);
+		consulta->setFechaConsulta(FechaYHora::setFechaAAAAMMDD());
+		consulta->setHoraConsulta(FechaYHora::setHoraHHMM());
+		consulta->setRespuesta("--");
+		consulta->setFechaRespuesta("00000000");
+		consulta->setHoraRespuesta("0000");
 		consulta->setOculta(false);
 		preguntado = indice->agregarConsulta(consulta);
 
@@ -494,8 +496,6 @@ estadoPrograma Programa::listadoUsuarios(){
 
 void Programa::emitirCategoriasDisponibles(vector<Categoria*> categorias){
 
-	bool error=true; //supongo q no hay ninguna caegoria
-	if(!error){
 		int posY = 1;
 		int posX = 50;
 		gotoXY(posX, 0);		cout<<"Categorias disponibles:";
@@ -504,7 +504,7 @@ void Programa::emitirCategoriasDisponibles(vector<Categoria*> categorias){
 
 			emitir(categorias.at(i)->getNombre(), posX + 5, posY);	posY++;
 		}
-	}
+
 }
 
 estadoPrograma Programa::publicarServicio(Usuario* &usuario){
@@ -659,12 +659,10 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 					pregunta->setRespuesta(respuesta);
 					pregunta->setFechaRespuesta(FechaYHora::setFechaAAAAMMDD());
 					pregunta->setHoraRespuesta(FechaYHora::setHoraHHMM());
-
 					indice->modificarConsulta(pregunta);
 				}
 			}
 		}
-
 	}
 
 	return estado;
