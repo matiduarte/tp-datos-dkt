@@ -301,8 +301,8 @@ int NodoHoja::baja(Clave clave, string valor){
 
         int indicador = 1;
         if (this->tieneLaClave(clave)){
-                //Si tiene la clave la borro
-                RegistroArbol * reg = getRegistro(clave);
+                //Si tiene la clave busco el registro correspondiente al valor:
+                RegistroArbol * reg = this->getRegistroConValor(clave,valor);
                 indicador = reg->borrar(clave,valor);
                 //Si el registro quedo vacio tengo que eliminarlo
                 if (indicador == 3){
@@ -481,4 +481,19 @@ list<string> * NodoHoja::buscarYlistar(Clave clave){
 	        it++;
 	}
 	return listaAdevolver;
+}
+
+
+RegistroArbol* NodoHoja::getRegistroConValor(Clave clave, string valor){
+
+		list<RegistroArbol*>::iterator it;
+		RegistroArbol * registro;
+		it = this->getElementos()->begin();
+
+		while ( it != this->getElementos()->end()){
+		        registro = *it;
+		        if (registro->getValor() == valor) return registro;
+		        it++;
+		}
+		return NULL;
 }

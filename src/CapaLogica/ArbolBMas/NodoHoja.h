@@ -49,6 +49,7 @@ public:
         list<RegistroArbol*> * getElementos();
         list<RegistroArbol*> * getMitadDerecha();
         list<string> * buscarYlistar(Clave clave);
+        RegistroArbol* getRegistroConValor(Clave clave, string valor);
 };
 
 
