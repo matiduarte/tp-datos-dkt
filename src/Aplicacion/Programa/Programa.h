@@ -103,6 +103,8 @@ private:
 	int leerOpcion(int cantidadDeOpciones, int posY);
 	void leer(string& nombre);
 	void emitir(string texto, int posX, int &posY);
+	void esperarEnter();
+
 
 	/* NECESITO:
 	 * modificar al indica para que el obtenerID devuelva un int?

@@ -748,7 +748,9 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 	if(contAdministradores == 1){
 		system("clear");
 		gotoXY(0, 14);
-		emitir("Sos el unico administrador hasta el momento.", 0, posY);		  posY++;
+		emitir("Usted es el unico administrador hasta el momento.", 0, posY);		  posY++;
+		emitir("Presione ENTER para volver al menu...", 0, posY);					  posY++;
+		esperarEnter();
 		return OPCIONES_USUARIO;
 	}
 
@@ -779,10 +781,10 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 
 		system("clear");
 		gotoXY(0, 14);
-		cout<<"No se puede eliminar el administrador pedido.";
+		emitir("No se puede eliminar el administrador pedido.", 0, posY); posY++;
+		emitir("Presione ENTER para volver al menu...", 0, posY);
+		esperarEnter();
 
-		posY++;
-		emitir("No se puede eliminar el administrador pedido.", 0, posY);
 
 	}
 
@@ -1041,6 +1043,11 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 
 void Programa::leer(string& dato) {
 	getline(cin, dato);
+}
+
+void Programa::esperarEnter(){
+	string enter;
+	this->leer(enter);
 }
 
 void Programa::emitir(string texto, int posX, int &posY){

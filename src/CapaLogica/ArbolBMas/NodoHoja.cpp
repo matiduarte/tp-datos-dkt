@@ -303,7 +303,7 @@ int NodoHoja::baja(Clave clave, string valor){
         if (this->tieneLaClave(clave)){
                 //Si tiene la clave busco el registro correspondiente al valor:
                 RegistroArbol * reg = this->getRegistroConValor(clave,valor);
-                indicador = reg->borrar(clave,valor);
+                if(reg != NULL) indicador = reg->borrar(clave,valor);
                 //Si el registro quedo vacio tengo que eliminarlo
                 if (indicador == 3){
                         //Lo elimino de la lista
