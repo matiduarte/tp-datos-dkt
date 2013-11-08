@@ -676,7 +676,7 @@ estadoPrograma Programa::bajaProducto(Usuario* &usuario){
 		gotoXY(0 ,0); cout<<"BAJA DE SERVICIO:";
 		//si llego a esta pantalla es porque todavia tengo cosas publicadas
 		for(unsigned int i=0; i<productos.size(); i++){
-			emitir("Producto N. " + StringUtil::int2string(i+1) + ": ", 0, posY);
+			emitir("Producto N. " + StringUtil::int2string(i+1) + ": ", 0, posY); posY++;
 			emitirResultado(productos.at(i), posY, false); posY++;
 		}
 		posY++;
