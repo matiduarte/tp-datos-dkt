@@ -94,7 +94,7 @@ private:
 	void emitirInformacion();
 	bool tieneEspacios(string dato);
 
-	void emitirCategoriasDisponibles();
+	void emitirCategoriasDisponibles(vector<Categoria*> categorias);
 	//para ingresar la contraseña sin mostrarla
 	void desactivarEcho();
 	void activarEcho();

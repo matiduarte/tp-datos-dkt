@@ -125,7 +125,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 			}
 	}
 
-	//si quedan mails sin setear, les asigno un ----
+	//si quedan mails sin setear, les asigno un "--"
 	if(nuevoUsuario->getEmails().size()<3){
 		do{
 			string mailVacio = "--";
@@ -176,14 +176,17 @@ estadoPrograma Programa::modificarDatosUsuario(Usuario* &usuario){
 	//el DNI no se modifica
 	//modificar provincia?
 	usuario->setProvincia(modificar("la provincia? ", usuario->getProvincia(), 5));
+
 	//modificar emails?
-	for(unsigned int i = 0; i < MAX_EMAILS; i++){
-		string aModificar= "el e-mail num " + StringUtil::int2string(i+1) + "? ";
-		string nuevoEmail = modificar(aModificar, usuario->getEmails().at(i), 6 + i);
-		usuario->setEmailEnPosicion(nuevoEmail, i);
-	}
+	string nuevoEmail = modificar("el e-mail n. 1?", usuario->getEmails().at(0), 6);
+	usuario->setEmailEnPosicion(nuevoEmail, 0);
+		   nuevoEmail = modificar("el e-mail n. 2?", usuario->getEmails().at(1), 7);
+	usuario->setEmailEnPosicion(nuevoEmail, 1);
+	       nuevoEmail = modificar("el e-mail n. 3?", usuario->getEmails().at(2), 8);
+	usuario->setEmailEnPosicion(nuevoEmail, 2);
+
 	//modificar contraseña?
-	usuario->setContrasena(modificar("la contraseña? ", usuario->getContrasena(), 6 + usuario->getEmails().size()));
+	usuario->setContrasena(modificar("la contraseña? ", usuario->getContrasena(), 9));
 
 	indice->modificarUsuario(usuario);
 
@@ -489,10 +492,9 @@ estadoPrograma Programa::listadoUsuarios(){
 	return OPCIONES_USUARIO;
 }
 
-void Programa::emitirCategoriasDisponibles(){
+void Programa::emitirCategoriasDisponibles(vector<Categoria*> categorias){
 
 	bool error=true; //supongo q no hay ninguna caegoria
-	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
 	if(!error){
 		int posY = 1;
 		int posX = 50;
@@ -521,7 +523,7 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 		servicio->setId(IDNuevo);
 		servicio->setIdProveedor(usuario->getDni());
 
-		emitirCategoriasDisponibles();
+		emitirCategoriasDisponibles(categorias);
 
 		gotoXY(0, 0);	cout<<"PUBLICAR:";
 		gotoXY(0, 2);	cout<<"Titulo: ";		leer(titulo); 	servicio->setNombre(titulo);
@@ -565,14 +567,14 @@ estadoPrograma Programa::publicarServicio(Usuario* &usuario){
 		gotoXY(0, posY+6);
 
 		if(tieneCategorias) agregado = indice->agregarServicio(servicio);
-
 		if(agregado){
 			cout<<"Publicacion exitosa!";
 			usuario->setTipo("P"); //si se publica correctamente el usuario se convierte en proveedor
 			indice->modificarUsuario(usuario);
 			//y se aumenta efectivamente el contador de servicios
-			string nuevoID = StringUtil::int2string(servicio->getId());
-			lector->setValor(idConsulta, nuevoID);
+			int nuevoID = StringUtil::str2int(lector->getValor(idServicio)) +1;
+			string ID = StringUtil::int2string(nuevoID);
+			lector->setValor(idServicio, ID);
 		}else{
 			cout<<"No se pudo publicar su servicio.";
 		}
@@ -637,17 +639,20 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 		}while(numPreg <= 0);
 		posY+=2;
 
-		if(numPub <= productos.size()){
-			vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(productos.at(numPub -1 ));
+		numPub--;
+		numPreg--;	//disminuyo para que arranquen en 0
 
-			if(numPreg <= preguntas.size()){
+		if(numPub < productos.size()){
+			vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(productos.at(numPub));
 
-				if(preguntas.at(numPreg - 1)->getRespuesta() == "--"){
+			if(numPreg < preguntas.size()){
+
+				if(preguntas.at(numPreg)->getRespuesta() == "--"){
 					//SI TODOS LOS DATOS SON VALIDOS, LLEGO A UNA PREGUNTA SIN RESPONDER
 					//la emito, y respondo
-					Consulta* pregunta = preguntas.at(numPreg -1);
+					Consulta* pregunta = preguntas.at(numPreg);
 					string respuesta;
-					emitir("Producto: " + productos.at(numPub - 1)->getNombre(), 0, posY);		posY++;
+					emitir("Producto: " + productos.at(numPub)->getNombre(), 0, posY);		posY++;
 					emitir("Pregunta: " + pregunta->getConsulta(), 0, posY);	posY++;
 					emitir("Respuesta: ", 0, posY);		leer(respuesta);
 
@@ -1022,7 +1027,7 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 	string respuesta;
 	do {
 		gotoXY(0, posY);
-		cout<< "Esta seguro que desea eliminar al ";
+		emitir("Esta seguro que desea eliminar al ", 0, posY);
 		cout<<imprimirTipoDeUsuario(usuario->getTipo())<<"? (s/n) ";
 		if(usuario->getTipo() != "A")
 			cout<<"(Las publicaciones, preguntas y respuestas no serán borradas)";
@@ -1031,7 +1036,7 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 
 	if (respuesta == "s"){
 		usuarioEliminado = indice->elimininarUsuario(usuario);
-		gotoXY(0, posY);
+		gotoXY(0, posY+3);
 		if(usuarioEliminado){
 			cout << imprimirTipoDeUsuario(usuario->getTipo())<<" eliminado correctamente!                                                                                   ";
 
