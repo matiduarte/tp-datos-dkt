@@ -138,7 +138,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	//intento agregar el usuario al indice
 	usuarioAgregado = indice->agregarUsuario(nuevoUsuario);
 
-	gotoXY(0, posY+2);
+	gotoXY(0, posY+7);
 	if(usuarioAgregado)	cout<<"Usuario registrado exitosamente!";
 	else cout<<"El usuario ya se encuentra registrado en el sistema.";
 
@@ -633,7 +633,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 
 		do{
 			emitir("Responder pregunta N.: ", 0, posY); leer(numPregunta);
-			numPub = atoi(numPregunta.c_str());
+			numPreg = atoi(numPregunta.c_str());
 		}while(numPreg <= 0);
 		posY+=2;
 
@@ -642,7 +642,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 
 			if(numPreg <= preguntas.size()){
 
-				if(preguntas.at(numPreg - 1)->getRespuesta() != "--"){
+				if(preguntas.at(numPreg - 1)->getRespuesta() == "--"){
 					//SI TODOS LOS DATOS SON VALIDOS, LLEGO A UNA PREGUNTA SIN RESPONDER
 					//la emito, y respondo
 					Consulta* pregunta = preguntas.at(numPreg -1);
@@ -727,7 +727,7 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 
 	gotoXY(0, 0);	cout<<"ELIMINAR ADMINISTRADOR:";
 	string id;
-	int posY=4,contAdministradores=1;
+	int posY=2,contAdministradores=1;
 	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
 	Usuario *usuarioAux;
 
@@ -737,8 +737,9 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 
 		if( (usuarioAux->getTipo() == "A") && (usuarioAux->getDni() != adminActual->getDni()) ){
 		emitir("Administrador nro " +StringUtil::int2string(contAdministradores)+ ": ",0,posY);	 		 posY++;
-		emitir("Nombre: " + usuarioAux->getNombre(), 0, posY);					 posY++;
-		emitir("ID: " + StringUtil::int2string(usuarioAux->getDni()), 0, posY) ; posY++;
+		emitir("Nombre: " + usuarioAux->getNombre(), 5, posY);					 posY++;
+		emitir("ID: " + StringUtil::int2string(usuarioAux->getDni()), 5, posY) ; posY++;
+		posY++;
 
 		contAdministradores++;
 		}
@@ -772,6 +773,7 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 	//verifico que el ID ingresado no sea uno mismo.
 	if( encontrado && ( atoi(id.c_str()) != adminActual->getDni() ) ) IDvalido = true;
 
+	posY+= 4;
 	if(IDvalido){
 		Usuario* usuario = new Usuario();
 		usuario->setDni(atoi(id.c_str()));
@@ -803,7 +805,7 @@ estadoPrograma Programa::generarNuevasCategorias(){
 
 	if(opcion == 1) cargaManualCategoria();
 	if(opcion == 2) cargaMasivaCategoria();
-
+	if(opcion == 3) return OPCIONES_USUARIO;
 	char c;
 	cin.get(c);
 	return OPCIONES_USUARIO;
@@ -813,7 +815,7 @@ estadoPrograma Programa::generarNuevasCategorias(){
 void Programa::cargaManualCategoria(){
 
 	gotoXY(0, 8);
-	string nombre, descripcion;
+	string nombre="", descripcion="";
 	do{
 		cout<<"Nombre de la categoria: "; leer(nombre);
 		if(nombre.size() > max_nombre_categoria){
@@ -833,7 +835,8 @@ void Programa::cargaManualCategoria(){
 	int IDNuevo = StringUtil::str2int(lector->getValor(idCategoria).c_str()) + 1;
 	nuevaCategoria->setId(IDNuevo);
 	nuevaCategoria->setNombre(nombre);
-	nuevaCategoria->setDescripcion(descripcion);
+	if(descripcion=="")	nuevaCategoria->setDescripcion("-");
+	else nuevaCategoria->setDescripcion(descripcion);
 
 	bool agregada = indice->agregarCategoria(nuevaCategoria);
 
