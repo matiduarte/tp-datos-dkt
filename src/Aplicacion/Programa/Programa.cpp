@@ -438,7 +438,7 @@ void Programa::emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY)
 			emitir(preguntas.at(i)->getConsulta(), 5, posY);	posY++;
 
 			if(preguntas.at(i)->getRespuesta() != "--"){
-				emitir("Respuesta: ", 5, posY);		posY++;
+				emitir("Respuesta: ", 0, posY);		posY++;
 				emitir(FechaYHora::getFecha_DD_MM_AAAA(preguntas.at(i)->getFechaRespuesta()) +
 				", " + FechaYHora::getHoraHH_MM(preguntas.at(i)->getHoraRespuesta()) + ".", 5, posY);	posY++;
 				emitir(preguntas.at(i)->getRespuesta(), 5, posY);	posY++;
@@ -506,7 +506,7 @@ void Programa::emitirCategoriasDisponibles(vector<Categoria*> categorias){
 
 		for(unsigned int i=0; i< categorias.size(); i++){
 
-			emitir(categorias.at(i)->getNombre(), posX + 5, posY);	posY++;
+			emitir(categorias.at(i)->getNombre(), posX + 2, posY);	posY++;
 		}
 
 }
@@ -791,7 +791,7 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 	}else{
 
 		system("clear");
-		gotoXY(0, 14);
+		gotoXY(0, 0);
 		emitir("No se puede eliminar el administrador pedido.", 0, posY); posY++;
 		emitir("Presione ENTER para volver al menu...", 0, posY);
 		esperarEnter();
@@ -943,6 +943,7 @@ estadoPrograma Programa::bajaCategoria(){	////FALTAN METODOS
 
 
 	string categoriaIngresada;
+	string respuesta="s";
 	bool eliminada=false;
 	int posY=0;
 
@@ -950,20 +951,24 @@ estadoPrograma Programa::bajaCategoria(){	////FALTAN METODOS
 
 	do{
 			system("clear");
-			emitir(	"ingrese el nombre de la categoria que desea eliminar: "	 ,  0, posY);	posY++;
+			emitir(	"ingrese el nombre de la categoria que desea eliminar: "	 ,  0, posY);
 			leer(categoriaIngresada);
 			if( !existeCategoria(categoriaIngresada) ){
-				system("clear");
-				emitir(	"La categoria ingresada no existe, presione enter para volver a intentar " ,  0, posY);
-				esperarEnter();
+				do{
+					system("clear");
+					emitir(	"La categoria ingresada no existe, reintentar? (s/n) " ,  0, posY);
+					leer(respuesta);
+				}while((respuesta != "s")&&(respuesta != "n"));
 			}
-		}while(!existeCategoria(categoriaIngresada));
+		}while((!existeCategoria(categoriaIngresada))&&(respuesta == "s"));
 
+	if(existeCategoria(categoriaIngresada)){
 		indice->eliminarCategoria(categoriaIngresada);
 		system("clear");
 		emitir(	"la categoria ha sido elimina exitosamente. "	 ,  0, posY);	posY++;
 		emitir(	"presione ENTER para continuar... " ,  0, posY);
 		esperarEnter();
+	}
 
 
 	return OPCIONES_USUARIO;
@@ -1161,11 +1166,12 @@ estadoPrograma Programa::moderarMensajes(){
 			if(consultas.at(j)->getOculta() == false){
 				system("clear");
 				contConsultas++;
-				emitir(		"Mensaje numero " + StringUtil::int2string(contConsultas) + ": ",  0, posY);	posY++;
-				emitir(		consultas.at(j)->getConsulta()								     ,  0, posY);	posY+=4;
-				emitir(		"1_ Ocultar Mensaje."			    							 ,  0, posY);	posY++;
-				emitir(		"2_ Continuar con el siguiente mensaje."					     ,  0, posY);	posY++;
-				emitir(		"3_ Dejar de moderar."			    							 ,  0, posY);	posY++;
+				emitir("Mensaje numero " + StringUtil::int2string(contConsultas) + ": ",  0, posY);	posY++;
+				emitir("Pregunta: " + consultas.at(j)->getConsulta()     			   ,  0, posY);	posY++;
+				emitir("Respuesta: " +  consultas.at(j)->getRespuesta()                ,  0, posY); posY+=2;
+				emitir(		"1 - Ocultar Mensaje."			    							 ,  0, posY);	posY++;
+				emitir(		"2 - Continuar con el siguiente mensaje."					     ,  0, posY);	posY++;
+				emitir(		"3 - Dejar de moderar."			    							 ,  0, posY);	posY++;
 				int opcion = leerOpcion(3,posY);
 				if(opcion == 1) {
 					consultas.at(j)->setOculta(true);
@@ -1187,27 +1193,28 @@ estadoPrograma Programa::modificarCategoria(){
 	system("clear");
 	estadoPrograma estado = OPCIONES_USUARIO;
 	int posY = 0;
-	string categoriaIngresada,nombre,descripcion;
+	string categoriaIngresada,nombre,descripcion, respuesta;
 	Categoria *categoriaAux;
 	bool error=true;
 
+	vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
 
-
-		vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
-
-
-		if(!error){
-			do{
-				system("clear");
-				emitir(	"Ingrese la categoria que desea modificar: "		 ,  0, posY);	posY++;
-				leer(categoriaIngresada);
-				if( !existeCategoria(categoriaIngresada) ){
+	if(!error){
+		do{
+			system("clear");
+			emitir(	"Ingrese la categoria que desea modificar: ", 0, posY);
+			leer(categoriaIngresada);
+			if( !existeCategoria(categoriaIngresada) ){
+				do{
 					system("clear");
-					emitir(	"La categoria ingresada no existe, presione enter para volver a intentar. " ,  0, posY);
-					esperarEnter();
-				}
-			}while(!existeCategoria(categoriaIngresada));
-			//la busco para conservar el mismo ID.(el indice usa el ID)
+					emitir(	"La categoria ingresada no existe, reintentar? (s/n) " ,  0, posY);
+					leer(respuesta);
+				}while((respuesta != "s")&&(respuesta != "n"));
+			}
+		}while((!existeCategoria(categoriaIngresada))&&(respuesta == "s"));
+
+		//la busco para conservar el mismo ID.(el indice usa el ID)
+		if(existeCategoria(categoriaIngresada)){
 			categoriaAux = this->buscarCategoria(categoriaIngresada);
 			leerNombreCategoria(nombre); posY++;
 			leerDescripcionCategoria(descripcion); posY++;
@@ -1219,12 +1226,11 @@ estadoPrograma Programa::modificarCategoria(){
 			emitir(	"La categoria ha sido modificada satisfactoriamente. " ,  0, posY); posY++;
 			emitir(	"presione ENTER para continuar... " ,  0, posY);
 			esperarEnter();
-		}else{
-			emitir("No hay ninguna categoria registrada en el sistema.", 0, posY); posY++;
+		}
+	}else{
+		emitir("No hay ninguna categoria registrada en el sistema.", 0, posY); posY++;
 
-
-
-}
+	}
 		return estado;
 }
 
