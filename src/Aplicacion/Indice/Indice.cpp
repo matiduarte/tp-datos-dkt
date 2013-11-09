@@ -281,6 +281,7 @@ vector<Servicio*> Indice::buscarServiciosPorUsuario(Usuario* usuario){
 		int nuevaPos;
 		string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
 		ser->deserializarCategorias(catsSerializadas);
+		this->hidratarCategoriasDeServicio(ser);
 		ser->setPosicionCategorias(nuevaPos);
 		this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 		resultadoServicios.push_back(ser);
@@ -337,6 +338,7 @@ vector<Servicio*> Indice::buscarServiciosCategoria(Categoria* categoria){
 		int nuevaPos;
 		string catsSerializadas = this->listaCategoriasPorServicio->obtener(ser->getPosicionCategorias(),&nuevaPos);
 		ser->deserializarCategorias(catsSerializadas);
+		this->hidratarCategoriasDeServicio(ser);
 		ser->setPosicionCategorias(nuevaPos);
 		this->indiceServicio->modificarElemento(StringUtil::int2string(ser->getId()),ser->serializar());
 		resultadoServicios.push_back(ser);
@@ -349,6 +351,7 @@ vector<Servicio*> Indice::buscarServiciosCategoria(Categoria* categoria){
 bool Indice::agregarConsulta(Consulta* consulta){
 	try {
 		this->indiceConsulta->insertarElemento(StringUtil::int2string(consulta->getId()),consulta->serializar());
+
 	} catch (ExceptionElementoKeyYaIngresado e){
 		return false;
 	}
@@ -369,10 +372,10 @@ bool Indice::agregarConsulta(Consulta* consulta){
 }
 
 void Indice::modificarConsulta(Consulta* consulta){
-	string antiguaConsultaSerializada = this->indiceCategorias->buscarElemento(StringUtil::int2string(consulta->getId()));
+
+	string antiguaConsultaSerializada = this->indiceConsulta->buscarElemento(StringUtil::int2string(consulta->getId()));
 	Consulta* antiguaConsulta = new Consulta();
 	antiguaConsulta->desSerializar(antiguaConsultaSerializada);
-	
 	//Actualizo el indice de fecha y hora
 	string claveString = StringUtil::int2string(antiguaConsulta->getIdServicio()) + separadorCamposClave + antiguaConsulta->getFechaConsulta() + separadorCamposClave + antiguaConsulta->getHoraConsulta();
 	Clave* claveArbol = new Clave(claveString);

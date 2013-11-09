@@ -29,11 +29,11 @@ string Consulta::serializar(){
     }else{
     	retorno += "0";
     }
-    
     return retorno;
 }
 
 void Consulta::desSerializar(string aDeserealizar){
+
 	vector<string> atributos = StringUtil::split(aDeserealizar,separadorCamposEntidades);
 	this->id = StringUtil::str2int(atributos.at(0));
 	this->idServicio = StringUtil::str2int(atributos.at(1));
