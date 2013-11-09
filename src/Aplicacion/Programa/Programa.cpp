@@ -75,7 +75,6 @@ estadoPrograma Programa::menuPrincipal(){
 	if(opcion == 2) estado = REGISTRO_U;
 	if(opcion == 3) estado = RECUPERAR_PASS;
 	if(opcion == 4) estado = TERMINAR;
-	if(opcion == 5) estado = REGISTRO_A; ////////////////quitar estooooooo
 
 	return estado;
 }
