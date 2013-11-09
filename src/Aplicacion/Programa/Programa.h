@@ -27,7 +27,7 @@ typedef enum{
 	REGISTRO_CAT,
 	BAJA_ADMIN,
 	BAJA_CAT,
-	MOD_CAT,
+	MODIFICAR_CATEGORIA,
 	LISTAR_CATEGORIAS,
 	CAMBIAR_DATOS,
 	INICIAR_SESION,
@@ -42,6 +42,7 @@ typedef enum{
 	BAJA_PRODUCTO,
 	RECUPERAR_PASS,
 	TERMINAR,
+	MODERAR_MENSAJES,
 }estadoPrograma;
 
 class Programa {
@@ -74,11 +75,14 @@ private:
 	estadoPrograma listadoUsuarios();
 	estadoPrograma listarCategorias();
 	estadoPrograma detalleResultado(Servicio* &resultado, Usuario* &usuario);
+	estadoPrograma moderarMensajes();
+	estadoPrograma modificarCategoria();
+
 
 	vector<Servicio*> buscarServicio(int opcion);
 
 	bool eliminarUsuario(Usuario* usuario, int posY);
-
+	bool existeCategoria(string categoria);
 	string imprimirTipoDeUsuario(string tipo);
 	void emitirDatosUsuario(Usuario* &usuario);
 	string modificar(string queCosa, string valorActual, int posicionDato);
@@ -90,6 +94,7 @@ private:
 
 	void cargaManualCategoria();
 	void cargaMasivaCategoria();
+	Categoria* buscarCategoria(string categoria);
 	vector<Categoria*> leerCategoriasDeArchivo(ifstream &archivo);
 	void emitirInformacion();
 	bool tieneEspacios(string dato);
@@ -102,6 +107,8 @@ private:
 	void gotoXY(int x, int y);
 	int leerOpcion(int cantidadDeOpciones, int posY);
 	void leer(string& nombre);
+	void leerNombreCategoria(string& nombre);
+	void leerDescripcionCategoria(string& descripcion);
 	void emitir(string texto, int posX, int &posY);
 	void esperarEnter();
 

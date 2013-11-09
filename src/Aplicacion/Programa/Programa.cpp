@@ -49,7 +49,10 @@ void Programa::ejecutar(){
 		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
 		case LISTAR_CATEGORIAS: estado = listarCategorias();							break;
 		case BAJA_CAT:			estado = bajaCategoria();								break;
+		case MODERAR_MENSAJES:	estado = moderarMensajes();								break;
+		case MODIFICAR_CATEGORIA: estado = modificarCategoria();						break;
 		default:																		break;
+
 		}
 
 		system("clear");
@@ -290,9 +293,9 @@ estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 	if(opcion == 1) estado = REGISTRO_A;
 	if(opcion == 2) estado = BAJA_ADMIN;
 	if(opcion == 3) estado = REGISTRO_CAT;
-	if(opcion == 4) estado = MOD_CAT;
+	if(opcion == 4) estado = MODIFICAR_CATEGORIA;
 	if(opcion == 5) estado = BAJA_CAT;
-	if(opcion == 6) estado = VER_MENSAJES;
+	if(opcion == 6) estado = MODERAR_MENSAJES;
 	if(opcion == 7) estado = VER_USUARIOS;
 	if(opcion == 8) estado = LISTAR_CATEGORIAS;
 
@@ -861,6 +864,7 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 	string rutaArchivoCategorias;
 	ifstream archivo;
 	bool agregada;
+	int posY = 14;
 
 	cout<<"Ingrese la ruta del archivo de categorias: "; leer(rutaArchivoCategorias);
 
@@ -873,7 +877,7 @@ void Programa::cargaMasivaCategoria(){ //EL AGREGARCATEGORIA DEBERIA CHEQUEAR LO
 		for(unsigned int i = 0; i < categorias.size(); i++){
 
 			agregada = indice->agregarCategoria(categorias.at(i));
-			int posY = 14 + i;
+			 posY++;
 			if(agregada){
 				emitir("Categoria '" + categorias.at(i)->getNombre() + "' agregada con exito!", 0, posY);
 			}else{
@@ -1127,4 +1131,154 @@ estadoPrograma Programa::listarCategorias(){
 	emitir("Presione una tecla para volver al menu principal... ", 0, posY);
 	cin.get(c);
 	return estado;
+}
+
+estadoPrograma Programa::moderarMensajes(){
+	system("clear");
+	estadoPrograma estado = OPCIONES_USUARIO;
+	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
+	int as = 7;
+
+	vector<Consulta*> consultas;
+	unsigned int contConsultas=0;
+	int posY=0;
+
+	for(unsigned int i=0; i< usuarios.size();i++){
+
+		consultas = indice->buscarConsultasHechasAUsuario(usuarios.at(i));
+
+		for(unsigned int j=0; j< consultas.size(); j++){
+
+			if(consultas.at(j)->getOculta() == false){
+				system("clear");
+				contConsultas++;
+				emitir(		"Mensaje numero " + StringUtil::int2string(contConsultas) + ": ",  0, posY);	posY++;
+				emitir(		consultas.at(j)->getConsulta()								     ,  0, posY);	posY+=4;
+				emitir(		"1_ Ocultar Mensaje."			    							 ,  0, posY);	posY++;
+				emitir(		"2_ Continuar con el siguiente mensaje."					     ,  0, posY);	posY++;
+				emitir(		"3_ Dejar de moderar."			    							 ,  0, posY);	posY++;
+				int opcion = leerOpcion(3,posY);
+				if(opcion == 1) consultas.at(j)->setOculta(true);
+				if(opcion == 3) return estado;
+			}
+		}
+	}
+
+	emitir(		"Se han moderado todos los mensajes."		    							 ,  0, posY);	posY++;
+	emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
+	esperarEnter();
+
+return estado;
+}
+
+estadoPrograma Programa::modificarCategoria(){
+	system("clear");
+	estadoPrograma estado = OPCIONES_USUARIO;
+	int posY = 0;
+	string categoriaIngresada,nombre,descripcion;
+	Categoria *categoriaAux;
+	bool error=true;
+
+
+
+		vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
+
+
+		if(!error){
+			do{
+				system("clear");
+				emitir(	"ingrese la categoria que desea modificar: "		 ,  0, posY);	posY++;
+				leer(categoriaIngresada);
+				if( !existeCategoria(categoriaIngresada) ){
+					system("clear");
+					emitir(	"La categoria ingresada no existe, presione enter para volver a intentar " ,  0, posY);
+					esperarEnter();
+				}
+			}while(!existeCategoria(categoriaIngresada));
+
+			indice->eliminarCategoria(categoriaIngresada);
+			leerNombreCategoria(nombre); posY++;
+			leerDescripcionCategoria(descripcion); posY++;
+			categoriaAux->setNombre(nombre);
+			categoriaAux->setDescripcion(descripcion);
+			indice->modificarCategoria(categoriaAux);
+
+
+
+			system("clear");
+			emitir(	"La categoria ha sido modificada satisfactoriamente. " ,  0, posY); posY++;
+			emitir(	"presione ENTER para continuar... " ,  0, posY);
+			esperarEnter();
+		}else{
+			emitir("No hay ninguna categoria registrada en el sistema.", 0, posY); posY++;
+
+
+
+}
+		return estado;
+}
+
+bool Programa::existeCategoria(string categoria){
+
+		Categoria *cat = this->buscarCategoria(categoria);
+
+		if(cat == NULL) return false;
+		else return true;
+
+
+}
+
+Categoria* Programa::buscarCategoria(string categoria){
+
+			bool error=true;
+			vector<Categoria*> categorias = indice->obtenerTodasLasCategorias(error);
+
+			if(!error){
+					for(unsigned int i=0; i<categorias.size(); i++){
+
+						if(categorias.at(i)->getNombre() == categoria) return categorias.at(i);
+
+					}
+				}
+
+			return NULL;
+}
+
+void Programa::leerNombreCategoria(string& nombre){
+	int posY=0;
+
+	system("clear");
+	do{
+			system("clear");
+			emitir("Ingrese el nuevo nombre: ", 0, posY);
+			leer(nombre);
+
+			if(nombre.size() > max_nombre_categoria){
+				system("clear");
+				emitir("Nombre demasiado largo... :S ", 0, posY); posY++;
+				emitir("presione ENTER para volver a intentar... ", 0, posY);
+				esperarEnter();
+			}
+		}while(nombre.size() > max_nombre_categoria);
+
+}
+
+
+void Programa::leerDescripcionCategoria(string& descripcion){
+	int posY=0;
+
+	system("clear");
+	do{
+			system("clear");
+			emitir("Ingrese la nueva descripcion: ", 0, posY);
+			leer(descripcion);
+
+			if(descripcion.size() > max_descr_categoria){
+				system("clear");
+				emitir("descripcion demasiado largo... :S ", 0, posY); posY++;
+				emitir("presione ENTER para volver a intentar... ", 0, posY);
+				esperarEnter();
+			}
+		}while(descripcion.size() > max_nombre_categoria);
+
 }
