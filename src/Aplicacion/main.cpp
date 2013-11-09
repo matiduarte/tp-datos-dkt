@@ -12,6 +12,11 @@ int main(int argc, char* argv[]){
 	}catch(Excepcion &e){
 		e.mostrarMensaje();
 		cout<< "Se produjo un error inesperado, abortando..."<<endl;
+
+		//escribo el vector de variables en el archivo config
+		//haciendo delete al lector
+		LectorConfig * lector = LectorConfig::getLector("");
+		delete lector;
 	}
 
 	return 0;
