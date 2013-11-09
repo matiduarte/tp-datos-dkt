@@ -1158,7 +1158,10 @@ estadoPrograma Programa::moderarMensajes(){
 				emitir(		"2_ Continuar con el siguiente mensaje."					     ,  0, posY);	posY++;
 				emitir(		"3_ Dejar de moderar."			    							 ,  0, posY);	posY++;
 				int opcion = leerOpcion(3,posY);
-				if(opcion == 1) consultas.at(j)->setOculta(true);
+				if(opcion == 1) {
+					consultas.at(j)->setOculta(true);
+					indice->modificarConsulta(consultas.at(j));
+				}
 				if(opcion == 3) return estado;
 			}
 		}
