@@ -333,7 +333,7 @@ estadoPrograma Programa::consultarServicio(vector<Servicio*> &resultados){
 		resultados = buscarServicio(opcion);
 		if(resultados.size() > 0) estado = RESULTADOS;
 		else{
-			gotoXY(0, 12);
+			gotoXY(0, 11);
 			cout<<"No se encontro ninguna coincidencia con la busqueda dada.";
 		}
 	}
@@ -1033,6 +1033,7 @@ string Programa::imprimirTipoDeUsuario(string tipo){
 
 bool Programa::eliminarUsuario(Usuario* usuario){
 
+	system("clear");
 	bool usuarioEliminado= false;
 	string respuesta;
 	do {
@@ -1259,7 +1260,6 @@ void Programa::leerNombreCategoria(string& nombre){
 
 	system("clear");
 	do{
-			system("clear");
 			emitir("Ingrese el nuevo nombre: ", 0, posY);
 			leer(nombre);
 
