@@ -44,8 +44,6 @@ bool Indice::agregarUsuario(Usuario* usuario){
 	}
 	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
-	cout << "Agrego id: "<< usuario->getDni()<<endl;
-	cout << "Con clave: "<< claveIndiceGeneralUsuarios<<endl;
 	this->indiceGeneralEntidades->agregarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	
 	return true;
@@ -78,8 +76,6 @@ bool Indice::elimininarUsuario(Usuario* usuario){
 		this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
-		cout << "Borro id: "<< usuario->getDni()<<endl;
-		cout << "Con clave: "<< claveIndiceGeneralUsuarios<<endl;
 		this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	}catch(Excepcion& e){
 		return false;
