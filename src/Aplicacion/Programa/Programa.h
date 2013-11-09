@@ -81,7 +81,7 @@ private:
 
 	vector<Servicio*> buscarServicio(int opcion);
 
-	bool eliminarUsuario(Usuario* usuario, int posY);
+	bool eliminarUsuario(Usuario* usuario);
 	bool existeCategoria(string categoria);
 	string imprimirTipoDeUsuario(string tipo);
 	void emitirDatosUsuario(Usuario* &usuario);

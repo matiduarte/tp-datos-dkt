@@ -90,8 +90,10 @@ void Usuario::setTipo(string tipo){
 
 void Usuario::setEmailEnPosicion(string email,unsigned int indice){
 
-	if(indice < MAX_EMAILS)
-		this->emails.insert(this->emails.begin() + indice, email);
+	if(emails.size() < MAX_EMAILS)
+		this->emails.push_back(email);
+	else
+		this->emails[indice] = email;
 }
 
 

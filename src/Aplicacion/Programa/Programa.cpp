@@ -84,8 +84,10 @@ estadoPrograma Programa::recuperacion(){
 	string nombre="";
 	int posY = 0;
 	emitir("RECUPERAR CONTRASEÑA:", 0, posY);					posY = 2;
-	emitir("Usuario: ", 			0, posY);	leer(nombre);	posY = 9;
-	emitir("Se ha enviado un mail con su contraseña a su casilla de correo.", 0, posY);
+	emitir("Usuario: ", 			0, posY);	leer(nombre);	posY = 4;
+	emitir("Se ha enviado un mail con su contraseña a su casilla de correo.", 0, posY); posY++;
+	emitir("Presione ENTER para continuar...", 0, posY);
+	this->esperarEnter();
 
 	return MENU_PRINCIPAL;
 }
@@ -241,7 +243,7 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 	if (opcion == 4) estado = PUBLICAR;
 
 	if (opcion == 2){
-		bool eliminado = eliminarUsuario(usuario, 10);
+		bool eliminado = eliminarUsuario(usuario);
 		if(eliminado) estado = MENU_PRINCIPAL;
 		else estado = OPCIONES_USUARIO;
 	}
@@ -268,7 +270,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	if(opcion == 6) estado = BAJA_PRODUCTO;
 
 	if (opcion == 2){
-		bool eliminado = eliminarUsuario(usuario, 13);
+		bool eliminado = eliminarUsuario(usuario);
 		if(!eliminado) estado = OPCIONES_USUARIO;
 	}
 	return estado;
@@ -442,7 +444,7 @@ void Programa::emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY)
 				emitir(preguntas.at(i)->getRespuesta(), 5, posY);	posY++;
 			}
 		}else{
-			emitir("Pregunta " + StringUtil::int2string(i+1) + " moderada por el administrador", 0, posY);
+			emitir("Pregunta " + StringUtil::int2string(i+1) + " moderada por el administrador.", 0, posY);
 		}
 			posY++;
 	}
@@ -785,7 +787,7 @@ estadoPrograma Programa::bajaAdmin(Usuario* &adminActual){
 		Usuario* usuario = new Usuario();
 		usuario->setDni(atoi(id.c_str()));
 		usuario->setTipo("A");
-		eliminarUsuario(usuario, posY);
+		eliminarUsuario(usuario);
 	}else{
 
 		system("clear");
@@ -1029,14 +1031,13 @@ string Programa::imprimirTipoDeUsuario(string tipo){
 	return respuesta;
 }
 
-bool Programa::eliminarUsuario(Usuario* usuario, int posY){
+bool Programa::eliminarUsuario(Usuario* usuario){
 
 	bool usuarioEliminado= false;
 	string respuesta;
 	do {
-		gotoXY(0, posY);
-		emitir("Esta seguro que desea eliminar al ", 0, posY);
-		cout<<imprimirTipoDeUsuario(usuario->getTipo())<<"? (s/n) ";
+		gotoXY(0, 0);
+		cout<<"Esta seguro que desea eliminar al " + imprimirTipoDeUsuario(usuario->getTipo()) + "? (s/n) ";
 		if(usuario->getTipo() != "A")
 			cout<<"(Las publicaciones, preguntas y respuestas no serán borradas)";
 		leer(respuesta);
@@ -1044,7 +1045,7 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 
 	if (respuesta == "s"){
 		usuarioEliminado = indice->elimininarUsuario(usuario);
-		gotoXY(0, posY+3);
+		gotoXY(0, 2);
 		if(usuarioEliminado){
 			cout << imprimirTipoDeUsuario(usuario->getTipo())<<" eliminado correctamente!                                                                                   ";
 
@@ -1053,6 +1054,8 @@ bool Programa::eliminarUsuario(Usuario* usuario, int posY){
 
 		}
 	}
+	gotoXY(0, 4); cout<<"Presione ENTER para continuar...";
+	esperarEnter();
 
 	return usuarioEliminado;
 }
@@ -1141,10 +1144,9 @@ estadoPrograma Programa::listarCategorias(){
 }
 
 estadoPrograma Programa::moderarMensajes(){
-	system("clear");
+
 	estadoPrograma estado = OPCIONES_USUARIO;
 	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
-	int as = 7;
 
 	vector<Consulta*> consultas;
 	unsigned int contConsultas=0;
