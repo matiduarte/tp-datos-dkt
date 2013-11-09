@@ -44,6 +44,8 @@ bool Indice::agregarUsuario(Usuario* usuario){
 	}
 	this->indiceUsuarioPorProvincia->agregarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 	this->indiceUsuarioPorTipo->agregarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+	cout << "Agrego id: "<< usuario->getDni()<<endl;
+	cout << "Con clave: "<< claveIndiceGeneralUsuarios<<endl;
 	this->indiceGeneralEntidades->agregarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	
 	return true;
@@ -76,6 +78,8 @@ bool Indice::elimininarUsuario(Usuario* usuario){
 		this->indiceUsuario->elminarElemento(StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorProvincia->borrarValor(*(new Clave(usuario->getProvincia())),StringUtil::int2string(usuario->getDni()));
 		this->indiceUsuarioPorTipo->borrarValor(*(new Clave(usuario->getTipo())),StringUtil::int2string(usuario->getDni()));
+		cout << "Borro id: "<< usuario->getDni()<<endl;
+		cout << "Con clave: "<< claveIndiceGeneralUsuarios<<endl;
 		this->indiceGeneralEntidades->borrarValor(*(new Clave(claveIndiceGeneralUsuarios)),StringUtil::int2string(usuario->getDni()));
 	}catch(Excepcion& e){
 		return false;
@@ -405,10 +409,11 @@ vector<Consulta*> Indice::buscarConsultasHechasAUsuario(Usuario* usuario){
 	//Aca tengo que tener todos los ids de los servicios del provvedor. Asi busco las preguntas de cada servicio
 	list<string>* idsServicios  = this->indiceServicioPorIdProveedor->elementosConIgualClave(StringUtil::int2string(usuario->getDni()));
 
-	list<string>* idsConsulta;
+	list<string>* idsConsulta = new list<string>;
 	for (std::list<string>::iterator it = idsServicios->begin(); it != idsServicios->end(); it++){
 		//Obtengo los ids de consultas dado un servicio
-		idsConsulta = this->indiceConsultaPorIdServicio->elementosConIgualClave(*it);
+		list<string>* idsActual = this->indiceConsultaPorIdServicio->elementosConIgualClave(*it);
+		idsConsulta->insert(idsConsulta->end(), idsActual->begin(), idsActual->end());
 	}
 	
 	vector<Consulta*> resultadoConsultas;
