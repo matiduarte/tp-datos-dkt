@@ -939,24 +939,30 @@ vector<Categoria*> Programa::leerCategoriasDeArchivo(ifstream &archivo){
 
 estadoPrograma Programa::bajaCategoria(){	////FALTAN METODOS
 
-	gotoXY(0, 0);	cout<<"ELIMINAR CATEGORIA:";
-	string id;
+
+	string categoriaIngresada;
 	bool eliminada=false;
-	//falta listado de todos las categorias
+	int posY=0;
+
+	system("clear");
+
 	do{
-		gotoXY(0, 2);	cout<<"Ingrese el ID de la categoria a eliminar:                 ";
-		gotoXY(42, 2);	leer(id);
-	}while(atoi(id.c_str()) <= 0);
+			system("clear");
+			emitir(	"ingrese el nombre de la categoria que desea eliminar: "	 ,  0, posY);	posY++;
+			leer(categoriaIngresada);
+			if( !existeCategoria(categoriaIngresada) ){
+				system("clear");
+				emitir(	"La categoria ingresada no existe, presione enter para volver a intentar " ,  0, posY);
+				esperarEnter();
+			}
+		}while(!existeCategoria(categoriaIngresada));
 
+		indice->eliminarCategoria(categoriaIngresada);
+		system("clear");
+		emitir(	"la categoria ha sido elimina exitosamente. "	 ,  0, posY);	posY++;
+		emitir(	"presione ENTER para continuar... " ,  0, posY);
+		esperarEnter();
 
-		Categoria* categoria= new Categoria();
-		categoria->setId(atoi(id.c_str()));
-		//eliminada = indice->eliminarCategoria(categoria);
-		gotoXY(0, 4);
-		if(eliminada)
-			cout<<"Se ha eliminado la categoria indicada.";
-		else
-			cout<<"No se pudo eliminar la categoria indicada.";
 
 	return OPCIONES_USUARIO;
 }
@@ -1127,9 +1133,10 @@ estadoPrograma Programa::listarCategorias(){
 	}else{
 		emitir("No hay ninguna categoria registrada en el sistema.", 0, posY); posY++;
 	}
-	char c;
-	emitir("Presione una tecla para volver al menu principal... ", 0, posY);
-	cin.get(c);
+
+	emitir("Presione ENTER para volver al menu principal... ", 0, posY);
+	esperarEnter();
+
 	return estado;
 }
 
@@ -1198,15 +1205,13 @@ estadoPrograma Programa::modificarCategoria(){
 					esperarEnter();
 				}
 			}while(!existeCategoria(categoriaIngresada));
-
-			indice->eliminarCategoria(categoriaIngresada);
+			//la busco para conservar el mismo ID.(el indice usa el ID)
+			categoriaAux = this->buscarCategoria(categoriaIngresada);
 			leerNombreCategoria(nombre); posY++;
 			leerDescripcionCategoria(descripcion); posY++;
 			categoriaAux->setNombre(nombre);
 			categoriaAux->setDescripcion(descripcion);
 			indice->modificarCategoria(categoriaAux);
-
-
 
 			system("clear");
 			emitir(	"La categoria ha sido modificada satisfactoriamente. " ,  0, posY); posY++;
