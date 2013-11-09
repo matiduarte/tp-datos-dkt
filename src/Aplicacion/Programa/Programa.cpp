@@ -457,7 +457,6 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 	gotoXY(0, posY);
 	emitir("Escriba su pregunta: ", 0, posY);	leer(pregunta);
 
-	posY += 4;
 	if(pregunta.size()<= max_caracteres_pregunta){
 
 		// creo una nueva consulta
@@ -625,6 +624,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 		emitir("2 - Volver al menu de opciones.", 0, posY);
 		opcion = leerOpcion(2, posY);
 	}else{
+		posY += 10;
 		emitir("No tiene ninguna pregunta sin responder", 0, posY);
 	}
 	posY += 5;
@@ -1073,8 +1073,7 @@ void Programa::esperarEnter(){
 void Programa::emitir(string texto, int posX, int &posY){
 
 	if(posY > MAX_Y){
-
-		for(int i=0; i < MAX_Y / 2; i++) cout<<endl;	//si llego abajo de la pantalla, hago scroll
+		cout<<endl;	//si llego abajo de la pantalla, hago scrolls
 	}
 
 	gotoXY(posX, posY); cout<<texto;
@@ -1176,7 +1175,7 @@ estadoPrograma Programa::moderarMensajes(){
 			}
 		}
 	}
-
+	system("clear");
 	emitir(		"Se han moderado todos los mensajes."		    							 ,  0, posY);	posY++;
 	emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
 	esperarEnter();
@@ -1200,11 +1199,11 @@ estadoPrograma Programa::modificarCategoria(){
 		if(!error){
 			do{
 				system("clear");
-				emitir(	"ingrese la categoria que desea modificar: "		 ,  0, posY);	posY++;
+				emitir(	"Ingrese la categoria que desea modificar: "		 ,  0, posY);	posY++;
 				leer(categoriaIngresada);
 				if( !existeCategoria(categoriaIngresada) ){
 					system("clear");
-					emitir(	"La categoria ingresada no existe, presione enter para volver a intentar " ,  0, posY);
+					emitir(	"La categoria ingresada no existe, presione enter para volver a intentar. " ,  0, posY);
 					esperarEnter();
 				}
 			}while(!existeCategoria(categoriaIngresada));
@@ -1258,8 +1257,9 @@ Categoria* Programa::buscarCategoria(string categoria){
 void Programa::leerNombreCategoria(string& nombre){
 	int posY=0;
 
-	system("clear");
 	do{
+			system("clear");
+
 			emitir("Ingrese el nuevo nombre: ", 0, posY);
 			leer(nombre);
 
