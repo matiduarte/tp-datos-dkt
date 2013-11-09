@@ -592,85 +592,48 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 
 	estadoPrograma estado = OPCIONES_USUARIO;
 	vector<Servicio*> productos = indice->buscarServiciosPorUsuario(usuario);
-	gotoXY(0, 0);	cout<<"RESPONDER CONSULTAS: ";
-	int posY=2;
-	bool hayAlgo = false;
 
-	for(unsigned int i=0; i< productos.size(); i++){
-	//para todos los productos, obtengo sus preguntas
-		vector<Consulta*> consultas = indice->buscarConsultasPorServicio(productos.at(i));
+	vector<Consulta*> consultas;
+	unsigned int contProductos=0;
+	int posY;
+	string respuesta;
 
-		//si hay preguntas y no estan respondidas, emitirlas
-		if(consultas.size() > 0){
+	for(unsigned int i=0; i< productos.size();i++){
+		consultas = indice->buscarConsultasPorServicio(productos.at(i));
+		contProductos++;
+		for(unsigned int j=0; j< consultas.size(); j++){
 
-			emitir("Producto " + StringUtil::int2string(i+1) + ": " + productos.at(i)->getNombre(), 0, posY);	posY++;
-
-			for(unsigned int j=0; j< consultas.size(); j++){
-
-				if(consultas.at(j)->getRespuesta() == "--"){
-					hayAlgo = true;
-					emitir("Pregunta " + StringUtil::int2string(j+1) + ": " + consultas.at(j)->getConsulta(), 0, posY);
-					posY++;
+			//si no esta respondida ni oculta, la emito
+			if((consultas.at(j)->getRespuesta() == "--")&&(consultas.at(j)->getOculta() == false)){
+				posY = 0;
+				system("clear");
+				emitir("Pruducto " + StringUtil::int2string(contProductos) + ": "			 ,  0, posY);	posY++;
+				emitir(productos.at(i)->getNombre()											 ,  3, posY);	posY++;
+				emitir("Pregunta: " + consultas.at(j)->getConsulta()    		 			 ,  0, posY);	posY+=3;
+				emitir(		"1 - Responder pregunta."			    						 ,  0, posY);	posY++;
+				emitir(		"2 - Continuar con la siguiente pregunta."					     ,  0, posY);	posY++;
+				emitir(		"3 - Dejar de responder."		    							 ,  0, posY);	posY++;
+				int opcion = leerOpcion(3,posY);
+				if(opcion == 1) {
+					posY=3;
+					emitir("Respuesta: ", 0, posY); leer(respuesta);
+					consultas.at(j)->setRespuesta(respuesta);
+					consultas.at(j)->setFechaRespuesta(FechaYHora::setFechaAAAAMMDD());
+					consultas.at(j)->setHoraRespuesta(FechaYHora::setHoraHHMM());
+					indice->modificarConsulta(consultas.at(j));
 				}
-			}
-			posY++;
-		}
-	}
-	int opcion = 0;
-
-	if(hayAlgo){
-		emitir("1 - Responder pregunta.", 0, posY);			posY++;
-		emitir("2 - Volver al menu de opciones.", 0, posY);
-		opcion = leerOpcion(2, posY);
-	}else{
-		posY += 10;
-		emitir("No tiene ninguna pregunta sin responder", 0, posY);
-	}
-	posY += 5;
-
-	string numPublicacion, numPregunta;
-	unsigned int numPub, numPreg;
-	if(opcion == 1){
-		do{
-			emitir("Responder pregunta de la publicacion N.: ", 0, posY); leer(numPublicacion);
-			numPub = atoi(numPublicacion.c_str());
-		}while(numPub <= 0);
-		posY++;
-
-		do{
-			emitir("Responder pregunta N.: ", 0, posY); leer(numPregunta);
-			numPreg = atoi(numPregunta.c_str());
-		}while(numPreg <= 0);
-		posY+=2;
-
-		numPub--;
-		numPreg--;	//disminuyo para que arranquen en 0
-
-		if(numPub < productos.size()){
-			vector<Consulta*> preguntas = indice->buscarConsultasPorServicio(productos.at(numPub));
-
-			if(numPreg < preguntas.size()){
-
-				if(preguntas.at(numPreg)->getRespuesta() == "--"){
-					//SI TODOS LOS DATOS SON VALIDOS, LLEGO A UNA PREGUNTA SIN RESPONDER
-					//la emito, y respondo
-					Consulta* pregunta = preguntas.at(numPreg);
-					string respuesta;
-					emitir("Producto: " + productos.at(numPub)->getNombre(), 0, posY);		posY++;
-					emitir("Pregunta: " + pregunta->getConsulta(), 0, posY);	posY++;
-					emitir("Respuesta: ", 0, posY);		leer(respuesta);
-
-					pregunta->setRespuesta(respuesta);
-					pregunta->setFechaRespuesta(FechaYHora::setFechaAAAAMMDD());
-					pregunta->setHoraRespuesta(FechaYHora::setHoraHHMM());
-
-					indice->modificarConsulta(pregunta);
-				}
+				if(opcion == 3) return estado;
 			}
 		}
 	}
+	system("clear");
+	emitir(		"Se han respondido todos los mensajes."		    							 ,  0, posY);	posY++;
+	emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
+	esperarEnter();
 
-	return estado;
+return estado;
+
+
 }
 
 estadoPrograma Programa::bajaProducto(Usuario* &usuario){
@@ -1164,6 +1127,7 @@ estadoPrograma Programa::moderarMensajes(){
 
 			if(consultas.at(j)->getOculta() == false){
 				system("clear");
+				posY=0;
 				contConsultas++;
 				emitir("Mensaje numero " + StringUtil::int2string(contConsultas) + ": ",  0, posY);	posY++;
 				emitir("Pregunta: " + consultas.at(j)->getConsulta()     			   ,  0, posY);	posY++;
