@@ -15,9 +15,9 @@ public:
 
 private:
 	static int** crearMatriz(string clave);
-	static int getPosicion(char* alfabeto, int tamanio, char aBuscar);
+	static int getPosicion(char alfabeto, int tamanio, char aBuscar);
 
-	char alfabeto[41] = {'_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+	static char alfabeto = {'_', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
 	'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
 	'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '?', ',', '-'};
 };

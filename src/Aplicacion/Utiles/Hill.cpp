@@ -14,9 +14,14 @@ int** Hill::crearMatriz(string clave){
 
 string Hill::encriptar(string mensaje, string clave){
 
-	mensaje = StringUtils::toUpper(mensaje);
+	mensaje = StringUtil::toUpper(mensaje);
 	int** matriz = crearMatriz(clave);
+	string tresLetras = "";
 
+	for (int i= 0; i< mensaje.size(); i++){
+
+		int posicion = getPosicion(alfabeto, 41, mensaje[i]);
+	}
 
 
 
@@ -25,7 +30,7 @@ string Hill::encriptar(string mensaje, string clave){
 int Hill::getPosicion(char* alfabeto, int tamanio, char aBuscar){
 
 	char* fin = alfabeto + tamanio;
-	char* match = std::find(alfabeto, fin, aBuscar);
+	char* match = std::find(alfabeto, fin, *aBuscar);
 	return(fin == match)? -1 : (match-alfabeto);
 }
 
