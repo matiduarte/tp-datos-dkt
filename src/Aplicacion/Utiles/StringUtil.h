@@ -19,6 +19,8 @@ class StringUtil {
 public:
 
 	static string toLower(string str);
+	
+	static string toUpper(string str);
 
 	static string int2string(int value);
 

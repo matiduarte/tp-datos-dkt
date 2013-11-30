@@ -14,6 +14,20 @@ string StringUtil::toLower(string str){
 	return (string)lower;
 }
 
+string StringUtil::toUpper(string str){
+	char* upper = (char*)str.c_str();
+	int i = 0;
+	char c;
+
+	while (str[i]){
+		c = str[i];
+		upper[i] = toupper(c);
+		i++;
+	}
+
+	return (string)upper;
+}
+
 string StringUtil::int2string(int value){
 	std::string s;
 	std::stringstream out;
