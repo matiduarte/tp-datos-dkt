@@ -15,6 +15,7 @@ Indice::Indice(string ruta){
 	this->indiceServicio = new Hash(rutaBaseIndice+"Servicio"+rutaTabla,rutaBaseIndice+"Servicio"+rutaNodos);
 	this->indiceConsulta = new Hash(rutaBaseIndice+"Consulta"+rutaTabla,rutaBaseIndice+"Consulta"+rutaNodos);
 	this->indiceCategorias = new Hash(rutaBaseIndice+"Categoria"+rutaTabla,rutaBaseIndice+"Categoria"+rutaNodos);
+	this->indicePedidoCotizacion = new Hash(rutaBaseIndice+"PedidoCotizacion"+rutaTabla,rutaBaseIndice+"PedidoCotizacion"+rutaNodos);
 	
 	//Indices secundarios
 	this->indiceUsuarioPorProvincia = new ArbolBMas(rutaBaseIndice+"ArbolUsuarioPorProvincia");
@@ -26,6 +27,9 @@ Indice::Indice(string ruta){
 	this->indiceConsultaPorIdServicioFechaHora = new ArbolBMas(rutaBaseIndice+"ArbolConsultaPorIdServicioFechaHora");
 	this->indiceGeneralEntidades = new ArbolBMas(rutaBaseIndice+"ArbolGeneralEntidades");
 	this->indiceCategoriaPorNombre = new ArbolBMas(rutaBaseIndice+"ArbolCategoriasPorNombre");
+	this->indicePedidoCotizacionPorIdServicio = new ArbolBMas(rutaBaseIndice+"ArbolPedidoCotizacionPorIdServicio");
+	this->indicePedidoCotizacionPorIdUsuario = new ArbolBMas(rutaBaseIndice+"ArbolPedidoCotizacionPorIdUsuario");
+	
 	
 	//Listas
 	this->listaCategoriasPorServicio = new ListaInvertida(rutaBaseIndice+"ListaCategoriasPorServicio");
@@ -515,6 +519,56 @@ vector<Categoria*> Indice::obtenerTodasLasCategorias(bool &error){
 }
 
 
+bool Indice::agregarPedidoCotizacion(PedidoCotizacion* pedido){
+	try {
+		this->indicePedidoCotizacion->insertarElemento(StringUtil::int2string(pedido->getId()),pedido->serializar());
+
+	} catch (ExceptionElementoKeyYaIngresado e){
+		return false;
+	}
+	
+	this->indicePedidoCotizacionPorIdServicio->agregarValor(*(new Clave(StringUtil::int2string(pedido->getIdServicio()))),StringUtil::int2string(pedido->getId()));
+	this->indicePedidoCotizacionPorIdUsuario->agregarValor(StringUtil::int2string(pedido->getIdUsuario()),StringUtil::int2string(pedido->getId()));
+	
+	return true;
+}
+
+vector<PedidoCotizacion*> Indice::buscarPedidosCotizacionHechasAUsuario(Usuario* usuario){
+	//Aca tengo que tener todos los ids de los servicios del provvedor. Asi busco las preguntas de cada servicio
+	list<string>* idsServicios  = this->indiceServicioPorIdProveedor->elementosConIgualClave(StringUtil::int2string(usuario->getDni()));
+
+	list<string>* idsPedido = new list<string>;
+	for (std::list<string>::iterator it = idsServicios->begin(); it != idsServicios->end(); it++){
+		//Obtengo los ids de pedidos dado un servicio
+		list<string>* idsActual = this->indicePedidoCotizacionPorIdServicio->elementosConIgualClave(*it);
+		idsPedido->insert(idsPedido->end(), idsActual->begin(), idsActual->end());
+	}
+	
+	vector<PedidoCotizacion*> resultadoPedidos;
+	for (std::list<string>::iterator itPed = idsPedido->begin(); itPed != idsPedido->end(); itPed++){
+		PedidoCotizacion* pedido = new PedidoCotizacion();
+		string pedidoSerializada = this->indicePedidoCotizacion->buscarElemento(*itPed);
+		pedido->desSerializar(pedidoSerializada);
+		resultadoPedidos.push_back(pedido);
+	}
+	return resultadoPedidos;
+
+}
+
+vector<PedidoCotizacion*> Indice::buscarPedidosCotizacionPorServicio(Servicio* servicio){
+	list<string>* idsPedido = this->indicePedidoCotizacionPorIdServicio->elementosConIgualClave(StringUtil::int2string(servicio->getId()));
+		
+	vector<PedidoCotizacion*> resultadoPedidos;
+	for (std::list<string>::iterator itPed = idsPedido->begin(); itPed != idsPedido->end(); itPed++){
+		PedidoCotizacion* ped = new PedidoCotizacion();
+		string pedidoSerializada = this->indicePedidoCotizacion->buscarElemento(*itPed);
+		ped->desSerializar(pedidoSerializada);
+		resultadoPedidos.push_back(ped);
+	}
+	return resultadoPedidos;
+}
+
+
 Indice::~Indice(){
 	delete(indiceUsuario);
 	delete(indiceServicio);
@@ -533,5 +587,8 @@ Indice::~Indice(){
 	delete(indiceOcurrenciasTerminos);
 	delete(indiceTerminosId);
 	delete(indiceTerminos);
+	delete(indicePedidoCotizacion);
+	delete(indicePedidoCotizacionPorIdServicio);
+	delete(indicePedidoCotizacionPorIdUsuario);
 	delete(diccionario);
 }
