@@ -419,7 +419,7 @@ estadoPrograma Programa::detalleResultado(Servicio* &resultado, Usuario* &usuari
 	int opcion = leerOpcion(3, posY);
 
 	if(opcion == 1) hacerPregunta(resultado, usuario, posY + 2);
-	if(opcion == 2) pedirCotizacion(resultado, posY + 2);
+	if(opcion == 2) pedirCotizacion(resultado, usuario, posY + 2);
 
 	return RESULTADOS;
 }
@@ -486,10 +486,37 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 	}
 }
 
-void Programa::pedirCotizacion(Servicio* &resultado, int posY){
+void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY){
 
-	gotoXY(0, posY); cout<<"Funcionalidad no implementada.";
+	bool pedidoEmitido=false;
+		string pedido;
+		gotoXY(0, posY);
+		emitir("Escriba su pedido de cotizacion: ", 0, posY);	leer(pedido);
+
+
+
+			// creo un nuevo pedido de cotizacion
+		PedidoCotizacion* pedidoCotizacion = new PedidoCotizacion();
+		int IDNuevo = StringUtil::str2int(lector->getValor(idConsulta).c_str()) + 1;
+		pedidoCotizacion->setId(IDNuevo);
+		pedidoCotizacion->setIdServicio(resultado->getId());
+		pedidoCotizacion->setIdUsuario(usuario->getDni());
+		pedidoCotizacion->setPedido(pedido);
+		pedidoCotizacion->setFechaPedido(FechaYHora::setFechaAAAAMMDD());
+		pedidoCotizacion->setHoraPedido(FechaYHora::setHoraHHMM());
+
+		pedidoEmitido = indice->agregarPedidoCotizacion(pedidoCotizacion);
+
+			if(!pedidoEmitido) emitir("el pedido no se pudo agregar", 0, posY);
+			else{
+				emitir("Pregunta agregada satisfactoriamente!", 0, posY);
+				//si se agrega bien, sumo en 1 efectivamente el contador de consultas
+				string nuevoID = StringUtil::int2string(IDNuevo);
+				lector->setValor(idConsulta, nuevoID);
+			}
+
 }
+
 
 estadoPrograma Programa::listadoUsuarios(){
 
@@ -906,7 +933,7 @@ estadoPrograma Programa::bajaCategoria(){	////FALTAN METODOS
 
 	string categoriaIngresada;
 	string respuesta="s";
-	bool eliminada=false;
+
 	int posY=0;
 
 	system("clear");

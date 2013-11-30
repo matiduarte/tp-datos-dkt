@@ -90,7 +90,7 @@ private:
 	void emitirResultado(Servicio* &resultado, int &posY, bool enDetalle);
 	void emitirPreguntasRespuestasServicio(Servicio* &servicio, int &posY);
 	void hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY);
-	void pedirCotizacion(Servicio* &resultado, int posY);
+	void pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY);
 
 	void cargaManualCategoria();
 	void cargaMasivaCategoria();

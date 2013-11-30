@@ -592,3 +592,4 @@ Indice::~Indice(){
 	delete(indicePedidoCotizacionPorIdUsuario);
 	delete(diccionario);
 }
+
