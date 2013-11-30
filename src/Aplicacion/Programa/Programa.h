@@ -113,21 +113,6 @@ private:
 	void esperarEnter();
 
 
-	/* NECESITO:
-	 * modificar al indica para que el obtenerID devuelva un int?
-	 * poder modificar los emails
-	 * listado de usuarios y de categorias, las necesito si o si !
-	 * que todas las excepciones deriven de Excepcion
-	 * agregarCategoria deberia chequear sobre los Nombres, no los IDs
-	 * faltan metodos:
-	 * bool eliminarCategoria(string nombreCategoria);
-	 * void modificarCategoria(Categoria categoria);
-	 * Categoria* buscarCategoria(string nombreCategoria);
-	 *
-	 * USUARIO: 	falta Publicar
-	 * PROVEEDOR:	falta la opcion publicar falta responder y baja producto
-	 * ADMIN:		falta modificarCategoria, moderarConsultas, listadoUsuarios
-	 */
 };
 
 #endif /* PROGRAMA_H_ */
