@@ -11,6 +11,7 @@
 #include "../Entidades/Servicio.h"
 #include "../Entidades/Consulta.h"
 #include "../Entidades/Usuario.h"
+#include "../Entidades/PedidoCotizacion.h"
 #include <string.h>
 
 using namespace std;
@@ -25,6 +26,7 @@ private:
 	Hash* indiceUsuario;
 	Hash* indiceServicio;
 	Hash* indiceConsulta;
+	Hash* indicePedidoCotizacion;
 
 	//Necesito otro hash para las categorias. No esta en el enunciado pero se necesita
 	Hash* indiceCategorias;
@@ -37,6 +39,9 @@ private:
 	ArbolBMas* indiceServicioPorIdProveedor;
 	ArbolBMas* indiceConsultaPorIdServicio;
 	ArbolBMas* indiceConsultaPorIdUsuario;
+	ArbolBMas* indicePedidoCotizacionPorIdServicio;
+	ArbolBMas* indicePedidoCotizacionPorIdUsuario;
+	
 	ArbolBMas* indiceGeneralEntidades;
 	ArbolBMas* indiceCategoriaPorNombre;
 	
@@ -90,6 +95,12 @@ public:
 	//Generales
 	vector<Usuario*> obtenerTodosLosUsuarios();
 	vector<Categoria*> obtenerTodasLasCategorias(bool& error);
+	
+	//Metodos consulta
+	bool agregarPedidoCotizacion(PedidoCotizacion* pedido);
+	//void modificarConsulta(Consulta* consulta);
+	vector<PedidoCotizacion*> buscarPedidosCotizacionHechasAUsuario(Usuario* usuario);
+	vector<PedidoCotizacion*> buscarPedidosCotizacionPorServicio(Servicio* servicio);
 };
 
 #endif /*INDICE_H_*/
