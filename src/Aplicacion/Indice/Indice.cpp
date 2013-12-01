@@ -568,6 +568,25 @@ vector<PedidoCotizacion*> Indice::buscarPedidosCotizacionPorServicio(Servicio* s
 	return resultadoPedidos;
 }
 
+bool Indice::agregarClaveSistema(string clave){
+	try {
+		this->indiceClaves->insertarElemento("CLAVESIS",clave);
+		return true;
+	} catch (ExceptionElementoKeyYaIngresado e){
+		return false;
+	}
+}
+
+string Indice::buscarClaveSistema(bool &error){
+	try{
+		string clave = this->indiceClaves->buscarElemento("CLAVESIS");
+		error = false;
+		return clave;
+	} catch (ExceptionElementoNoEncontrado &e){
+		error = true;
+		return "";
+	}
+}
 
 Indice::~Indice(){
 	delete(indiceUsuario);

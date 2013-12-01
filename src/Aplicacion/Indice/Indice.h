@@ -32,6 +32,8 @@ private:
 	Hash* indiceCategorias;
 	ListaInvertida* listaCategoriasPorServicio;
 	
+	Hash* indiceClaves;
+	
 	//Indices secundarios
 	ArbolBMas* indiceUsuarioPorProvincia;
 	ArbolBMas* indiceUsuarioPorTipo;
@@ -101,6 +103,9 @@ public:
 	//void modificarConsulta(Consulta* consulta);
 	vector<PedidoCotizacion*> buscarPedidosCotizacionHechasAUsuario(Usuario* usuario);
 	vector<PedidoCotizacion*> buscarPedidosCotizacionPorServicio(Servicio* servicio);
+
+	bool agregarClaveSistema(string clave);
+	string buscarClaveSistema(bool &error);
 };
 
 #endif /*INDICE_H_*/
