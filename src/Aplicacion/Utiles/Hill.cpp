@@ -152,10 +152,10 @@ float** Hill::calcularInversa(float** matriz){
 	matrizInversa[2][2] = (matriz[1][1]*matriz[0][0] - matriz[1][0]*matriz[0][1]);
 
 	for(int i=0; i<3; i++)
-		for(int j=0; j<3; j++)
+		for(int j=0; j<3; j++){
 			matrizInversa[i][j] /= determinante;
+		}
 
-	mostrarMatriz(matrizInversa);
 	return matrizInversa;
 }
 
@@ -189,7 +189,4 @@ void Hill::mostrarMatriz(float** matriz){
 
 		cout<<endl;
 	}
-
-
 }
-
