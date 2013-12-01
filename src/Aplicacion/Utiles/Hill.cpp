@@ -1,11 +1,9 @@
 #include <iostream>
 #include <algorithm>
 #include "Hill.h"
+#include <math.h>
 
-char alfabeto[41] =
-{' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
- 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y',
- 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '?', ',', '-'};
+char alfabeto[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.?,-";
 
 float** Hill::crearMatriz(string clave){
 
@@ -123,6 +121,7 @@ string Hill::desencriptar(string mensajeEncriptado, string clave){
 			vector3 = multiplicar(matrizInversa, vector3);
 
 			for(int i = 0; i < 3; i++){
+				while(vector3[i]<0) vector3[i] += 41;
 				int posicion = modulo(vector3[i], 41);
 				mensajePlano += alfabeto[posicion];
 			}
@@ -142,19 +141,22 @@ float** Hill::calcularInversa(float** matriz){
 
 	int determinante = calcularDeterminante(matriz);
 
-	matrizInversa[0][0] = (matriz[2][2]*matriz[1][1] - matriz[2][1]*matriz[1][2]) / determinante;
-	matrizInversa[0][1] = (matriz[2][1]*matriz[0][2] - matriz[2][2]*matriz[0][1]) / determinante;
-	matrizInversa[0][2] = (matriz[1][2]*matriz[0][1] - matriz[1][1]*matriz[0][2]) / determinante;
-	matrizInversa[1][0] = (matriz[2][0]*matriz[1][2] - matriz[2][2]*matriz[1][0]) / determinante;
-	matrizInversa[1][1] = (matriz[2][2]*matriz[0][0] - matriz[2][0]*matriz[0][2]) / determinante;
-	matrizInversa[1][2] = (matriz[1][0]*matriz[0][2] - matriz[1][2]*matriz[0][0]) / determinante;
-	matrizInversa[2][0] = (matriz[2][1]*matriz[1][0] - matriz[2][0]*matriz[1][1]) / determinante;
-	matrizInversa[2][1] = (matriz[2][0]*matriz[0][1] - matriz[2][1]*matriz[0][0]) / determinante;
-	matrizInversa[2][2] = (matriz[1][1]*matriz[0][0] - matriz[1][0]*matriz[0][1]) / determinante;
+	matrizInversa[0][0] = (matriz[2][2]*matriz[1][1] - matriz[2][1]*matriz[1][2]);
+	matrizInversa[0][1] = (matriz[2][1]*matriz[0][2] - matriz[2][2]*matriz[0][1]);
+	matrizInversa[0][2] = (matriz[1][2]*matriz[0][1] - matriz[1][1]*matriz[0][2]);
+	matrizInversa[1][0] = (matriz[2][0]*matriz[1][2] - matriz[2][2]*matriz[1][0]);
+	matrizInversa[1][1] = (matriz[2][2]*matriz[0][0] - matriz[2][0]*matriz[0][2]);
+	matrizInversa[1][2] = (matriz[1][0]*matriz[0][2] - matriz[1][2]*matriz[0][0]);
+	matrizInversa[2][0] = (matriz[2][1]*matriz[1][0] - matriz[2][0]*matriz[1][1]);
+	matrizInversa[2][1] = (matriz[2][0]*matriz[0][1] - matriz[2][1]*matriz[0][0]);
+	matrizInversa[2][2] = (matriz[1][1]*matriz[0][0] - matriz[1][0]*matriz[0][1]);
+
+	for(int i=0; i<3; i++)
+		for(int j=0; j<3; j++)
+			matrizInversa[i][j] /= determinante;
 
 	mostrarMatriz(matrizInversa);
 	return matrizInversa;
-
 }
 
 float* Hill::multiplicar(float** matriz, float* vector){
