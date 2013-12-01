@@ -37,7 +37,8 @@ Indice::Indice(string ruta){
 
 	
 	this->indiceTerminosId = new ArbolBMas(rutaBaseIndice+"ArbolTerminosId");
-	this->indiceTerminos = new Hash(rutaBaseIndice+"Terminos"+rutaTabla,rutaBaseIndice+"Terminos"+rutaNodos);;
+	this->indiceTerminos = new Hash(rutaBaseIndice+"Terminos"+rutaTabla,rutaBaseIndice+"Terminos"+rutaNodos);
+	this->indiceClaves = new Hash(rutaBaseIndice+"Claves"+rutaTabla,rutaBaseIndice+"Claves"+rutaNodos);;
 }
 
 bool Indice::agregarUsuario(Usuario* usuario){
@@ -609,6 +610,7 @@ Indice::~Indice(){
 	delete(indicePedidoCotizacion);
 	delete(indicePedidoCotizacionPorIdServicio);
 	delete(indicePedidoCotizacionPorIdUsuario);
+	delete(indiceClaves);
 	delete(diccionario);
 }
 
