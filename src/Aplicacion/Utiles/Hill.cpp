@@ -2,6 +2,7 @@
 #include <algorithm>
 #include "Hill.h"
 #include <math.h>
+#include <stdio.h>
 
 const char* Hill::getAlfabeto(){
 	return alfabeto;
@@ -134,30 +135,66 @@ string Hill::desencriptar(string mensajeEncriptado, string clave){
 
 float** Hill::calcularInversa(float** matriz){
 
-	////////MODIFICAR POR ELIMINACION GAUSSIANA
-
 	float** matrizInversa = new float*[3];
-	for (int i = 0; i < 3; ++i)
-	    matrizInversa[i] = new float[3];
 
-	int determinante = calcularDeterminante(matriz);
+	float temporary, r;
+	int i, j, k, temp;
+	int dimension = 3;
+	float matrizAuxiliar[dimension][2*dimension];
 
-	matrizInversa[0][0] = (matriz[2][2]*matriz[1][1] - matriz[2][1]*matriz[1][2]);
-	matrizInversa[0][1] = (matriz[2][1]*matriz[0][2] - matriz[2][2]*matriz[0][1]);
-	matrizInversa[0][2] = (matriz[1][2]*matriz[0][1] - matriz[1][1]*matriz[0][2]);
-	matrizInversa[1][0] = (matriz[2][0]*matriz[1][2] - matriz[2][2]*matriz[1][0]);
-	matrizInversa[1][1] = (matriz[2][2]*matriz[0][0] - matriz[2][0]*matriz[0][2]);
-	matrizInversa[1][2] = (matriz[1][0]*matriz[0][2] - matriz[1][2]*matriz[0][0]);
-	matrizInversa[2][0] = (matriz[2][1]*matriz[1][0] - matriz[2][0]*matriz[1][1]);
-	matrizInversa[2][1] = (matriz[2][0]*matriz[0][1] - matriz[2][1]*matriz[0][0]);
-	matrizInversa[2][2] = (matriz[1][1]*matriz[0][0] - matriz[1][0]*matriz[0][1]);
+	//Creo la matriz de 3x3
+	for (int i = 0; i < dimension; ++i)
+		    matrizInversa[i] = new float[3];
 
-	for(int i=0; i<3; i++)
-		for(int j=0; j<3; j++){
-			matrizInversa[i][j] /= determinante;
+	//Agrego los elementos de matriz a la matriz auxiliar
+	for (i = 0; i < dimension; i++)
+	        for (j = 0; j < dimension; j++)
+	            matrizAuxiliar[i][j] = matriz[i][j];
+
+
+	//Armo la identidad para luego triangular
+    for (i = 0; i < dimension; i++)
+        for (j = dimension; j < 2 * dimension; j++)
+            if (i == j % dimension)
+                matrizAuxiliar[i][j] = 1;
+            else
+                matrizAuxiliar[i][j] = 0;
+
+	//Eliminacion de gauss
+	for (j = 0; j < dimension; j++) {
+		temp = j;
+		//busco el máximo elemento de la columna j-ésima
+		for (i = j + 1; i < dimension; i++)
+			if (matriz[i][j] > matriz[temp][j])
+				temp = i;
+
+		//intercambio de fila que tiene el máximo elemento de la columna j-ésima
+		if (temp != j)
+			for (k = 0; k < 2 * dimension; k++) {
+				temporary = matrizAuxiliar[j][k];
+				matrizAuxiliar[j][k] = matrizAuxiliar[temp][k];
+				matrizAuxiliar[temp][k] = temporary;
+			}
+
+		for (i = 0; i < dimension; i++)
+			if (i != j) {
+				r = matrizAuxiliar[i][j];
+				for (k = 0; k < 2 * dimension; k++)
+					matrizAuxiliar[i][k] -= matrizAuxiliar[j][k] * r / matrizAuxiliar[j][j];
+			} else {
+				r = matrizAuxiliar[i][j];
+				for (k = 0; k < 2 * dimension; k++)
+					matrizAuxiliar[i][k] /= r;
+			}
+	    }
+
+		//Copio los elementos a la matriz inversa
+		for (i = 0; i < dimension; i++) {
+			for (j = dimension; j < 2 * dimension; j++)
+				matrizInversa[i][j - dimension] = matrizAuxiliar[i][j];
 		}
 
-	return matrizInversa;
+	    return matrizInversa;
 }
 
 float* Hill::multiplicar(float** matriz, float* vector){
