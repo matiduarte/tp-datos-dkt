@@ -17,6 +17,9 @@
 #include "../Indice/Indice.h"
 #include "../Utiles/FechaYHora.h"
 #include <unistd.h>
+#include "../Utiles/Hill.h"
+#include "time.h"
+
 
 using namespace std;
 
@@ -30,11 +33,13 @@ typedef enum{
 	MODIFICAR_CATEGORIA,
 	LISTAR_CATEGORIAS,
 	CAMBIAR_DATOS,
+	CAMBIAR_CONTRASENA,
 	INICIAR_SESION,
 	OPCIONES_USUARIO,
 	CONSULTA_SERVICIO,
 	VER_MENSAJES,
 	VER_USUARIOS,
+	VER_PEDIDOS_COTIZACION,
 	RESULTADOS,
 	RESULTADO_DET,
 	PUBLICAR,
@@ -77,6 +82,8 @@ private:
 	estadoPrograma detalleResultado(Servicio* &resultado, Usuario* &usuario);
 	estadoPrograma moderarMensajes();
 	estadoPrograma modificarCategoria();
+	estadoPrograma verPedidosCotizacion(Usuario* &usuario);
+	estadoPrograma cambiarContrasena();
 
 
 	vector<Servicio*> buscarServicio(int opcion);
@@ -111,6 +118,8 @@ private:
 	void leerDescripcionCategoria(string& descripcion);
 	void emitir(string texto, int posX, int &posY);
 	void esperarEnter();
+	string obtenerClaveDelSistema();
+	void generarClave();
 
 
 };

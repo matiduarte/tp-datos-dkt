@@ -14,6 +14,7 @@ using namespace std;
 const unsigned int TAMANIOBLOQUE_DEFAULT = 1024;
 const unsigned int TAMANIOCLAVE_DEFAULT = 50;
 const unsigned int MAX_EMAILS = 3;
+const unsigned int TAMANIO_CLAVE_SISTEMA = 9;
 
 const string rutaConfig = "\Aplicacion/config";
 const string rutaConfig_Dic = "\Aplicacion/Diccionario/stop-words-espanol";

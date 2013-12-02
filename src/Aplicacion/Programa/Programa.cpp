@@ -9,8 +9,15 @@
 
 Programa::Programa(){
 
+	bool error;
 	lector = LectorConfig::getLector(rutaConfig);
 	indice = new Indice("");
+
+	//si no existe clave del sistema, la genero:
+	indice->buscarClaveSistema(error);
+	if(error) this->generarClave();
+
+
 	system("clear");
 }
 
@@ -46,11 +53,13 @@ void Programa::ejecutar(){
 		case RESPONDER:			estado = responderPregunta(usuario);					break;
 		case BAJA_PRODUCTO:		estado = bajaProducto(usuario);							break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
+		case VER_PEDIDOS_COTIZACION: estado = verPedidosCotizacion(usuario);			break;
 		case REGISTRO_CAT:		estado = generarNuevasCategorias();						break;
 		case LISTAR_CATEGORIAS: estado = listarCategorias();							break;
 		case BAJA_CAT:			estado = bajaCategoria();								break;
 		case MODERAR_MENSAJES:	estado = moderarMensajes();								break;
 		case MODIFICAR_CATEGORIA: estado = modificarCategoria();						break;
+		case CAMBIAR_CONTRASENA: estado = cambiarContrasena();							break;
 		default:																		break;
 
 		}
@@ -137,7 +146,9 @@ estadoPrograma Programa::altaUsuario(string tipo){
 		}while(nuevoUsuario->getEmails().size() < 3);
 	}
 
-	gotoXY(0, posY);	cout<<"Contraseña: ";	leer(contrasena);	nuevoUsuario->setContrasena(contrasena);
+	gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres:";	leer(contrasena);
+
+	nuevoUsuario->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
 
 	//intento agregar el usuario al indice
 	usuarioAgregado = indice->agregarUsuario(nuevoUsuario);
@@ -257,16 +268,18 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	gotoXY(0, 3);	cout<<"2 - Darse de baja del sistema.";
 	gotoXY(0, 4);	cout<<"3 - Consultar productos/servicios.";
 	gotoXY(0, 5);	cout<<"4 - Publicar producto/servicio.";
-	gotoXY(0, 6);	cout<<"5 - Responder preguntas/cotizaciones.";
-	gotoXY(0, 7);	cout<<"6 - Dar de baja un producto.";
-	gotoXY(0, 8);	cout<<"7 - Cerrar sesion.";
+	gotoXY(0, 6);	cout<<"5 - Responder preguntas.";
+	gotoXY(0, 7);	cout<<"6 - ver pedidos de cotizacion.";
+	gotoXY(0, 8);	cout<<"7 - Dar de baja un producto.";
+	gotoXY(0, 9);	cout<<"8 - Cerrar sesion.";
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = CAMBIAR_DATOS;
 	if(opcion == 3) estado = CONSULTA_SERVICIO;
 	if(opcion == 4) estado = PUBLICAR;
 	if(opcion == 5) estado = RESPONDER;
-	if(opcion == 6) estado = BAJA_PRODUCTO;
+	if(opcion == 6) estado = RESPONDER;
+	if(opcion == 7) estado = BAJA_PRODUCTO;
 
 	if (opcion == 2){
 		bool eliminado = eliminarUsuario(usuario);
@@ -288,7 +301,8 @@ estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 	gotoXY(0, 7);	cout<<"6 - Moderar mensajes.";
 	gotoXY(0, 8);	cout<<"7 - Listado de usuarios.";
 	gotoXY(0, 9);	cout<<"8 - Listado de categorias.";
-	gotoXY(0, 10);	cout<<"9 - Cerrar sesion.";
+	gotoXY(0, 10);	cout<<"9 - Cambiar Contraseñas.";
+	gotoXY(0, 11);	cout<<"10 - Cerrar sesion.";
 
 	int opcion = leerOpcion(cantidadOpciones, cantidadOpciones+1);
 	if(opcion == 1) estado = REGISTRO_A;
@@ -299,6 +313,7 @@ estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 	if(opcion == 6) estado = MODERAR_MENSAJES;
 	if(opcion == 7) estado = VER_USUARIOS;
 	if(opcion == 8) estado = LISTAR_CATEGORIAS;
+	if(opcion == 9) estado = CAMBIAR_CONTRASENA;
 
 	return estado;
 }
@@ -489,19 +504,26 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY){
 
 	bool pedidoEmitido=false;
-		string pedido;
+		string pedido,contraseniaUsuario;
 		gotoXY(0, posY);
 		emitir("Escriba su pedido de cotizacion: ", 0, posY);	leer(pedido);
 
 
+		/*
+		 * string contrasena = Hill::desencriptar(usuario->getContrasena());
+		 *  esto va en setpedido : Hill::encriptar(pedido, contrasena);
+		 */
+		//desencripto la contrasenia del usuario:
+		contraseniaUsuario = Hill::desencriptar(usuario->getContrasena(),this->obtenerClaveDelSistema());
 
-			// creo un nuevo pedido de cotizacion
+
+		// creo un nuevo pedido de cotizacion
 		PedidoCotizacion* pedidoCotizacion = new PedidoCotizacion();
 		int IDNuevo = StringUtil::str2int(lector->getValor(idConsulta).c_str()) + 1;
 		pedidoCotizacion->setId(IDNuevo);
 		pedidoCotizacion->setIdServicio(resultado->getId());
 		pedidoCotizacion->setIdUsuario(usuario->getDni());
-		pedidoCotizacion->setPedido(pedido);
+		pedidoCotizacion->setPedido( Hill::encriptar(pedido,contraseniaUsuario));
 		pedidoCotizacion->setFechaPedido(FechaYHora::setFechaAAAAMMDD());
 		pedidoCotizacion->setHoraPedido(FechaYHora::setHoraHHMM());
 
@@ -520,8 +542,29 @@ void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY
 
 estadoPrograma Programa::listadoUsuarios(){
 
-	cout<<"Funcionalidad no implementada.";
-	return OPCIONES_USUARIO;
+	estadoPrograma estado = OPCIONES_USUARIO;
+
+		int posY = 0;
+
+		vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
+		Usuario *usuarioAux;
+
+		for(unsigned int i=0; i<usuarios.size(); i++){
+
+			usuarioAux = usuarios.at(i);
+
+			emitir("Usuario nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
+			emitir("Nombre: " + usuarioAux->getNombre(), 5, posY); 				posY++;
+			emitir("Id: " + usuarioAux->getDni(), 5, posY) ;		posY+=2;
+
+
+		}
+
+
+		emitir("Presione ENTER para volver al menu principal... ", 0, posY);
+		esperarEnter();
+
+		return estado;
 }
 
 void Programa::emitirCategoriasDisponibles(vector<Categoria*> categorias){
@@ -662,6 +705,33 @@ return estado;
 
 
 }
+
+estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
+
+		estadoPrograma estado = OPCIONES_USUARIO;
+		vector<PedidoCotizacion*> pedidos = indice->buscarPedidosCotizacionHechasAUsuario(usuario);
+		int posY =0;
+		string contrasenaUsuario, pedido;
+
+		contrasenaUsuario = Hill::desencriptar(usuario->getContrasena(),this->obtenerClaveDelSistema());
+		for(unsigned int i=0; i< pedidos.size();i++){
+
+
+					posY++;
+					system("clear");
+					emitir("Pedido " + StringUtil::int2string(i) + ": "			 ,  0, posY);	posY++;
+					emitir(Hill::desencriptar(pedidos.at(i)->getPedido(),contrasenaUsuario)	 ,  3, posY);	posY++;
+
+		}
+
+		emitir(		"Se han mostrado todos los mensajes."		    							 ,  0, posY);	posY++;
+		emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
+		esperarEnter();
+
+
+	return estado;
+}
+
 
 estadoPrograma Programa::bajaProducto(Usuario* &usuario){
 
@@ -1286,5 +1356,77 @@ void Programa::leerDescripcionCategoria(string& descripcion){
 				esperarEnter();
 			}
 		}while(descripcion.size() > max_nombre_categoria);
+
+}
+
+
+string Programa::obtenerClaveDelSistema(){
+	bool e;
+	return indice->buscarClaveSistema(e);
+}
+
+
+estadoPrograma Programa::cambiarContrasena(){
+	estadoPrograma estado = OPCIONES_USUARIO;
+	string id,contrasena;
+	int posY=0;
+	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
+	Usuario* usuarioAux;
+
+	//listo todos los usuarios:
+
+	for(unsigned int i=0; i<usuarios.size(); i++){
+
+		usuarioAux = usuarios.at(i);
+
+		emitir("Usuario nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
+		emitir("Nombre: " + usuarioAux->getNombre(), 5, posY); 				posY++;
+		emitir("Id: " + usuarioAux->getDni(), 5, posY) ;		posY+=2;
+
+	}
+
+	emitir("Presione ENTER para continuar... ", 0, posY);
+	esperarEnter();
+
+	do{
+			system("clear");
+			posY=0;
+			emitir("Ingrese el ID del usuario que desea cambiarle la contrasena:                 ", 0, posY);
+			gotoXY(44, posY);	leer(id);
+		}while(atoi(id.c_str()) <= 0);
+
+
+	//busco que exista el ID ingresado:
+	bool encontrado = false;
+	unsigned int i=0;
+	while( (i<usuarios.size()) && (!encontrado) ){
+		if( atoi(id.c_str()) == usuarios.at(i)->getDni()) encontrado = true;
+		i++;
+	}
+
+	//si existe el usuario, le cambio la contrasenia:
+	if(encontrado){
+		usuarioAux = usuarios.at(i-1);
+		gotoXY(0, posY);	cout<<"ingrese la nueva contrasenia: ";	leer(contrasena);
+		usuarioAux->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
+		indice->modificarUsuario(usuarioAux);
+
+	}else{
+
+		system("clear");
+		gotoXY(0, 0);
+		emitir("No existe el usuario ingresado", 0, posY); posY++;
+		emitir("Presione ENTER para volver al menu...", 0, posY);
+		esperarEnter();
+
+
+		}
+
+	return estado;
+}
+
+
+void Programa::generarClave(){
+	srand(time(NULL));
 
 }
