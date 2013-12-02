@@ -2,6 +2,7 @@
 #ifndef HILL_H_
 #define HILL_H_
 #include <string.h>
+#include "../constantes.h"
 #include "StringUtil.h"
 
 using namespace std;
@@ -14,6 +15,7 @@ public:
 
 	//chequea que la clave sea de 9 letras, que sean todas validas y que el det != 0
 	static bool claveValida(string clave);
+	static const char* getAlfabeto();
 
 private:
 	static void mostrarMatriz(float** mat);
@@ -22,7 +24,7 @@ private:
 	static int modulo(int num, int modulo);
 	static float calcularDeterminante(float** matriz);
 	static float** calcularInversa(float** matriz);
-	static int getPosicion(char* alfabeto, int tamanio, char aBuscar);
+	static int getPosicion(const char* alfabeto, int tamanio, char aBuscar);
 
 };
 

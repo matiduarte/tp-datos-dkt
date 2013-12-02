@@ -36,4 +36,6 @@ const string idConsulta = "idUltimaConsulta";
 const string claveIndiceGeneralUsuarios = "Usuarios";
 const string claveIndiceGeneralCategorias = "Categorias";
 
+const char* alfabeto = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.?,-";
+
 #endif /* CONSTANTES_H_ */

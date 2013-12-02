@@ -3,8 +3,9 @@
 #include "Hill.h"
 #include <math.h>
 
-char alfabeto[] = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.?,-";
-
+const char* Hill::getAlfabeto(){
+	return alfabeto;
+}
 float** Hill::crearMatriz(string clave){
 
 	float** matriz = new float*[3];
@@ -14,7 +15,7 @@ float** Hill::crearMatriz(string clave){
 	//convierto de letra a numeros del 0 al 41
 	int claveNumerica[9];
 	for(int i=0; i<9; i++){
-		claveNumerica[i] = getPosicion(alfabeto, 41, clave[i]);
+		claveNumerica[i] = getPosicion(getAlfabeto(), 41, clave[i]);
 	}
 
 	//guardo las 9 letras de la clave en la matriz
@@ -68,7 +69,7 @@ string Hill::encriptar(string mensaje, string clave){
 
 	//quito los caracteres invalidos
 	for (unsigned int i= 0; i< mensaje.size(); i++){
-		int posicion = getPosicion(alfabeto, 41, mensaje[i]);
+		int posicion = getPosicion(getAlfabeto(), 41, mensaje[i]);
 		if(posicion != -1){ //si la letra es valida la agrego a mensajePlanoValido
 
 			mensajePlanoValido += mensaje[i];
@@ -82,7 +83,7 @@ string Hill::encriptar(string mensaje, string clave){
 	int posActual=0;
 	for (unsigned int i= 0; i< mensajePlanoValido.size(); i++){
 
-		int posicion = getPosicion(alfabeto, 41, mensajePlanoValido[i]);
+		int posicion = getPosicion(getAlfabeto(), 41, mensajePlanoValido[i]);
 		vector3[posActual] = posicion;
 		posActual++;
 
@@ -111,7 +112,7 @@ string Hill::desencriptar(string mensajeEncriptado, string clave){
 	int posActual=0;
 	for (unsigned int i= 0; i< mensajeEncriptado.size(); i++){
 
-		int posicion = getPosicion(alfabeto, 41, mensajeEncriptado[i]);
+		int posicion = getPosicion(getAlfabeto(), 41, mensajeEncriptado[i]);
 		vector3[posActual] = posicion;
 		posActual++;
 
@@ -170,10 +171,10 @@ float* Hill::multiplicar(float** matriz, float* vector){
 	return vector3;
 }
 
-int Hill::getPosicion(char* alfabeto, int tamanio, char aBuscar){
+int Hill::getPosicion(const char* alfabeto, int tamanio, char aBuscar){
 
-	char* fin = alfabeto + tamanio;
-	char* match = std::find(alfabeto, fin, aBuscar);
+	const char* fin = alfabeto + tamanio;
+	const char* match = std::find(alfabeto, fin, aBuscar);
 	return(fin == match)? -1 : (match-alfabeto);
 }
 
