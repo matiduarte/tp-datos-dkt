@@ -1430,15 +1430,13 @@ void Programa::generarClave(){
 	srand(time(NULL));
 
 	 string clave;
-	 int numAleatorio;
 	 bool claveCorrecta = false;
 	 char* alfabetoClaves = (char*)Hill::getAlfabeto();
 
 	 while(!claveCorrecta){
 
-		 for(int i=0;i<41;i++){
-		 	numAleatorio = rand()%41;
-		 	clave += alfabetoClaves[numAleatorio];
+		 for(int i=0;i<9;i++){
+		 	clave += alfabetoClaves[rand()%41];
 		 }
 		 claveCorrecta = Hill::claveValida(clave);
 	 }

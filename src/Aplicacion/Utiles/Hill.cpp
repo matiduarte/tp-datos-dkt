@@ -4,7 +4,9 @@
 #include <math.h>
 #include <stdio.h>
 
-const char* Hill::getAlfabeto(){
+char* Hill::alfabeto = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.?,-";
+
+char* Hill::getAlfabeto(){
 	return alfabeto;
 }
 float** Hill::crearMatriz(string clave){

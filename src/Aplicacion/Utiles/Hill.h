@@ -12,10 +12,10 @@ class Hill {
 public:
 	static string encriptar(string mensaje, string clave);
 	static string desencriptar(string mensaje, string clave);
-
+	static char* alfabeto;
 	//chequea que la clave sea de 9 letras, que sean todas validas y que el det != 0
 	static bool claveValida(string clave);
-	static const char* getAlfabeto();
+	static char* getAlfabeto();
 
 private:
 	static void mostrarMatriz(float** mat);
