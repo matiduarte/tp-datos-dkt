@@ -190,10 +190,10 @@ float** Hill::calcularInversa(float** matriz){
 			}
 	    }
 
-		//Copio los elementos a la matriz inversa
+		//Copio los elementos a la matriz inversa y aplico el modulo
 		for (i = 0; i < dimension; i++) {
 			for (j = dimension; j < 2 * dimension; j++)
-				matrizInversa[i][j - dimension] = matrizAuxiliar[i][j];
+				matrizInversa[i][j - dimension] = modulo(((int)matrizAuxiliar[i][j]) , 41);
 		}
 
 	    return matrizInversa;
