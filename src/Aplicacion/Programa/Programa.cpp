@@ -152,7 +152,8 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool contrasenaValida=false;
 
 	while(!contrasenaValida){
-	gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres):";
+		system("clear");
+		gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres):";
 		leer(contrasena);
 		contrasenaValida= Hill::claveValida(contrasena);
 	}
@@ -313,7 +314,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 9;
+	int cantidadOpciones = 11;
 
 	gotoXY(0, 2);	cout<<"1 - Agregar nuevo administrador.";
 	gotoXY(0, 3);	cout<<"2 - Eliminar administrador.";
@@ -574,7 +575,7 @@ estadoPrograma Programa::listadoUsuarios(){
 
 			emitir("Usuario nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
 			emitir("Nombre: " + usuarioAux->getNombre(), 5, posY); 				posY++;
-			emitir("Id: " + usuarioAux->getDni(), 5, posY) ;		posY+=2;
+			emitir("Id: " + StringUtil::int2string(usuarioAux->getDni()), 5, posY) ;		posY+=2;
 
 
 		}
