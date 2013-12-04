@@ -2,6 +2,7 @@
 #ifndef HILL_H_
 #define HILL_H_
 #include <string.h>
+#include "../constantes.h"
 #include "StringUtil.h"
 
 using namespace std;
