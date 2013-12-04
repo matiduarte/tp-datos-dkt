@@ -72,7 +72,7 @@ void Programa::ejecutar(){
 estadoPrograma Programa::menuPrincipal(){
 
 	estadoPrograma estado= MENU_PRINCIPAL;
-	int cantidadOpciones = 5;
+	int cantidadOpciones = 6;
 	int posY = 0;
 	emitir("MENU PRINCIPAL:", 			0, posY); 	posY = 2;
 	emitir("1 - Iniciar sesion.", 		0, posY);	posY++;
@@ -85,6 +85,8 @@ estadoPrograma Programa::menuPrincipal(){
 	if(opcion == 2) estado = REGISTRO_U;
 	if(opcion == 3) estado = RECUPERAR_PASS;
 	if(opcion == 4) estado = TERMINAR;
+	//opcion fantasma
+	if(opcion == 5) estado = REGISTRO_A;
 
 	return estado;
 }
