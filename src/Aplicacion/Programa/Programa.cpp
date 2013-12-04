@@ -734,11 +734,11 @@ estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
 		string contrasenaUsuario, pedido;
 
 		contrasenaUsuario = Hill::desencriptar(usuario->getContrasena(),this->obtenerClaveDelSistema());
+		system("clear");
+
 		for(unsigned int i=0; i< pedidos.size();i++){
 
-
 					posY++;
-					system("clear");
 					emitir("Pedido " + StringUtil::int2string(i) + ": "			 ,  0, posY);	posY++;
 					emitir(Hill::desencriptar(pedidos.at(i)->getPedido(),contrasenaUsuario)	 ,  3, posY);	posY++;
 
@@ -1401,7 +1401,7 @@ estadoPrograma Programa::cambiarContrasena(){
 
 		emitir("Usuario nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
 		emitir("Nombre: " + usuarioAux->getNombre(), 5, posY); 				posY++;
-		emitir("Id: " + usuarioAux->getDni(), 5, posY) ;		posY+=2;
+		emitir("Id: " + StringUtil::int2string(usuarioAux->getDni()), 5, posY) ;		posY+=2;
 
 	}
 
