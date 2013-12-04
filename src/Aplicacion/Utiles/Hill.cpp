@@ -65,7 +65,6 @@ string Hill::encriptar(string mensaje, string clave){
 	mensaje = StringUtil::toUpper(mensaje);
 	clave = StringUtil::toUpper(clave);
 	float** matriz = crearMatriz(clave);
-
 	float* vector3 = new float[3];
 	string mensajeEncriptado = "";
 	string mensajePlanoValido = "";
@@ -190,10 +189,10 @@ float** Hill::calcularInversa(float** matriz){
 			}
 	    }
 
-		//Copio los elementos a la matriz inversa y aplico el modulo
+		//Copio los elementos a la matriz inversa
 		for (i = 0; i < dimension; i++) {
 			for (j = dimension; j < 2 * dimension; j++)
-				matrizInversa[i][j - dimension] = modulo(((int)matrizAuxiliar[i][j]) , 41);
+				matrizInversa[i][j - dimension] = matrizAuxiliar[i][j];
 		}
 
 	    return matrizInversa;
