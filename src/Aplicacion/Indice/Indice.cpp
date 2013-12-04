@@ -109,6 +109,19 @@ Usuario* Indice::buscarUsuario(string dni, string contrasena, bool &error){
 	
 }
 
+Usuario* Indice::buscarUsuario(string dni, bool &error){
+	try{
+			string usuarioSerializado = this->indiceUsuario->buscarElemento(dni);
+			Usuario* usuario = new Usuario();
+			usuario->desSerializar(usuarioSerializado);
+			error = false;
+			return usuario;
+		} catch (ExceptionElementoNoEncontrado &e){
+			error = true;
+			return new Usuario();
+		}
+}
+
 bool Indice::agregarServicio(Servicio* servicio){
 	try {
 		this->indiceServicio->insertarElemento(StringUtil::int2string(servicio->getId()),servicio->serializar());
