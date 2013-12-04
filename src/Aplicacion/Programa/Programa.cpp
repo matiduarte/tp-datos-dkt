@@ -524,17 +524,14 @@ void Programa::hacerPregunta(Servicio* &resultado, Usuario* &usuario, int posY){
 void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY){
 
 	bool pedidoEmitido=false;
-		string pedido,contraseniaUsuario;
+		string pedido,contrasenaProveedor;
 		gotoXY(0, posY);
 		emitir("Escriba su pedido de cotizacion: ", 0, posY);	leer(pedido);
+		Usuario* proveedor;
+		proveedor = indice->buscarUsuario(StringUtil::int2string(resultado->getIdProveedor()));
 
-
-		/*
-		 * string contrasena = Hill::desencriptar(usuario->getContrasena());
-		 *  esto va en setpedido : Hill::encriptar(pedido, contrasena);
-		 */
-		//desencripto la contrasenia del usuario:
-		contraseniaUsuario = Hill::desencriptar(usuario->getContrasena(),this->obtenerClaveDelSistema());
+		//desencripto la contrasenia del proveedor:
+		contrasenaProveedor = Hill::desencriptar(proveedor->getContrasena(),this->obtenerClaveDelSistema());
 
 
 		// creo un nuevo pedido de cotizacion
@@ -543,7 +540,7 @@ void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY
 		pedidoCotizacion->setId(IDNuevo);
 		pedidoCotizacion->setIdServicio(resultado->getId());
 		pedidoCotizacion->setIdUsuario(usuario->getDni());
-		pedidoCotizacion->setPedido( Hill::encriptar(pedido,contraseniaUsuario));
+		pedidoCotizacion->setPedido( Hill::encriptar(pedido,contrasenaProveedor));
 		pedidoCotizacion->setFechaPedido(FechaYHora::setFechaAAAAMMDD());
 		pedidoCotizacion->setHoraPedido(FechaYHora::setHoraHHMM());
 
