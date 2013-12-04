@@ -18,6 +18,7 @@ Programa::Programa(){
 	if(error) this->generarClave();
 
 
+
 	system("clear");
 }
 
