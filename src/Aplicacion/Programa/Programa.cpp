@@ -146,8 +146,13 @@ estadoPrograma Programa::altaUsuario(string tipo){
 		}while(nuevoUsuario->getEmails().size() < 3);
 	}
 
-	gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres:";	leer(contrasena);
+	bool contrasenaValida=false;
 
+	while(!contrasenaValida){
+	gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres):";
+		leer(contrasena);
+		contrasenaValida= Hill::claveValida(contrasena);
+	}
 	nuevoUsuario->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
 
 	//intento agregar el usuario al indice
@@ -166,6 +171,7 @@ estadoPrograma Programa::altaUsuario(string tipo){
 string Programa::modificar(string queCosa, string valorActual, int posicionDato){
 
 	string respuesta, datoNuevo;
+	bool contrasenaValida;
 	do{
 		gotoXY(0, 12);
 		cout<<"Desea modificar "<<queCosa<<"(s/n)"; leer(respuesta);
@@ -176,6 +182,16 @@ string Programa::modificar(string queCosa, string valorActual, int posicionDato)
 		gotoXY(12, posicionDato); cout<<"                                    "; //borro lo que haya
 		gotoXY(12, posicionDato);
 		leer(datoNuevo);
+
+		if(queCosa == "la contraseña? "){
+			contrasenaValida = Hill::claveValida(datoNuevo);
+			if(contrasenaValida) return Hill::encriptar(datoNuevo, this->obtenerClaveDelSistema());
+			else{
+				posicionDato +=2;
+				gotoXY(12, posicionDato); cout<<"La contraseña es invalida, no se pudo modificar.";
+				return valorActual;
+			}
+		}
 	}
 	return datoNuevo;
 }
@@ -223,6 +239,9 @@ estadoPrograma Programa::iniciarSesion(Usuario* &usuario){
 
 	gotoXY(0, 3); cout<<"Contrasena: ";
 	desactivarEcho();	leer(contrasena);	activarEcho();
+
+	//encripto la contraseña ingresada para poder compararla con la guardada
+	contrasena = Hill::encriptar(contrasena, this->obtenerClaveDelSistema());
 
 	bool error=true;
 	usuario = indice->buscarUsuario(dni, contrasena, error);
@@ -1081,7 +1100,7 @@ void Programa::emitirDatosUsuario(Usuario* &usuario){
 	gotoXY(0, posY);	cout<<"e-Mail 1:   "<<usuario->getEmails().at(0);	posY++;
 	gotoXY(0, posY);	cout<<"e-Mail 2:   "<<usuario->getEmails().at(1);	posY++;
 	gotoXY(0, posY);	cout<<"e-Mail 3:   "<<usuario->getEmails().at(2);	posY++;
-	gotoXY(0, posY);	cout<<"Contraseña: "<<usuario->getContrasena(); posY++;
+	gotoXY(0, posY);	cout<<"Contraseña: "<<Hill::desencriptar(usuario->getContrasena(), this->obtenerClaveDelSistema()); posY++;
 
 }
 
@@ -1405,12 +1424,21 @@ estadoPrograma Programa::cambiarContrasena(){
 	}
 
 	//si existe el usuario, le cambio la contrasenia:
+
 	if(encontrado){
 		usuarioAux = usuarios.at(i-1);
-		gotoXY(0, posY);	cout<<"ingrese la nueva contrasenia: ";	leer(contrasena);
-		usuarioAux->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
-		indice->modificarUsuario(usuarioAux);
+		gotoXY(0, posY);	cout<<"ingrese la nueva contraseña: ";	leer(contrasena);
 
+		if(Hill::claveValida(contrasena)){
+			usuarioAux->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
+			indice->modificarUsuario(usuarioAux);
+
+		}else{
+			posY +=2;
+			gotoXY(12, posY); cout<<"La contraseña es invalida, no se pudo modificar."; posY++;
+			emitir("Presione ENTER para volver al menu...", 0, posY);
+			esperarEnter();
+		}
 	}else{
 
 		system("clear");
@@ -1429,7 +1457,7 @@ estadoPrograma Programa::cambiarContrasena(){
 void Programa::generarClave(){
 	srand(time(NULL));
 
-	 string clave;
+	 string clave="";
 	 bool claveCorrecta = false;
 	 char* alfabetoClaves = (char*)Hill::getAlfabeto();
 
@@ -1439,6 +1467,7 @@ void Programa::generarClave(){
 		 	clave += alfabetoClaves[rand()%41];
 		 }
 		 claveCorrecta = Hill::claveValida(clave);
+		 if(!claveCorrecta) clave = "";
 	 }
 
 	 indice->agregarClaveSistema(clave);

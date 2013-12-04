@@ -56,6 +56,7 @@ string Usuario::getProvincia(){
 string Usuario::getContrasena(){
 	return this->contrasena;
 }
+
 string Usuario::getTipo(){
 	return this->tipo;
 }
