@@ -25,9 +25,8 @@ private:
 	static int** calcularInversaModular(int** matriz, int modulo);
 	static int getPosicion(const char* alfabeto, int tamanio, char aBuscar);
 
-	static long invmod(long m,long n);
-	static long coef1(long a,long b);
-	static long coef2(long a, long b);
+	static int invmod(int m,int n);
+	static int pow(int a, int b, int mod);
 };
 
 #endif /* HILL_H_ */
