@@ -13,19 +13,21 @@ public:
 	static string encriptar(string mensaje, string clave);
 	static string desencriptar(string mensaje, string clave);
 	static char* alfabeto;
-	//chequea que la clave sea de 9 letras, que sean todas validas y que el det != 0
+	//chequea que la clave sea de 9 letras, que sean todas validas y que el det y su inversa modular sean != 0
 	static bool claveValida(string clave);
 	static char* getAlfabeto();
 
 private:
-	static void mostrarMatriz(float** mat);
-	static float** crearMatriz(string clave);
-	static float* multiplicar(float** matriz, float* vector);
 	static int modulo(int num, int modulo);
-	static float calcularDeterminante(float** matriz);
-	static float** calcularInversa(float** matriz);
+	static int** crearMatriz(string clave);
+	static int* multiplicar(int** matriz, int* vector);
+	static int calcularDeterminante(int** matriz);
+	static int** calcularInversaModular(int** matriz, int modulo);
 	static int getPosicion(const char* alfabeto, int tamanio, char aBuscar);
 
+	static long invmod(long m,long n);
+	static long coef1(long a,long b);
+	static long coef2(long a, long b);
 };
 
 #endif /* HILL_H_ */

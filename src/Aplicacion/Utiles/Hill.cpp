@@ -9,11 +9,11 @@ char* Hill::alfabeto = " ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.?,-";
 char* Hill::getAlfabeto(){
 	return alfabeto;
 }
-float** Hill::crearMatriz(string clave){
+int** Hill::crearMatriz(string clave){
 
-	float** matriz = new float*[TAMANIO_MATRIZ_HILL];
+	int** matriz = new int*[TAMANIO_MATRIZ_HILL];
 	for (unsigned int i = 0; i < TAMANIO_MATRIZ_HILL; ++i)
-	    matriz[i] = new float[TAMANIO_MATRIZ_HILL];
+	    matriz[i] = new int[TAMANIO_MATRIZ_HILL];
 
 	//convierto de letra a numeros del 0 al 41
 	int claveNumerica[TAMANIO_CLAVE_SISTEMA];
@@ -37,25 +37,28 @@ bool Hill::claveValida(string clave){
 
 	clave = StringUtil::toUpper(clave);
 
-	float** matriz = crearMatriz(clave);
+	int** matriz = crearMatriz(clave);
 
 	for(unsigned int i=0; i<TAMANIO_MATRIZ_HILL; i++)
 		for(unsigned int j=0; j<TAMANIO_MATRIZ_HILL; j++)
 			if(matriz[i][j] == -1) return false;
 
-	float det = calcularDeterminante(matriz);
+	int det = calcularDeterminante(matriz);
+	int invDet = invmod(det, strlen(alfabeto));
+
+	if(invDet==0) return false;
 
 	return (det!=0)? true : false;
 }
 
-float Hill::calcularDeterminante(float** matriz){
+int Hill::calcularDeterminante(int** matriz){
 	//DET  =  a11(a33a22-a32a23)-a21(a33a12-a32a13)+a31(a23a12-a22a13)
 
-	float aux1 = matriz[2][2]*matriz[1][1] - matriz[2][1]*matriz[1][2];
-	float aux2 = matriz[2][2]*matriz[0][1] - matriz[2][1]*matriz[0][2];
-	float aux3 = matriz[1][2]*matriz[0][1] - matriz[1][1]*matriz[0][2];
+	int aux1 = matriz[2][2]*matriz[1][1] - matriz[2][1]*matriz[1][2];
+	int aux2 = matriz[2][2]*matriz[0][1] - matriz[2][1]*matriz[0][2];
+	int aux3 = matriz[1][2]*matriz[0][1] - matriz[1][1]*matriz[0][2];
 
-	float det = matriz[0][0]* aux1 - matriz[1][0]* aux2 + matriz[2][0]* aux3;
+	int det = matriz[0][0]* aux1 - matriz[1][0]* aux2 + matriz[2][0]* aux3;
 
 	return det;
 }
@@ -64,11 +67,10 @@ string Hill::encriptar(string mensaje, string clave){
 
 	mensaje = StringUtil::toUpper(mensaje);
 	clave = StringUtil::toUpper(clave);
-	float** matriz = crearMatriz(clave);
-	float* vector3 = new float[TAMANIO_MATRIZ_HILL];
+	int** matriz = crearMatriz(clave);
+	int* vector3 = new int[TAMANIO_MATRIZ_HILL];
 	string mensajeEncriptado = "";
 	string mensajePlanoValido = "";
-
 
 	//quito los caracteres invalidos
 	for (unsigned int i= 0; i< mensaje.size(); i++){
@@ -108,8 +110,8 @@ string Hill::encriptar(string mensaje, string clave){
 string Hill::desencriptar(string mensajeEncriptado, string clave){
 
 	clave = StringUtil::toUpper(clave);
-	float** matrizInversa = calcularInversa(crearMatriz(clave));
-	float* vector3 = new float[TAMANIO_MATRIZ_HILL];
+	int** matrizInversa = calcularInversaModular(crearMatriz(clave), strlen(alfabeto));
+	int* vector3 = new int[TAMANIO_MATRIZ_HILL];
 	string mensajePlano = "";
 
 	int posActual=0;
@@ -125,7 +127,6 @@ string Hill::desencriptar(string mensajeEncriptado, string clave){
 			vector3 = multiplicar(matrizInversa, vector3);
 
 			for(unsigned int i = 0; i < TAMANIO_MATRIZ_HILL; i++){
-				while(vector3[i]<0) vector3[i] += strlen(alfabeto);
 				int posicion = modulo(vector3[i], strlen(alfabeto));
 				mensajePlano += alfabeto[posicion];
 			}
@@ -135,9 +136,9 @@ string Hill::desencriptar(string mensajeEncriptado, string clave){
 	return mensajePlano;
 }
 
-float** Hill::calcularInversa(float** matriz){
+int** Hill::calcularInversaModular(int** matriz, int mod){
 
-	float** matrizInversa = new float*[TAMANIO_MATRIZ_HILL];
+	int** matrizInversa = new int*[TAMANIO_MATRIZ_HILL];
 
 	float temporary, r;
 	int i, j, k, temp;
@@ -146,7 +147,7 @@ float** Hill::calcularInversa(float** matriz){
 
 	//Creo la matriz de 3x3
 	for (int i = 0; i < dimension; ++i)
-		    matrizInversa[i] = new float[TAMANIO_MATRIZ_HILL];
+		    matrizInversa[i] = new int[TAMANIO_MATRIZ_HILL];
 
 	//Agrego los elementos de matriz a la matriz auxiliar
 	for (i = 0; i < dimension; i++)
@@ -186,22 +187,24 @@ float** Hill::calcularInversa(float** matriz){
 			} else {
 				r = matrizAuxiliar[i][j];
 				for (k = 0; k < 2 * dimension; k++)
-					matrizAuxiliar[i][k] /= r;
+					matrizAuxiliar[i][k] = matrizAuxiliar[i][k] / r;
 			}
 	    }
 
+		long det = calcularDeterminante(matriz);
+		long invdet = invmod(det, mod);
 		//Copio los elementos a la matriz inversa
 		for (i = 0; i < dimension; i++) {
 			for (j = dimension; j < 2 * dimension; j++)
-				matrizInversa[i][j - dimension] = matrizAuxiliar[i][j];
+				matrizInversa[i][j - dimension] = modulo(round(matrizAuxiliar[i][j] * det * invdet), mod);
 		}
 
 	    return matrizInversa;
 }
 
-float* Hill::multiplicar(float** matriz, float* vector){
+int* Hill::multiplicar(int** matriz, int* vector){
 
-	float* vector3 = new float[TAMANIO_MATRIZ_HILL];
+	int* vector3 = new int[TAMANIO_MATRIZ_HILL];
 
 	for(unsigned int i=0; i < TAMANIO_MATRIZ_HILL; i++){
 		vector3[i] = 0 ;
@@ -223,14 +226,31 @@ int Hill::getPosicion(const char* alfabeto, int tamanio, char aBuscar){
 
 int Hill::modulo(int numero, int mod){
 
-	return(numero%mod);
+	while(numero<0) numero +=mod;
+	int resultado = (numero%mod);
+
+	return resultado;
 }
 
-void Hill::mostrarMatriz(float** matriz){
-	for(unsigned int i=0; i<TAMANIO_MATRIZ_HILL; i++){
-		for(unsigned int j=0; j<TAMANIO_MATRIZ_HILL; j++)
-			cout<<matriz[i][j]<<" ";
+//calcula la inversa modular de un numero
+long Hill::invmod(long m,long n)
+{
+	long a,b;
 
-		cout<<endl;
-	}
+    a=coef1(m,n);
+	b=coef2(m,n);
+	if (m*a+n*b!=1) return 0;
+	else return a;
+}
+
+long Hill::coef1(long a,long b)
+{
+    if (a%b==0) return (0);
+    else return (coef2(b,a%b));
+}
+
+long Hill::coef2(long a, long b)
+{
+    if (a%b==0) return(1);
+    else return (coef1(b,a%b)- a/b *coef2(b,a%b));
 }
