@@ -741,12 +741,11 @@ estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
 		string contrasenaUsuario, pedido;
 
 		contrasenaUsuario = Hill::desencriptar(usuario->getContrasena(),this->obtenerClaveDelSistema());
-		system("clear");
 
 		for(unsigned int i=0; i< pedidos.size();i++){
 
 					posY++;
-					emitir("Pedido " + StringUtil::int2string(i)+1 + ": "			 ,  0, posY);	posY++;
+					emitir("Pedido " + StringUtil::int2string(i+1) + ": "			 ,  0, posY);	posY++;
 					emitir(Hill::desencriptar(pedidos.at(i)->getPedido(),contrasenaUsuario)	 ,  3, posY);	posY++;
 
 		}
@@ -1472,7 +1471,7 @@ void Programa::generarClave(){
 	 while(!claveCorrecta){
 
 		 for(int i=0;i<9;i++){
-		 	clave += alfabetoClaves[rand()%41];
+		 	clave += alfabetoClaves[rand() % 41];
 		 }
 		 claveCorrecta = Hill::claveValida(clave);
 		 if(!claveCorrecta) clave = "";
