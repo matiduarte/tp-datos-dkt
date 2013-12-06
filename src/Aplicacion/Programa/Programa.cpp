@@ -51,7 +51,7 @@ void Programa::ejecutar(){
 		case RESULTADOS:		estado = emitirResultadoBusqueda(resultados, resultado, usuario);	break;
 		case RESULTADO_DET:		estado = detalleResultado(resultado, usuario);			break;
 		case PUBLICAR:			estado = publicarServicio(usuario);						break;
-		case RESPONDER:			estado = responderPregunta(usuario);					break;
+		case RESPONDER_PREG:	estado = responderPregunta(usuario);					break;
 		case BAJA_PRODUCTO:		estado = bajaProducto(usuario);							break;
 		case VER_USUARIOS:		estado = listadoUsuarios();								break;
 		case VER_PEDIDOS_COTIZACION: estado = verPedidosCotizacion(usuario);			break;
@@ -152,10 +152,16 @@ estadoPrograma Programa::altaUsuario(string tipo){
 	bool contrasenaValida=false;
 
 	while(!contrasenaValida){
-		system("clear");
-		gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres):";
+		gotoXY(0, posY);	cout<<"Contraseña (de "<<TAMANIO_CLAVE_SISTEMA<<" caracteres):                       ";
+		gotoXY(30, posY);
 		leer(contrasena);
 		contrasenaValida= Hill::claveValida(contrasena);
+		if(!contrasenaValida){
+			posY++;
+			gotoXY(0, posY);
+			cout<<"La contraseña es invalida, por favor reingrese.";
+			posY--;
+		}
 	}
 	nuevoUsuario->setContrasena(Hill::encriptar(contrasena,this->obtenerClaveDelSistema()));
 
@@ -286,13 +292,13 @@ estadoPrograma Programa::opcionesUsuarioNormal(Usuario* &usuario){
 estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 7;
+	int cantidadOpciones = 8;
 	gotoXY(0, 2);	cout<<"1 - Modificar datos de usuario.";
 	gotoXY(0, 3);	cout<<"2 - Darse de baja del sistema.";
 	gotoXY(0, 4);	cout<<"3 - Consultar productos/servicios.";
 	gotoXY(0, 5);	cout<<"4 - Publicar producto/servicio.";
 	gotoXY(0, 6);	cout<<"5 - Responder preguntas.";
-	gotoXY(0, 7);	cout<<"6 - ver pedidos de cotizacion.";
+	gotoXY(0, 7);	cout<<"6 - Ver pedidos de cotizacion.";
 	gotoXY(0, 8);	cout<<"7 - Dar de baja un producto.";
 	gotoXY(0, 9);	cout<<"8 - Cerrar sesion.";
 
@@ -300,8 +306,8 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 	if(opcion == 1) estado = CAMBIAR_DATOS;
 	if(opcion == 3) estado = CONSULTA_SERVICIO;
 	if(opcion == 4) estado = PUBLICAR;
-	if(opcion == 5) estado = RESPONDER;
-	if(opcion == 6) estado = RESPONDER;
+	if(opcion == 5) estado = RESPONDER_PREG;
+	if(opcion == 6) estado = VER_PEDIDOS_COTIZACION;
 	if(opcion == 7) estado = BAJA_PRODUCTO;
 
 	if (opcion == 2){
@@ -314,7 +320,7 @@ estadoPrograma Programa::opcionesUsuarioProveedor(Usuario* &usuario){
 estadoPrograma Programa::opcionesAdministrador(Usuario* &usuario){
 
 	estadoPrograma estado = MENU_PRINCIPAL;
-	int cantidadOpciones = 11;
+	int cantidadOpciones = 10;
 
 	gotoXY(0, 2);	cout<<"1 - Agregar nuevo administrador.";
 	gotoXY(0, 3);	cout<<"2 - Eliminar administrador.";
@@ -531,7 +537,8 @@ void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY
 		gotoXY(0, posY);
 		emitir("Escriba su pedido de cotizacion: ", 0, posY);	leer(pedido);
 		Usuario* proveedor;
-		proveedor = indice->buscarUsuario(StringUtil::int2string(resultado->getIdProveedor()));
+		bool error;
+		proveedor = indice->buscarUsuario(StringUtil::int2string(resultado->getIdProveedor()), error);
 
 		//desencripto la contrasenia del proveedor:
 		contrasenaProveedor = Hill::desencriptar(proveedor->getContrasena(),this->obtenerClaveDelSistema());
@@ -739,7 +746,7 @@ estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
 		for(unsigned int i=0; i< pedidos.size();i++){
 
 					posY++;
-					emitir("Pedido " + StringUtil::int2string(i) + ": "			 ,  0, posY);	posY++;
+					emitir("Pedido " + StringUtil::int2string(i)+1 + ": "			 ,  0, posY);	posY++;
 					emitir(Hill::desencriptar(pedidos.at(i)->getPedido(),contrasenaUsuario)	 ,  3, posY);	posY++;
 
 		}

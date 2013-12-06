@@ -73,6 +73,7 @@ clean:
 	-@echo ' '
 	-@echo 'PaginasDoradas desinstalado correctamente! '
 	-@echo ' '
+
 .PHONY: all clean dependents
 .SECONDARY:
 

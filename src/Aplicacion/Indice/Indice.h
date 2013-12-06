@@ -71,7 +71,6 @@ public:
 	void modificarUsuario(Usuario* usuario);
 	bool elimininarUsuario(Usuario* usuario);
 	Usuario* buscarUsuario(string dni, string contrasena, bool &error);
-	Usuario* buscarUsuario(string dni);
 	Usuario* buscarUsuario(string dni, bool &error);
 	
 	//Metodos servicios

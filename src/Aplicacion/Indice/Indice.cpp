@@ -109,19 +109,6 @@ Usuario* Indice::buscarUsuario(string dni, string contrasena, bool &error){
 	
 }
 
-Usuario* Indice::buscarUsuario(string dni){
-
-	try{
-		string usuarioSerializado = this->indiceUsuario->buscarElemento(dni);
-		Usuario* usuario = new Usuario();
-		usuario->desSerializar(usuarioSerializado);
-
-	} catch (ExceptionElementoNoEncontrado &e){
-		return new Usuario();
-	}
-
-}
-
 Usuario* Indice::buscarUsuario(string dni, bool &error){
 	try{
 			string usuarioSerializado = this->indiceUsuario->buscarElemento(dni);
