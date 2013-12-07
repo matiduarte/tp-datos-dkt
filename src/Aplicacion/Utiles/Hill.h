@@ -27,8 +27,6 @@ private:
 
 	static int invmod(int m,int n);
 	static int pow(int a, int b, int mod);
-
-	static void mostrarMatriz(int** matriz);
 };
 
 #endif /* HILL_H_ */

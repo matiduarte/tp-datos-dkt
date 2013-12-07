@@ -193,11 +193,11 @@ int** Hill::calcularInversaModular(int** matriz, int mod){
 	    }
 
 		int det = calcularDeterminante(matriz);
-		int invdet = modulo(invmod(det, mod), strlen(alfabeto));
+		int invdet = modulo(invmod(det, mod), mod);
 		//Copio los elementos a la matriz inversa
 		for (i = 0; i < dimension; i++) {
 			for (j = dimension; j < 2 * dimension; j++)
-				matrizInversa[i][j - dimension] = modulo(round(matrizAuxiliar[i][j]*det*invdet), strlen(alfabeto));
+				matrizInversa[i][j - dimension] = modulo(round(matrizAuxiliar[i][j]*det*invdet), mod);
 		}
 	    return matrizInversa;
 }
@@ -250,14 +250,4 @@ int x = 1, y = a;
         b /= 2;
     }
     return x;
-}
-
-void Hill::mostrarMatriz(int** matriz){
-
-	for(int i=0; i < 3; i++){
-		for(int j=0; j<3; j++){
-			cout<<matriz[i][j]<<" ";
-		}
-		cout<<endl;
-	}
 }
