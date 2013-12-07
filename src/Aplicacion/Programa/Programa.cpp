@@ -687,7 +687,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 
 	vector<Consulta*> consultas;
 	unsigned int contProductos=0;
-	int posY;
+	int posY=0;
 	string respuesta;
 
 	for(unsigned int i=0; i< productos.size();i++){
@@ -718,7 +718,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 			}
 		}
 	}
-	//system("clear");
+	system("clear");
 	emitir(		"Se han respondido todos los mensajes."		    							 ,  0, posY);	posY++;
 	emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
 	esperarEnter();
