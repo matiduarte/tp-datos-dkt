@@ -740,7 +740,10 @@ estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
 		for(unsigned int i=0; i< pedidos.size();i++){
 
 					posY++;
-					emitir("Pedido " + StringUtil::int2string(i+1) + ": "			 ,  0, posY);	posY++;
+					emitir("Pedido " + StringUtil::int2string(i+1) + ": "			 , 							0, posY);	posY++;
+					emitir("ID Usuario: " + StringUtil::int2string(pedidos.at(i)->getIdUsuario()),				0, posY); 	posY++;
+					emitir("ID Servicio: "+ StringUtil::int2string(pedidos.at(i)->getIdServicio()),				0, posY);	posY++;
+					emitir("Fecha y hora: " + FechaYHora::getFecha_DD_MM_AAAA(pedidos.at(i)->getFechaPedido()) + ", " + FechaYHora::getHoraHH_MM(pedidos.at(i)->getHoraPedido()), 0, posY); posY++;
 					emitir(Hill::desencriptar(pedidos.at(i)->getPedido(),contrasenaUsuario)	 ,  3, posY);	posY++;
 
 		}
