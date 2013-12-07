@@ -16,6 +16,8 @@ Programa::Programa(){
 	//si no existe clave del sistema, la genero:
 	indice->buscarClaveSistema(error);
 	if(error) this->generarClave();
+
+	system("clear");
 }
 
 Programa::~Programa(){
@@ -538,7 +540,6 @@ void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY
 
 		//desencripto la contrasenia del proveedor:
 		contrasenaProveedor = Hill::desencriptar(proveedor->getContrasena(),this->obtenerClaveDelSistema());
-
 
 		// creo un nuevo pedido de cotizacion
 		PedidoCotizacion* pedidoCotizacion = new PedidoCotizacion();
