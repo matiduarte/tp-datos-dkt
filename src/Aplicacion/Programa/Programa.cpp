@@ -1420,7 +1420,7 @@ estadoPrograma Programa::cambiarContrasena(){
 			system("clear");
 			posY=0;
 			emitir("Ingrese el ID del usuario que desea cambiarle la contrasena:                 ", 0, posY); posY++;
-			gotoXY(44, posY);	leer(id);
+			leer(id); posY++;
 		}while(atoi(id.c_str()) <= 0);
 
 
