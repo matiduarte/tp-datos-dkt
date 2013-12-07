@@ -33,9 +33,9 @@ int** Hill::crearMatriz(string clave){
 
 bool Hill::claveValida(string clave){
 
-	if(clave.size() != TAMANIO_CLAVE_SISTEMA) return false;
+	clave= StringUtil::toUpper(clave);
 
-	clave = StringUtil::toUpper(clave);
+	if(clave.size() != TAMANIO_CLAVE_SISTEMA) return false;
 
 	int** matriz = crearMatriz(clave);
 
@@ -47,8 +47,9 @@ bool Hill::claveValida(string clave){
 	int invDet = invmod(det, strlen(alfabeto));
 
 	if(invDet==0) return false;
+	if(det != 0) return true;
 
-	return (det!=0)? true : false;
+	return false;
 }
 
 int Hill::calcularDeterminante(int** matriz){
@@ -187,18 +188,17 @@ int** Hill::calcularInversaModular(int** matriz, int mod){
 			} else {
 				r = matrizAuxiliar[i][j];
 				for (k = 0; k < 2 * dimension; k++)
-					matrizAuxiliar[i][k] = matrizAuxiliar[i][k] / r;
+					matrizAuxiliar[i][k] /= r;
 			}
 	    }
 
-		long det = calcularDeterminante(matriz);
-		long invdet = invmod(det, mod);
+		int det = calcularDeterminante(matriz);
+		int invdet = modulo(invmod(det, mod), strlen(alfabeto));
 		//Copio los elementos a la matriz inversa
 		for (i = 0; i < dimension; i++) {
 			for (j = dimension; j < 2 * dimension; j++)
-				matrizInversa[i][j - dimension] = modulo(round(matrizAuxiliar[i][j] * det * invdet), mod);
+				matrizInversa[i][j - dimension] = modulo(round(matrizAuxiliar[i][j]*det*invdet), strlen(alfabeto));
 		}
-
 	    return matrizInversa;
 }
 
@@ -250,4 +250,14 @@ int x = 1, y = a;
         b /= 2;
     }
     return x;
+}
+
+void Hill::mostrarMatriz(int** matriz){
+
+	for(int i=0; i < 3; i++){
+		for(int j=0; j<3; j++){
+			cout<<matriz[i][j]<<" ";
+		}
+		cout<<endl;
+	}
 }

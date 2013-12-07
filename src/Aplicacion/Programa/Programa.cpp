@@ -9,7 +9,7 @@
 
 Programa::Programa(){
 
-	bool error;
+	bool error= true;
 	lector = LectorConfig::getLector(rutaConfig);
 	indice = new Indice("");
 
@@ -547,7 +547,7 @@ void Programa::pedirCotizacion(Servicio* &resultado, Usuario* &usuario, int posY
 		pedidoCotizacion->setId(IDNuevo);
 		pedidoCotizacion->setIdServicio(resultado->getId());
 		pedidoCotizacion->setIdUsuario(usuario->getDni());
-		pedidoCotizacion->setPedido( Hill::encriptar(pedido,contrasenaProveedor));
+		pedidoCotizacion->setPedido(Hill::encriptar(pedido,contrasenaProveedor));
 		pedidoCotizacion->setFechaPedido(FechaYHora::setFechaAAAAMMDD());
 		pedidoCotizacion->setHoraPedido(FechaYHora::setHoraHHMM());
 
@@ -580,8 +580,6 @@ estadoPrograma Programa::listadoUsuarios(){
 			emitir("Usuario nro " + StringUtil::int2string(i+1) + ": ", 0, posY);	posY++;
 			emitir("Nombre: " + usuarioAux->getNombre(), 5, posY); 				posY++;
 			emitir("Id: " + StringUtil::int2string(usuarioAux->getDni()), 5, posY) ;		posY+=2;
-
-
 		}
 
 
@@ -720,7 +718,7 @@ estadoPrograma Programa::responderPregunta(Usuario* &usuario){
 			}
 		}
 	}
-	system("clear");
+	//system("clear");
 	emitir(		"Se han respondido todos los mensajes."		    							 ,  0, posY);	posY++;
 	emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
 	esperarEnter();
@@ -1385,6 +1383,7 @@ void Programa::leerDescripcionCategoria(string& descripcion){
 
 
 string Programa::obtenerClaveDelSistema(){
+
 	bool e;
 	return indice->buscarClaveSistema(e);
 }
