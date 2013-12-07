@@ -16,10 +16,6 @@ Programa::Programa(){
 	//si no existe clave del sistema, la genero:
 	indice->buscarClaveSistema(error);
 	if(error) this->generarClave();
-
-
-
-	system("clear");
 }
 
 Programa::~Programa(){
@@ -750,6 +746,7 @@ estadoPrograma Programa::verPedidosCotizacion(Usuario* &usuario){
 
 		}
 
+		posY++;
 		emitir(		"Se han mostrado todos los mensajes."		    							 ,  0, posY);	posY++;
 		emitir(		"presione ENTER para volver al menu..."			    						 ,  0, posY);	posY++;
 		esperarEnter();
@@ -1464,11 +1461,12 @@ estadoPrograma Programa::cambiarContrasena(){
 
 
 void Programa::generarClave(){
+
 	srand(time(NULL));
 
 	 string clave="";
 	 bool claveCorrecta = false;
-	 char* alfabetoClaves = (char*)Hill::getAlfabeto();
+	 char* alfabetoClaves = Hill::getAlfabeto();
 
 	 while(!claveCorrecta){
 

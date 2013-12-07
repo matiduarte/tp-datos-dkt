@@ -563,6 +563,7 @@ vector<PedidoCotizacion*> Indice::buscarPedidosCotizacionHechasAUsuario(Usuario*
 	for (std::list<string>::iterator itPed = idsPedido->begin(); itPed != idsPedido->end(); itPed++){
 		PedidoCotizacion* pedido = new PedidoCotizacion();
 		string pedidoSerializada = this->indicePedidoCotizacion->buscarElemento(*itPed);
+
 		pedido->desSerializar(pedidoSerializada);
 		resultadoPedidos.push_back(pedido);
 	}

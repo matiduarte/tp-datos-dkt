@@ -68,7 +68,7 @@ void PedidoCotizacion::setIdUsuario(int idUsuario){
 }
 
 void PedidoCotizacion::setPedido(string consulta){
-	this->pedido = pedido;
+	this->pedido = consulta;
 }
 
 void PedidoCotizacion::setFechaPedido(string fecha){
