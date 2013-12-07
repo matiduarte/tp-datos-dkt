@@ -1399,6 +1399,8 @@ estadoPrograma Programa::cambiarContrasena(){
 	vector<Usuario*> usuarios = indice->obtenerTodosLosUsuarios();
 	Usuario* usuarioAux;
 
+	system("clear");
+	emitir("Estos son los usuarios registrados en el sistema: ", 0, posY); posY++;
 	//listo todos los usuarios:
 
 	for(unsigned int i=0; i<usuarios.size(); i++){
@@ -1417,7 +1419,7 @@ estadoPrograma Programa::cambiarContrasena(){
 	do{
 			system("clear");
 			posY=0;
-			emitir("Ingrese el ID del usuario que desea cambiarle la contrasena:                 ", 0, posY);
+			emitir("Ingrese el ID del usuario que desea cambiarle la contrasena:                 ", 0, posY); posY++;
 			gotoXY(44, posY);	leer(id);
 		}while(atoi(id.c_str()) <= 0);
 
